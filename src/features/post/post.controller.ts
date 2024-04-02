@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { PostService } from './post.service';
 
+import { PostService } from './post.service';
 import { CreatePostModel } from './models/input/create-post.model';
 import { UpdatePostModel } from './models/input/update-post.model';
 

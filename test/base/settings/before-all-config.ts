@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
 import { TestManager } from '../managers/test.manager';
+
 import { initializeApp } from './initialize-app';
 
 export async function beforeAllConfig(): Promise<{

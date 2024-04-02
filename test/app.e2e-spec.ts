@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
-import { beforeAllConfig } from './base/settings/before-all-config';
 import TestAgent from 'supertest/lib/agent';
+
+import { beforeAllConfig } from './base/settings/before-all-config';
 import { TestManager } from './base/managers/test.manager';
 
 describe('AppController (e2e)', () => {

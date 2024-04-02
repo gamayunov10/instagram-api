@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { CreatePostModel } from './models/input/create-post.model';
 import { UpdatePostModel } from './models/input/update-post.model';
 

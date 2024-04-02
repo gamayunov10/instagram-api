@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { CreateUserModel } from './models/input/create-user.model';
 import { UpdateUserModel } from './models/input/update-user.model';
 

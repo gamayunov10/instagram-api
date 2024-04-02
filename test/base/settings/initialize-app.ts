@@ -2,8 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
 import supertest from 'supertest';
-import { AppModule } from '../../../src/app.module';
 import { PrismaClient } from '@prisma/client';
+
+import { AppModule } from '../../../src/app.module';
 
 export const initializeApp = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
