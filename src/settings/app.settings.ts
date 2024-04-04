@@ -6,6 +6,8 @@ import { useContainer } from 'class-validator';
 import { config } from 'dotenv';
 
 import { AppModule } from '../app.module';
+import { customExceptionFactory } from '../infrastructure/exception-filters/exception-factory';
+import { HttpExceptionFilter } from '../infrastructure/exception-filters/http-exception-filter';
 
 config();
 
@@ -97,6 +99,8 @@ export class AppSettings {
     this.setAppPrefix(app);
     this.setSwagger(app);
     this.setAppPipes(app);
+
+    setAppExceptionsFilters(app);
   }
 
   private setAppPrefix(app: INestApplication) {
@@ -126,10 +130,15 @@ export class AppSettings {
         whitelist: true,
         transform: true,
         stopAtFirstError: true,
+        exceptionFactory: customExceptionFactory,
       }),
     );
   }
 }
+
+const setAppExceptionsFilters = (app: INestApplication) => {
+  app.useGlobalFilters(new HttpExceptionFilter());
+};
 
 const env = new EnvironmentSettings(
   (Environments.includes(process.env.ENV)

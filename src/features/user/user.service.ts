@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { CreateUserModel } from './models/input/create-user.model';
 import { UpdateUserModel } from './models/input/update-user.model';
+import { UsersRepository } from './infrastructure/users.repo';
 
 @Injectable()
 export class UserService {
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly configService: ConfigService,
+  ) {}
   create(createUserModel: CreateUserModel) {
     return 'This action adds a new user';
   }
@@ -21,7 +27,7 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  deleteUser(id: string) {
+    return this.usersRepository.deleteUser(id);
   }
 }
