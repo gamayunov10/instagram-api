@@ -9,16 +9,24 @@ import {
   lorem30,
   lorem50,
   userEmail1,
+  userEmail2,
+  username1,
+  username2,
+  userPassword,
 } from '../../base/constants/tests-strings';
+import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
+import { TestManager } from '../../base/managers/test.manager';
 
 describe('AuthController: /registration', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
+  let testManager: TestManager;
 
   beforeAll(async () => {
     const config = await beforeAllConfig();
     app = config.app;
     agent = config.agent;
+    testManager = config.testManager;
   });
 
   afterAll(async () => {
@@ -157,11 +165,41 @@ describe('AuthController: /registration', () => {
       await agent
         .post('/auth/registration')
         .send({
-          username: 'userLogin1',
-          password: 'userPassword',
+          username: username1,
+          password: userPassword,
           email: userEmail1,
         })
         .expect(204);
     });
+
+    it(`should return 204 when trying to Register in the system, 
+    SendRegistrationMailUseCase should be called`, async () => {
+      const executeSpy = jest.spyOn(
+        SendRegistrationMailUseCase.prototype,
+        'execute',
+      );
+
+      await agent
+        .post('/auth/registration')
+        .send({
+          username: username2,
+          password: userPassword,
+          email: userEmail2,
+        })
+        .expect(204);
+
+      const confirmationCode =
+        await testManager.getEmailConfirmationCode(userEmail2);
+
+      expect(executeSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: username2,
+          email: userEmail2,
+          confirmationCode: confirmationCode,
+        }),
+      );
+
+      executeSpy.mockClear();
+    }, 15000);
   });
 });

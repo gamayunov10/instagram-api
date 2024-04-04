@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 export class SendRegistrationMailCommand {
   constructor(
-    public login: string,
+    public username: string,
     public email: string,
     public confirmationCode: string,
   ) {}
@@ -26,7 +26,7 @@ export class SendRegistrationMailUseCase
       subject: 'Registration confirmation',
       template: './confirmation',
       context: {
-        login: command.login,
+        login: command.username,
         url,
       },
     });
