@@ -24,6 +24,19 @@ export class UsersQueryRepository {
     });
   }
 
+  async getUserWithRelations(email: string) {
+    return (await this.prismaClient.user.findFirst({
+      where: { email },
+      include: {
+        confirmationCode: true,
+      },
+    })) as User & {
+      confirmationCode: {
+        confirmationCode: string;
+      } | null;
+    };
+  }
+
   async findUserByEmailConfirmationCode(confirmationCode: string) {
     return this.prismaClient.user.findFirst({
       where: {
