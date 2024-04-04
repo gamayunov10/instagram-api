@@ -18,3 +18,15 @@ export const userEmail4 = 'login-user-4@gmail.com';
 export const userEmail5 = 'login-user-5@gmail.com';
 export const userEmail6 = 'login-user-6@gmail.com';
 export const userEmail7 = 'login-user-7@gmail.com';
+
+// username
+export const username1 = 'username1';
+export const username2 = 'username2';
+export const username3 = 'username3';
+export const username4 = 'username4';
+export const username5 = 'username5';
+export const username6 = 'username6';
+export const username7 = 'username7';
+
+// password
+export const userPassword = 'userPassword1*';
