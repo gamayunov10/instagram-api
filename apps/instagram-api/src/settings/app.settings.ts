@@ -11,7 +11,7 @@ import { HttpExceptionFilter } from '../infrastructure/exception-filters/http-ex
 
 config();
 
-export const APP_PREFIX = '';
+export const APP_PREFIX = '/api/v1';
 
 export type EnvironmentVariable = {
   [key: string]: string | undefined;
