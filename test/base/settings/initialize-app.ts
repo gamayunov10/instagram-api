@@ -1,9 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { useContainer } from 'class-validator';
-import cookieParser from 'cookie-parser';
 import supertest from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 
+import { appSettings } from '../../../src/settings/app.settings';
 import { AppModule } from '../../../src/app.module';
 
 export const initializeApp = async () => {
@@ -29,9 +28,7 @@ export const initializeApp = async () => {
   const app = moduleFixture.createNestApplication();
   const prisma = moduleFixture.get<PrismaClient>(PrismaClient);
 
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  app.enableCors();
-  app.use(cookieParser());
+  appSettings.applySettings(app);
 
   await app.init();
   const agent = supertest.agent(app.getHttpServer());
