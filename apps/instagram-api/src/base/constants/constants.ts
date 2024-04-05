@@ -11,6 +11,7 @@ export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';
 export const emailIsIncorrect =
   'The email must match the format example@example.com';
+export const loginIsIncorrect = 'If the password or login is wrong'
 
 export const linkIsExpired = `Looks like the verification link has expired. Not
 to worry, we can send the link again`;
