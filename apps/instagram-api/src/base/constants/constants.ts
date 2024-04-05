@@ -1,9 +1,12 @@
 // Fields
 export const confirmCodeField = 'code';
+export const emailField = 'email';
 export const environmentField = 'environment';
 
 // Validation
 export const emailNotUnique = 'User with this email is already registered';
+export const emailNotExist = `User with this email doesn't exist`;
+export const emailNotSend = `An error occurred while sending a message`;
 export const usernameNotUnique =
   'User with this username is already registered';
 export const usernameIsIncorrect = 'The username must contain a-zA-Z0-9_-';
