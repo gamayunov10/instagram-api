@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
+import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
@@ -14,7 +15,6 @@ import {
   username2,
   userPassword,
 } from '../../base/constants/tests-strings';
-import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
 import { TestManager } from '../../base/managers/test.manager';
 
 describe('AuthController: /registration', () => {
@@ -33,14 +33,16 @@ describe('AuthController: /registration', () => {
     await app.close();
   });
 
+  const registration_url = '/api/v1/auth/registration';
+
   describe('negative', () => {
     it(`should clear database`, async () => {
-      await agent.delete('/testing/all-data');
+      await agent.delete('/api/v1/testing/all-data');
     });
 
     it(`should return 400 when trying to Register in the system with empty username`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: '',
           password: 'password123',
@@ -53,7 +55,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect username`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: 'qw', //minLength: 3
           password: 'password123',
@@ -66,7 +68,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect username`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem50, //maxLength: 30
           password: 'password123',
@@ -79,7 +81,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with empty password`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: '',
@@ -92,7 +94,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: '12345', //minLength: 6
@@ -105,7 +107,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: lorem30, //maxLength: 20
@@ -118,7 +120,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with empty email`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: lorem20,
@@ -131,7 +133,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect email`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: lorem20,
@@ -144,7 +146,7 @@ describe('AuthController: /registration', () => {
 
     it(`should return 400 when trying to Register in the system with incorrect email`, async () => {
       const response = await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: lorem10,
           password: lorem20,
@@ -158,12 +160,12 @@ describe('AuthController: /registration', () => {
 
   describe('positive', () => {
     it(`should clear database`, async () => {
-      await agent.delete('/testing/all-data');
+      await agent.delete('/api/v1/testing/all-data');
     });
 
     it(`should return 204 when trying to Register in the system`, async () => {
       await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: username1,
           password: userPassword,
@@ -180,7 +182,7 @@ describe('AuthController: /registration', () => {
       );
 
       await agent
-        .post('/auth/registration')
+        .post(registration_url)
         .send({
           username: username2,
           password: userPassword,

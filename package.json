@@ -100,7 +100,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
+    "rootDir": ".",
     "testRegex": ".*(-|.)spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -112,6 +112,15 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/"
-    ]
+    ],
+    "moduleDirectories": [
+      "<rootDir>/../",
+      "node_modules"
+    ],
+    "moduleNameMapper": {
+      "^@instagram-api/(.*)$": "<rootDir>/apps/inctagram-api/$1",
+      "^@file/(.*)$": "<rootDir>/apps/files-api/$1"
+    },
+    "testTimeout": 15000
   }
 }
