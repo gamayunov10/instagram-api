@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -9,6 +9,7 @@ import { ResultCode } from '../../../base/enums/result-code.enum';
 import {
   confirmationCodeIsIncorrect,
   confirmCodeField,
+  loginIsIncorrect,
 } from '../../../base/constants/constants';
 import { UserConfirmationCodeInputModel } from '../models/input/user-confirmation-code.input.model';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
@@ -17,6 +18,8 @@ import { UserEmailInputModel } from '../models/input/user-email.input.model';
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
 import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
+import { UserLoginInputModel } from '../models/input/user-login.input.model';
+import { LoginInTheSystemCommand } from './application/use-cases/login-in-the-system.use-case';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -117,5 +120,32 @@ export class AuthController {
     }
 
     return result;
+  }
+
+  @Post('login')
+  @SwaggerOptions(
+    'Log in',
+   false,
+    false,
+    200,
+    'The user has successfully logged in',
+    false,
+    'If the inputModel has incorrect values',
+    ApiErrorMessages,
+    'If the password or login is wrong',
+    false,
+    false,
+    false
+  )
+  @HttpCode(200)
+  async loginUserToTheSystem(
+    @Body() userLoginInputModel: UserLoginInputModel,
+  ): Promise<void> {
+    const result = await this.commandBus.execute(
+      new LoginInTheSystemCommand(userLoginInputModel),
+    )
+    if (!result) {
+      throw new HttpException(loginIsIncorrect, HttpStatus.UNAUTHORIZED)
+    }
   }
 }
