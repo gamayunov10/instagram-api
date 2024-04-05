@@ -24,7 +24,11 @@ export class SendRegistrationMailUseCase
     await this.mailerService.sendMail({
       to: command.email,
       subject: 'Registration confirmation',
-      template: './confirmation',
+      html: `<h1>Hello, {{ login }}! Thank you for registration</h1>
+              <p>Follow the link below to complete your registration, or simply ignore it if you find it suspicious:
+                <a href="{{ url }}">Complete your registration</a>
+              </p>
+            `,
       context: {
         login: command.username,
         url,

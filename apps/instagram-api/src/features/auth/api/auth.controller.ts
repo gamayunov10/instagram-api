@@ -12,9 +12,11 @@ import {
 } from '../../../base/constants/constants';
 import { UserConfirmationCodeInputModel } from '../models/input/user-confirmation-code.input.model';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
+import { UserEmailInputModel } from '../models/input/user-email.input.model';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
+import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -84,6 +86,34 @@ export class AuthController {
         confirmationCodeIsIncorrect,
         confirmCodeField,
       );
+    }
+
+    return result;
+  }
+
+  @Post('password-recovery')
+  @SwaggerOptions(
+    'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
+    false,
+    false,
+    204,
+    'Success',
+    false,
+    true,
+    ApiErrorMessages,
+    false,
+    false,
+    `If User with this email doesn't exist`,
+    false,
+  )
+  @HttpCode(204)
+  async passwordRecovery(@Body() userEmailInputModel: UserEmailInputModel) {
+    const result = await this.commandBus.execute(
+      new PasswordRecoveryCommand(userEmailInputModel),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
     }
 
     return result;
