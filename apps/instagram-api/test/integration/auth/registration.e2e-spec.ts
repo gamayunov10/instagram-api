@@ -17,6 +17,8 @@ import {
 } from '../../base/constants/tests-strings';
 import { TestManager } from '../../base/managers/test.manager';
 
+export const registration_url = '/api/v1/auth/registration';
+
 describe('AuthController: /registration', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
@@ -32,8 +34,6 @@ describe('AuthController: /registration', () => {
   afterAll(async () => {
     await app.close();
   });
-
-  const registration_url = '/api/v1/auth/registration';
 
   describe('negative', () => {
     it(`should clear database`, async () => {
