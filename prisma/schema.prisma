@@ -14,19 +14,20 @@ datasource db {
 }
 
 model User {
-  id               String            @id @default(uuid())
-  email            String            @unique
-  username         String            @unique
-  firstname        String?
-  lastname         String?
-  birthDate        String?           @map("birth_date")
-  city             String?
-  aboutMe          String?           @map("about_me")
-  passwordHash     String?           @map("password_hash")
-  createdAt        DateTime          @default(now()) @map("created_at")
-  isConfirmed      Boolean           @default(false) @map("is_confirmed")
-  confirmationCode ConfirmationCode?
-  posts            Post[]
+  id                   String                @id @default(uuid())
+  email                String                @unique
+  username             String                @unique
+  firstname            String?
+  lastname             String?
+  birthDate            String?               @map("birth_date")
+  city                 String?
+  aboutMe              String?               @map("about_me")
+  passwordHash         String?               @map("password_hash")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  isConfirmed          Boolean               @default(false) @map("is_confirmed")
+  confirmationCode     ConfirmationCode?
+  PasswordRecoveryCode PasswordRecoveryCode?
+  posts                Post[]
 
   @@map("user")
 }
@@ -39,6 +40,17 @@ model ConfirmationCode {
   userId           String   @unique @map("user_id")
 
   @@map("confirmation_code")
+}
+
+model PasswordRecoveryCode {
+  id             String   @id @default(uuid()) @map("password_recovery_code_id")
+  recoveryCode   String   @unique @map("recovery_code")
+  createdAt      DateTime @default(now()) @map("created_at")
+  expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '4 hours'")) @map("expiration_date")
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @unique @map("user_id")
+
+  @@map("password_recovery_code")
 }
 
 model Post {

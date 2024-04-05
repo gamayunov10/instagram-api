@@ -11,9 +11,14 @@ import { AuthService } from './api/application/auth.service';
 import { AuthController } from './api/auth.controller';
 import { RegistrationUseCase } from './api/application/use-cases/registration.use-case';
 import { RegistrationConfirmationUseCase } from './api/application/use-cases/registration-confirmation.use-case';
+import { PasswordRecoveryUseCase } from './api/application/use-cases/password-recovery.use-case';
 
 const services = [AuthService, PrismaClient];
-const useCases = [RegistrationUseCase, RegistrationConfirmationUseCase];
+const useCases = [
+  RegistrationUseCase,
+  RegistrationConfirmationUseCase,
+  PasswordRecoveryUseCase,
+];
 const repositories = [UsersRepository];
 const queryRepositories = [UsersQueryRepository];
 const constraints = [

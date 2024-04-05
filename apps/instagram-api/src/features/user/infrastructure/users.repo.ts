@@ -67,6 +67,32 @@ export class UsersRepository {
     }
   }
 
+  async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const createdRecord = await prisma.passwordRecoveryCode.create({
+          data: {
+            userId: id,
+            recoveryCode: recoveryCode,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        return createdRecord.id;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      await this.prismaClient.$executeRaw`ROLLBACK`;
+
+      return false;
+    }
+  }
+
   async deleteUser(userId: string): Promise<void> {
     return await this.prismaClient.$transaction(async (prisma) => {
       await prisma.user.delete({

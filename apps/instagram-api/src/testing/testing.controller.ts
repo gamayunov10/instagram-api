@@ -45,6 +45,7 @@ export class TestingController {
       ) {
         await this.prismaClient.$transaction([
           this.prismaClient.confirmationCode.deleteMany({}),
+          this.prismaClient.passwordRecoveryCode.deleteMany({}),
           this.prismaClient.post.deleteMany({}),
           this.prismaClient.user.deleteMany({}),
         ]);

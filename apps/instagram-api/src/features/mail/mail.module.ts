@@ -8,6 +8,7 @@ import { config } from 'dotenv';
 config();
 
 import { SendRegistrationMailUseCase } from './application/use-cases/send-registration-mail.use-case';
+import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-recovery-mail.use-case';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { SendRegistrationMailUseCase } from './application/use-cases/send-regist
         from: '"Sir Alex" <process.env.EMAIL>',
       },
       template: {
-        dir: join(__dirname, 'templates'),
+        dir: join(__dirname, './features/mail/templates'),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
@@ -34,6 +35,6 @@ import { SendRegistrationMailUseCase } from './application/use-cases/send-regist
       },
     }),
   ],
-  providers: [SendRegistrationMailUseCase],
+  providers: [SendRegistrationMailUseCase, SendPasswordRecoveryUseCase],
 })
 export class MailModule {}
