@@ -8,19 +8,25 @@ import {
   username1,
   userPassword,
 } from '../../base/constants/tests-strings';
+import { TestManager } from '../../base/managers/test.manager';
 
-import { registration_url } from './registration.e2e-spec';
+import {
+  registration_confirmation_url,
+  registration_url,
+} from './registration.e2e-spec';
 
 const login_url = '/api/v1/auth/login';
 
 describe('AuthController: /login', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
+  let testManager: TestManager;
 
   beforeAll(async () => {
     const config = await beforeAllConfig();
     app = config.app;
     agent = config.agent;
+    testManager = config.testManager;
   });
 
   afterAll(async () => {
@@ -100,6 +106,16 @@ describe('AuthController: /login', () => {
           username: username1,
           password: userPassword,
           email: userEmail1,
+        })
+        .expect(204);
+
+      const confirmationCode =
+        await testManager.getEmailConfirmationCode(userEmail1);
+
+      await agent
+        .post(registration_confirmation_url)
+        .send({
+          code: confirmationCode,
         })
         .expect(204);
 

@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 
 import { appSettings } from '../../../src/settings/app.settings';
 import { AppModule } from '../../../src/app.module';
+import { RecaptchaGuard } from '../../../src/infrastructure/guards/recaptcha.guard';
+import { ReCaptchaGuardMock } from '../mock/ReCaptchaGuardMock';
 
 export const initializeApp = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -23,7 +25,10 @@ export const initializeApp = async () => {
         },
       },
     ],
-  }).compile();
+  })
+    .overrideGuard(RecaptchaGuard)
+    .useValue(new ReCaptchaGuardMock())
+    .compile();
 
   const app = moduleFixture.createNestApplication();
   const prisma = moduleFixture.get<PrismaClient>(PrismaClient);

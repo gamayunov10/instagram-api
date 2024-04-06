@@ -44,6 +44,7 @@ describe('AuthController: /password-recovery', () => {
         .post(passwd_recovery_url)
         .send({
           email: '',
+          reCaptcha: 'reCaptcha',
         })
         .expect(400);
 
@@ -95,6 +96,7 @@ describe('AuthController: /password-recovery', () => {
         .post(passwd_recovery_url)
         .send({
           email: userEmail2,
+          reCaptcha: 'reCaptcha',
         })
         .expect(204);
 
