@@ -27,11 +27,14 @@ import { UserPasswdRecoveryInputModel } from '../models/input/user-passwd-recove
 import { UserLoginInputModel } from '../models/input/user-login.input.model';
 import { AccessTokenView } from '../models/output/access-token-view.model';
 import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
+import { CheckRefreshToken } from '../../../infrastructure/guards/check-refresh-token.guard';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
 import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
 import { LoginCommand } from './application/use-cases/login.use.case';
+import { CookiesDecorator } from "../../../infrastructure/decorators/cookies.decorator";
+import { LogoutDeviceCommand } from "./application/use-cases/devices/logout-device.use-case";
 
 @Controller('auth')
 @ApiTags('auth')
@@ -171,5 +174,34 @@ export class AuthController {
         secure: true,
       })
       .json({ accessToken: result.accessToken });
+  }
+  @UseGuards(CheckRefreshToken)
+  @Post('logout')
+  @SwaggerOptions(
+    'Logout of an authorized user',
+    false,
+    false,
+    204,
+    'No content',
+    false,
+    '',
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    false,
+    false,
+    false,
+  )
+  @HttpCode(200)
+  async logout(
+    @Ip() ip: string,
+    @Headers() headers: IncomingMessage,
+    @CookiesDecorator('refreshToken') refreshToken: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.commandBus.execute(
+      new LogoutDeviceCommand(refreshToken),
+    );
+    res.clearCookie('refreshToken');
+    res.status(204);
   }
 }

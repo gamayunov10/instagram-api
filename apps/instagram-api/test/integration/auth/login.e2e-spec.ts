@@ -15,7 +15,7 @@ import {
   registration_url,
 } from './registration.e2e-spec';
 
-const login_url = '/api/v1/auth/login';
+export const login_url = '/api/v1/auth/login';
 
 describe('AuthController: /login', () => {
   let app: INestApplication;

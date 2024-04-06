@@ -17,6 +17,8 @@ import { PasswordRecoveryUseCase } from './api/application/use-cases/password-re
 import { LoginUseCase } from './api/application/use-cases/login.use.case';
 import { CreateTokensUseCase } from './api/application/use-cases/tokens/create-token.use-case';
 import { LoginDeviceUseCase } from './api/application/use-cases/devices/login-device.use-case';
+import { LogoutDeviceUseCase } from './api/application/use-cases/devices/logout-device.use-case';
+import { UserDevicesQueryRepository } from '../user/infrastructure/user.devices.query.repo';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -26,9 +28,10 @@ const useCases = [
   LoginUseCase,
   CreateTokensUseCase,
   LoginDeviceUseCase,
+  LogoutDeviceUseCase
 ];
 const repositories = [UsersRepository, UserDevicesRepository];
-const queryRepositories = [UsersQueryRepository];
+const queryRepositories = [UsersQueryRepository, UserDevicesQueryRepository];
 const constraints = [
   IsEmailAlreadyExistConstraint,
   IsUsernameAlreadyExistConstraint,
