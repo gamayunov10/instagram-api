@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
-import { UserEmailInputModel } from '../../../models/input/user-email.input.model';
+import { UserPasswdRecoveryInputModel } from '../../../models/input/user-passwd-recovery.input.model';
 import { UsersRepository } from '../../../../user/infrastructure/users.repo';
 import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
 import { SendPasswordRecoveryMailCommand } from '../../../../mail/application/use-cases/send-pass-recovery-mail.use-case';
@@ -14,9 +14,10 @@ import {
   emailNotExist,
 } from '../../../../../base/constants/constants';
 import { ExceptionResultType } from '../../../../../base/types/exception.type';
+import { UserDevicesRepository } from '../../../../user/infrastructure/user.devices.repo';
 
 export class PasswordRecoveryCommand {
-  constructor(public userEmailInputModel: UserEmailInputModel) {}
+  constructor(public userEmailInputModel: UserPasswdRecoveryInputModel) {}
 }
 
 @CommandHandler(PasswordRecoveryCommand)
@@ -29,6 +30,7 @@ export class PasswordRecoveryUseCase
     private commandBus: CommandBus,
     private readonly usersRepository: UsersRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly userDevicesRepository: UserDevicesRepository,
     private readonly configService: ConfigService,
   ) {}
 
@@ -75,6 +77,8 @@ export class PasswordRecoveryUseCase
         this.logger.error(e);
       }
     }
+
+    await this.userDevicesRepository.deleteUserSessions(user.id);
 
     return {
       data: true,

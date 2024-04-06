@@ -14,6 +14,10 @@ export class AuthService {
       return false;
     }
 
+    if (!user.isConfirmed) {
+      return false;
+    }
+
     const isHashesEquals: boolean = await this._isPasswordCorrect(
       password,
       user.passwordHash,
