@@ -18,6 +18,8 @@ import {
 import { TestManager } from '../../base/managers/test.manager';
 
 export const registration_url = '/api/v1/auth/registration';
+export const registration_confirmation_url =
+  '/api/v1/auth/registration-confirmation';
 
 describe('AuthController: /registration', () => {
   let app: INestApplication;
