@@ -30,3 +30,7 @@ export const username7 = 'username7';
 
 // password
 export const userPassword = 'userPassword1*';
+
+//refreshToken
+export const invalidRefreshToken= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwiZGV2aWNlSWQiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMn0.tqobxgHJy6qUabbSr2vvXoOcFowQMBCcUuRQa5QYVZA'
+export const expiredRefreshToken= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwiZGV2aWNlSWQiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMn0.tpCmDjazzXwMem_KM7ZIpq4rcCxU7280frJjrNOH9hY'
