@@ -1,6 +1,16 @@
-import { Body, Controller, HttpCode, HttpException, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpCode,
+  Ip,
+  Post,
+  Res,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
+import { IncomingMessage } from 'http';
 
 import { UserAuthInputModel } from '../models/input/user-auth.input.model';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -9,17 +19,17 @@ import { ResultCode } from '../../../base/enums/result-code.enum';
 import {
   confirmationCodeIsIncorrect,
   confirmCodeField,
-  loginIsIncorrect,
 } from '../../../base/constants/constants';
 import { UserConfirmationCodeInputModel } from '../models/input/user-confirmation-code.input.model';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
 import { UserEmailInputModel } from '../models/input/user-email.input.model';
+import { UserLoginInputModel } from '../models/input/user-login.input.model';
+import { AccessTokenView } from '../models/output/access-token-view.model';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
 import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
-import { UserLoginInputModel } from '../models/input/user-login.input.model';
-import { LoginInTheSystemCommand } from './application/use-cases/login-in-the-system.use-case';
+import { LoginCommand } from './application/use-cases/login.use.case';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -124,28 +134,37 @@ export class AuthController {
 
   @Post('login')
   @SwaggerOptions(
-    'Log in',
-   false,
+    'Try login user to the system',
+    false,
     false,
     200,
-    'The user has successfully logged in',
+    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    AccessTokenView,
+    'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
     false,
-    'If the inputModel has incorrect values',
-    ApiErrorMessages,
     'If the password or login is wrong',
     false,
     false,
-    false
+    false,
   )
   @HttpCode(200)
-  async loginUserToTheSystem(
+  async login(
+    @Ip() ip: string,
     @Body() userLoginInputModel: UserLoginInputModel,
+    @Headers() headers: IncomingMessage,
+    @Res() res: Response,
   ): Promise<void> {
+    const userAgent = headers['user-agent'] || 'unknown';
+
     const result = await this.commandBus.execute(
-      new LoginInTheSystemCommand(userLoginInputModel),
-    )
-    if (!result) {
-      throw new HttpException(loginIsIncorrect, HttpStatus.UNAUTHORIZED)
-    }
+      new LoginCommand(userLoginInputModel, userAgent, ip),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: result.accessToken });
   }
 }

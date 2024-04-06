@@ -28,8 +28,22 @@ model User {
   confirmationCode     ConfirmationCode?
   PasswordRecoveryCode PasswordRecoveryCode?
   posts                Post[]
+  device               DeviceAuthSession[]
 
   @@map("user")
+}
+
+model DeviceAuthSession {
+  id             String   @id @default(uuid()) @map("device_auth_session_id")
+  deviceId       String   @map("device_id")
+  ip             String
+  title          String
+  lastActiveDate DateTime @map("last_active_date")
+  expirationDate DateTime @map("expiration_date")
+  User           User?    @relation(fields: [userId], references: [id])
+  userId         String?  @map("user_id")
+
+  @@map("device_auth_session")
 }
 
 model ConfirmationCode {
