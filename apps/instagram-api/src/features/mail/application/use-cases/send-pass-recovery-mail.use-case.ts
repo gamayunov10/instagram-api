@@ -24,10 +24,9 @@ export class SendPasswordRecoveryUseCase
     await this.mailerService.sendMail({
       to: command.email,
       subject: 'Password recovery',
-      // template: './passwd-recovery',
-      html: `<h1>Hello, {{ login }}!</h1>
+      html: `<h1>Hello, ${command.username}!</h1>
               <p>To recover your password please follow the link below, or simply ignore it if you find it suspicious:
-                <a href="{{ url }}">Click here to reset your password</a>
+                <a href="${url}">Click here to reset your password</a>
               </p>
             `,
       context: {

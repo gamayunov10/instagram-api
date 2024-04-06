@@ -1,7 +1,6 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
 import { UserLoginInputModel } from '../../../models/input/user-login.input.model';
 import { AuthService } from '../auth.service';
 
@@ -19,7 +18,6 @@ export class LoginCommand {
 @CommandHandler(LoginCommand)
 export class LoginUseCase implements ICommandHandler<LoginCommand> {
   constructor(
-    private readonly usersQueryRepository: UsersQueryRepository,
     private readonly authService: AuthService,
     private commandBus: CommandBus,
   ) {}
