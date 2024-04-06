@@ -45,4 +45,20 @@ export class UserDevicesRepository {
       }
     }
   }
+
+  async deleteUserSessions(userId: string): Promise<void> {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.deviceAuthSession.deleteMany({
+          where: {
+            userId: userId,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
 }

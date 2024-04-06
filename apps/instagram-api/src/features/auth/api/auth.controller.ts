@@ -6,6 +6,7 @@ import {
   Ip,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
@@ -22,9 +23,10 @@ import {
 } from '../../../base/constants/constants';
 import { UserConfirmationCodeInputModel } from '../models/input/user-confirmation-code.input.model';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
-import { UserEmailInputModel } from '../models/input/user-email.input.model';
+import { UserPasswdRecoveryInputModel } from '../models/input/user-passwd-recovery.input.model';
 import { UserLoginInputModel } from '../models/input/user-login.input.model';
 import { AccessTokenView } from '../models/output/access-token-view.model';
+import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
@@ -115,14 +117,17 @@ export class AuthController {
     true,
     ApiErrorMessages,
     false,
-    false,
+    'reCAPTCHA',
     `If User with this email doesn't exist`,
     false,
   )
+  @UseGuards(RecaptchaGuard)
   @HttpCode(204)
-  async passwordRecovery(@Body() userEmailInputModel: UserEmailInputModel) {
+  async passwordRecovery(
+    @Body() userPasswdRecoveryInputModel: UserPasswdRecoveryInputModel,
+  ) {
     const result = await this.commandBus.execute(
-      new PasswordRecoveryCommand(userEmailInputModel),
+      new PasswordRecoveryCommand(userPasswdRecoveryInputModel),
     );
 
     if (result.code !== ResultCode.Success) {
