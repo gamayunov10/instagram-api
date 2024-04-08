@@ -1,17 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   Headers,
   HttpCode,
   Ip,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
+import { User } from '@prisma/client';
 
 import { UserAuthInputModel } from '../models/input/user-auth.input.model';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -27,16 +30,23 @@ import { UserPasswdRecoveryInputModel } from '../models/input/user-passwd-recove
 import { UserLoginInputModel } from '../models/input/user-login.input.model';
 import { AccessTokenView } from '../models/output/access-token-view.model';
 import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
+import { GoogleOAuth2Guard } from '../../../infrastructure/guards/google-oauth2.guard';
+import { GitHubOAuth2Guard } from '../../../infrastructure/guards/github-oauth2.guard';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
 import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
 import { LoginCommand } from './application/use-cases/login.use.case';
+import { AuthService } from './application/auth.service';
+import { CreateOAuthTokensCommand } from './application/use-cases/tokens/create-oauth-token.use-case';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private commandBus: CommandBus) {}
+  constructor(
+    private commandBus: CommandBus,
+    private authService: AuthService,
+  ) {}
 
   @Post('registration')
   @SwaggerOptions(
@@ -135,6 +145,91 @@ export class AuthController {
     }
 
     return result;
+  }
+
+  @Get('google/login')
+  @SwaggerOptions(
+    'Try login user to the system by Google (OAuth2)',
+    false,
+    false,
+    200,
+    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    AccessTokenView,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(GoogleOAuth2Guard)
+  @HttpCode(200)
+  async googleLogin() {
+    return { msg: 'Google Auth' };
+  }
+
+  @Get('google/redirect')
+  @ApiExcludeEndpoint()
+  @UseGuards(GoogleOAuth2Guard)
+  async googleRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user: Partial<User> = req.user;
+
+    const result = await this.commandBus.execute(
+      new CreateOAuthTokensCommand(user),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: result.accessToken });
+  }
+
+  @Get('github/login')
+  @Get('google/login')
+  @SwaggerOptions(
+    'Try login user to the system by Github (OAuth2)',
+    false,
+    false,
+    200,
+    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    AccessTokenView,
+    'If the provider has not provided all the necessary data',
+    ApiErrorMessages,
+    false,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(GitHubOAuth2Guard)
+  @HttpCode(200)
+  async githubLogin() {
+    return { msg: 'GitHub Auth' };
+  }
+
+  @Get('github/redirect')
+  @ApiExcludeEndpoint()
+  @UseGuards(GitHubOAuth2Guard)
+  async githubRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user: Partial<User> = req.user;
+
+    const result = await this.commandBus.execute(
+      new CreateOAuthTokensCommand(user),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: result.accessToken });
   }
 
   @Post('login')
