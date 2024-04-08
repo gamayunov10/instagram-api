@@ -12,7 +12,7 @@ export class UserDevicesQueryRepository {
 
   async findUserByDeviceId(userId: string, deviceId: string) {
     return this.prismaClient.deviceAuthSession.findFirst({
-      where: { userId, deviceId }
+      where: { userId, deviceId },
     });
   }
 }

@@ -20,7 +20,7 @@ export class LogoutDeviceUseCase
 
     return this.userDevicesRepository.deleteUserDeviceId(
       decodedToken.userId,
-      decodedToken.deviceId
+      decodedToken.deviceId,
     );
   }
 }
