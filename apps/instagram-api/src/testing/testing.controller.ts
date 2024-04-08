@@ -12,8 +12,8 @@ import {
 } from '../base/constants/constants';
 import { NodeEnv } from '../base/enums/node-env.enum';
 
-@ApiTags('testing')
 @Controller('testing')
+@ApiTags('Testing')
 export class TestingController {
   private readonly logger = new Logger(TestingController.name);
   constructor(
@@ -45,6 +45,7 @@ export class TestingController {
       ) {
         await this.prismaClient.$transaction([
           this.prismaClient.confirmationCode.deleteMany({}),
+          this.prismaClient.userProviderInfo.deleteMany({}),
           this.prismaClient.passwordRecoveryCode.deleteMany({}),
           this.prismaClient.post.deleteMany({}),
           this.prismaClient.user.deleteMany({}),

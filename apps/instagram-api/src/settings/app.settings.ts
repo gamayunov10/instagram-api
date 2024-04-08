@@ -1,9 +1,11 @@
 import * as process from 'process';
+import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { config } from 'dotenv';
+import session from 'express-session';
 
 import { AppModule } from '../app.module';
 import { customExceptionFactory } from '../infrastructure/exception-filters/exception-factory';
@@ -60,6 +62,9 @@ class APISettings {
   public readonly DATABASE_URL: string;
   public readonly TEST_DATABASE_URL: string;
 
+  // OAuth2
+  public readonly GOOGLE_CLIENT_SECRET: string;
+
   constructor(private readonly envVariables: EnvironmentVariable) {
     // Application
     this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT, 9876);
@@ -71,6 +76,9 @@ class APISettings {
     // Database
     this.DATABASE_URL = this.envVariables.DATABASE_URL;
     this.TEST_DATABASE_URL = this.envVariables.TEST_DATABASE_URL;
+
+    // OAuth2
+    this.GOOGLE_CLIENT_SECRET = this.envVariables.GOOGLE_CLIENT_SECRET;
   }
 
   private getNumberOrDefault(value: string, defaultValue: number): number {
@@ -93,6 +101,18 @@ export class AppSettings {
   applySettings(app: INestApplication) {
     app.enableCors();
     app.use(cookieParser());
+
+    app.use(
+      session({
+        secret: this.api.GOOGLE_CLIENT_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 60000 },
+      }),
+    );
+
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
