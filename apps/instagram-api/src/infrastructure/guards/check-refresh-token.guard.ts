@@ -39,15 +39,13 @@ export class CheckRefreshToken implements CanActivate {
       }
       const res = await this.userDevicesQueryRepo.findUserByDeviceId(
         refreshTokenPayload.userId,
-        refreshTokenPayload.deviceId)
+        refreshTokenPayload.deviceId,
+      );
       if (!res) {
         return null;
       }
     } catch (error) {
-      throw new HttpException(
-        'Unauthorized',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     return true;
   }

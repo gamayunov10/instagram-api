@@ -9,6 +9,7 @@ import { UsersQueryRepository } from '../user/infrastructure/users.query.repo';
 import { IsEmailAlreadyExistConstraint } from '../../infrastructure/decorators/unique-email.decorator';
 import { IsUsernameAlreadyExistConstraint } from '../../infrastructure/decorators/unique-username.decorator';
 import { UserDevicesRepository } from '../user/infrastructure/user.devices.repo';
+import { UserDevicesQueryRepository } from '../user/infrastructure/user.devices.query.repo';
 
 import { AuthService } from './api/application/auth.service';
 import { AuthController } from './api/auth.controller';
@@ -23,7 +24,6 @@ import { CreateOAuthTokensUseCase } from './api/application/use-cases/tokens/cre
 import { SessionSerializer } from './utils/session.serializer';
 import { GithubOAuth2Strategy } from './strategy/github-oauth2.strategy';
 import { LogoutDeviceUseCase } from './api/application/use-cases/devices/logout-device.use-case';
-import { UserDevicesQueryRepository } from '../user/infrastructure/user.devices.query.repo';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -34,7 +34,7 @@ const useCases = [
   CreateTokensUseCase,
   LoginDeviceUseCase,
   CreateOAuthTokensUseCase,
-  LogoutDeviceUseCase
+  LogoutDeviceUseCase,
 ];
 const repositories = [UsersRepository, UserDevicesRepository];
 const queryRepositories = [UsersQueryRepository, UserDevicesQueryRepository];

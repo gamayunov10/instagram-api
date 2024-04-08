@@ -33,6 +33,7 @@ import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
 import { GoogleOAuth2Guard } from '../../../infrastructure/guards/google-oauth2.guard';
 import { GitHubOAuth2Guard } from '../../../infrastructure/guards/github-oauth2.guard';
 import { CheckRefreshToken } from '../../../infrastructure/guards/check-refresh-token.guard';
+import { CookiesDecorator } from '../../../infrastructure/decorators/cookies.decorator';
 
 import { RegistrationCommand } from './application/use-cases/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
@@ -40,8 +41,7 @@ import { PasswordRecoveryCommand } from './application/use-cases/password-recove
 import { LoginCommand } from './application/use-cases/login.use.case';
 import { AuthService } from './application/auth.service';
 import { CreateOAuthTokensCommand } from './application/use-cases/tokens/create-oauth-token.use-case';
-import { CookiesDecorator } from "../../../infrastructure/decorators/cookies.decorator";
-import { LogoutDeviceCommand } from "./application/use-cases/devices/logout-device.use-case";
+import { LogoutDeviceCommand } from './application/use-cases/devices/logout-device.use-case';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -292,9 +292,7 @@ export class AuthController {
     @CookiesDecorator('refreshToken') refreshToken: string,
     @Res() res: Response,
   ): Promise<void> {
-    await this.commandBus.execute(
-      new LogoutDeviceCommand(refreshToken),
-    );
+    await this.commandBus.execute(new LogoutDeviceCommand(refreshToken));
     res.clearCookie('refreshToken');
     res.status(204);
   }
