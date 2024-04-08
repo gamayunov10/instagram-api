@@ -5,9 +5,14 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UsersRepository } from './infrastructure/users.repo';
 import { UsersQueryRepository } from './infrastructure/users.query.repo';
+import { UserDevicesQueryRepository } from './infrastructure/user.devices.query.repo';
 
 const services = [PrismaClient];
 const repositories = [UsersRepository, UsersQueryRepository];
+
+const services = [PrismaClient];
+const repositories = [UsersRepository, UserDevicesQueryRepository];
+
 @Module({
   controllers: [UserController],
   providers: [UserService, ...repositories, ...services],
