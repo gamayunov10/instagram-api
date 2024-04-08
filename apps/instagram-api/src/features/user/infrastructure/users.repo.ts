@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 
 import { UserAuthInputModel } from '../../auth/models/input/user-auth.input.model';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
+import { UserOauthCredInputModel } from '../../auth/models/input/user-oauth-cred.input.model';
 
 @Injectable()
 export class UsersRepository {
@@ -67,6 +68,91 @@ export class UsersRepository {
     }
   }
 
+  async updateUserProviderInfo(
+    details: UserOauthCredInputModel,
+    id: string,
+    userId: string,
+  ): Promise<void> {
+    try {
+      await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.userProviderInfo.update({
+          where: {
+            id: id,
+            provider: details.provider,
+          },
+          data: {
+            provider: details.provider,
+            userProviderId: details.userProviderId,
+            userId: userId,
+            displayName: details.displayName,
+            email: details.email,
+            city: details?.city ?? null,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
+  async createUserByOAuth(details: UserOauthCredInputModel): Promise<User> {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const createdUser = await prisma.user.create({
+          data: {
+            email: details.email,
+            username: details.displayName,
+            passwordHash: null,
+            isConfirmed: true,
+          },
+        });
+
+        await prisma.userProviderInfo.create({
+          data: {
+            provider: details.provider,
+            userProviderId: details.userProviderId,
+            userId: createdUser.id,
+            displayName: details.displayName,
+            email: details.email,
+            city: details?.city ?? null,
+          },
+        });
+
+        return createdUser;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
+  async mergeUserProviderInfo(
+    details: UserOauthCredInputModel,
+    userId: string,
+  ): Promise<void> {
+    try {
+      await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.userProviderInfo.create({
+          data: {
+            provider: details.provider,
+            userProviderId: details.userProviderId,
+            userId: userId,
+            displayName: details.displayName,
+            email: details.email,
+            city: details?.city ?? null,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
   async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
@@ -86,8 +172,6 @@ export class UsersRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
-
-      await this.prismaClient.$executeRaw`ROLLBACK`;
 
       return false;
     }
