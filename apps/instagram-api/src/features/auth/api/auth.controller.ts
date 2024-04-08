@@ -41,7 +41,7 @@ import { AuthService } from './application/auth.service';
 import { CreateOAuthTokensCommand } from './application/use-cases/tokens/create-oauth-token.use-case';
 
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
@@ -190,7 +190,6 @@ export class AuthController {
   }
 
   @Get('github/login')
-  @Get('google/login')
   @SwaggerOptions(
     'Try login user to the system by Github (OAuth2)',
     false,

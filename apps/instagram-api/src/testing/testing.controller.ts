@@ -12,8 +12,8 @@ import {
 } from '../base/constants/constants';
 import { NodeEnv } from '../base/enums/node-env.enum';
 
-@ApiTags('testing')
 @Controller('testing')
+@ApiTags('Testing')
 export class TestingController {
   private readonly logger = new Logger(TestingController.name);
   constructor(
