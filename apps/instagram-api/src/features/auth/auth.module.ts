@@ -22,6 +22,8 @@ import { GoogleOAuth2Strategy } from './strategy/google-oauth2.strategy';
 import { CreateOAuthTokensUseCase } from './api/application/use-cases/tokens/create-oauth-token.use-case';
 import { SessionSerializer } from './utils/session.serializer';
 import { GithubOAuth2Strategy } from './strategy/github-oauth2.strategy';
+import { LogoutDeviceUseCase } from './api/application/use-cases/devices/logout-device.use-case';
+import { UserDevicesQueryRepository } from '../user/infrastructure/user.devices.query.repo';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -32,9 +34,10 @@ const useCases = [
   CreateTokensUseCase,
   LoginDeviceUseCase,
   CreateOAuthTokensUseCase,
+  LogoutDeviceUseCase
 ];
 const repositories = [UsersRepository, UserDevicesRepository];
-const queryRepositories = [UsersQueryRepository];
+const queryRepositories = [UsersQueryRepository, UserDevicesQueryRepository];
 const constraints = [
   IsEmailAlreadyExistConstraint,
   IsUsernameAlreadyExistConstraint,
