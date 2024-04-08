@@ -12,15 +12,27 @@ export class UsersQueryRepository {
     private prismaClient: PrismaClient,
   ) {}
 
+  async findUserById(id: string) {
+    return this.prismaClient.user.findUnique({
+      where: { id },
+    });
+  }
+
   async findUserByEmail(email: string) {
-    return this.prismaClient.user.findFirst({
+    return this.prismaClient.user.findUnique({
       where: { email },
     });
   }
 
   async findUserByUsername(username: string): Promise<User | null> {
-    return this.prismaClient.user.findFirst({
+    return this.prismaClient.user.findUnique({
       where: { username },
+    });
+  }
+
+  async findUserProviderInfo(userId: string): Promise<User | null> {
+    return this.prismaClient.userProviderInfo.findMany({
+      where: { userId: userId },
     });
   }
 

@@ -2,36 +2,36 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import { User } from '@prisma/client';
 
-export class CreateTokensCommand {
-  constructor(public userId: string) {}
+export class CreateOAuthTokensCommand {
+  constructor(public user: Partial<User>) {}
 }
 
-@CommandHandler(CreateTokensCommand)
-export class CreateTokensUseCase
-  implements ICommandHandler<CreateTokensCommand>
+@CommandHandler(CreateOAuthTokensCommand)
+export class CreateOAuthTokensUseCase
+  implements ICommandHandler<CreateOAuthTokensCommand>
 {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
-  async execute(command: CreateTokensCommand) {
-    const deviceId = randomUUID();
-
-    const accessTokenPayload = { userId: command.userId };
-
-    const refreshTokenPayload = {
-      userId: command.userId,
-      deviceId: deviceId,
+  async execute(command: CreateOAuthTokensCommand) {
+    const payload = {
+      deviceId: randomUUID(),
+      userId: command.user.id,
+      email: command.user.email,
+      username: command.user.username,
+      issueAt: new Date(Date.now()),
     };
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
+    const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('ACCESS_TOKEN_SECRET'),
       expiresIn: this.configService.get('ACCESS_TOKEN_EXP'),
     });
 
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+    const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('REFRESH_TOKEN_EXP'),
     });
