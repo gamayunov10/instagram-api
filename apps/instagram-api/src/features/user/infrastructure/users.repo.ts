@@ -173,8 +173,6 @@ export class UsersRepository {
         this.logger.error(e);
       }
 
-      await this.prismaClient.$executeRaw`ROLLBACK`;
-
       return false;
     }
   }

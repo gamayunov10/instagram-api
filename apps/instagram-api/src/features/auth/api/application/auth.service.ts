@@ -28,7 +28,7 @@ export class AuthService {
       user.passwordHash,
     );
 
-    return isHashesEquals ? user.id.toString() : false;
+    return isHashesEquals ? user.id : false;
   }
 
   async _isPasswordCorrect(password: string, hash: string): Promise<boolean> {
