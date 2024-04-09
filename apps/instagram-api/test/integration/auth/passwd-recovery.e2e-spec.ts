@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
 import { beforeAllConfig } from '../../base/settings/before-all-config';
-import { PasswordRecoveryUseCase } from '../../../src/features/auth/api/application/use-cases/password-recovery.use-case';
+import { PasswordRecoveryUseCase } from '../../../src/features/auth/api/application/use-cases/password/password-recovery.use-case';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
   userEmail2,

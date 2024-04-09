@@ -195,6 +195,64 @@ export class UsersRepository {
     }
   }
 
+  async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = new Date();
+        expirationDate.setHours(expirationDate.getHours() + 5);
+
+        const updateResult = await prisma.confirmationCode.update({
+          where: {
+            userId: userId,
+          },
+          data: {
+            confirmationCode: confirmationCode,
+            expirationDate: expirationDate,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        // If updateResult exists, it means the record was updated successfully
+        return !!updateResult;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    }
+  }
+
+  async updatePassword(userId: string, hash: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            passwordHash: hash,
+          },
+        });
+
+        await prisma.passwordRecoveryCode.delete({
+          where: {
+            userId: userId,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    }
+  }
+
   async deleteUser(userId: string): Promise<void> {
     return await this.prismaClient.$transaction(async (prisma) => {
       await prisma.user.delete({

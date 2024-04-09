@@ -1,7 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserDevicesRepository } from '../../../../../user/infrastructure/user.devices.repo';
+import { UserDevicesRepository } from '../../../../../user/infrastructure/devices/user.devices.repo';
+import { ExceptionResultType } from '../../../../../../base/types/exception.type';
+import { UserDevicesQueryRepository } from '../../../../../user/infrastructure/devices/user.devices.query.repo';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
+import {
+  deviceIDField,
+  deviceNotFound,
+} from '../../../../../../base/constants/constants';
 
 export class LogoutDeviceCommand {
   constructor(public token: string) {}
@@ -13,14 +20,35 @@ export class LogoutDeviceUseCase
 {
   constructor(
     private readonly userDevicesRepository: UserDevicesRepository,
+    private readonly devicesQueryRepository: UserDevicesQueryRepository,
     private readonly jwtService: JwtService,
   ) {}
-  async execute(command: LogoutDeviceCommand): Promise<boolean> {
+  async execute(
+    command: LogoutDeviceCommand,
+  ): Promise<ExceptionResultType<boolean>> {
     const decodedToken = await this.jwtService.decode(command.token);
 
-    return this.userDevicesRepository.deleteUserDeviceId(
+    const device = await this.devicesQueryRepository.findDeviceByDeviceId(
+      decodedToken.deviceId,
+    );
+
+    if (!device) {
+      return {
+        data: false,
+        code: ResultCode.NotFound,
+        field: deviceIDField,
+        message: deviceNotFound,
+      };
+    }
+
+    await this.userDevicesRepository.deleteUserDevices(
       decodedToken.userId,
       decodedToken.deviceId,
     );
+
+    return {
+      data: true,
+      code: ResultCode.Success,
+    };
   }
 }

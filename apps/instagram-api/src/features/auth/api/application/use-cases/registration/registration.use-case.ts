@@ -4,10 +4,10 @@ import { randomUUID } from 'crypto';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { UserAuthInputModel } from '../../../models/input/user-auth.input.model';
-import { UsersRepository } from '../../../../user/infrastructure/users.repo';
-import { SendRegistrationMailCommand } from '../../../../mail/application/use-cases/send-registration-mail.use-case';
-import { NodeEnv } from '../../../../../base/enums/node-env.enum';
+import { UserAuthInputModel } from '../../../../models/input/user-auth.input.model';
+import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
+import { SendRegistrationMailCommand } from '../../../../../mail/application/use-cases/send-registration-mail.use-case';
+import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
 
 export class RegistrationCommand {
   constructor(public userAuthInputModel: UserAuthInputModel) {}

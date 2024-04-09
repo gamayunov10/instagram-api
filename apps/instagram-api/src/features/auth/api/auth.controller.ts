@@ -15,6 +15,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 import { UserAuthInputModel } from '../models/input/user-auth.input.model';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -23,6 +24,11 @@ import { ResultCode } from '../../../base/enums/result-code.enum';
 import {
   confirmationCodeIsIncorrect,
   confirmCodeField,
+  emailField,
+  recoveryCodeIsIncorrect,
+  userIdField,
+  userNotFound,
+  userNotFoundOrConfirmed,
 } from '../../../base/constants/constants';
 import { UserConfirmationCodeInputModel } from '../models/input/user-confirmation-code.input.model';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
@@ -32,24 +38,110 @@ import { AccessTokenView } from '../models/output/access-token-view.model';
 import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
 import { GoogleOAuth2Guard } from '../../../infrastructure/guards/google-oauth2.guard';
 import { GitHubOAuth2Guard } from '../../../infrastructure/guards/github-oauth2.guard';
-import { CheckRefreshToken } from '../../../infrastructure/guards/check-refresh-token.guard';
-import { CookiesDecorator } from '../../../infrastructure/decorators/cookies.decorator';
+import { UsersQueryRepository } from '../../user/infrastructure/users.query.repo';
+import { JwtBearerGuard } from '../guards/jwt-bearer.guard';
+import { UserIdFromGuard } from '../decorators/user-id-from-guard.guard.decorator';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
+import { RefreshToken } from '../decorators/refresh-token.param.decorator';
+import { MeView } from '../models/output/me-view.model';
+import { EmailInputModel } from '../models/input/email-input.model';
+import { NewPasswordModel } from '../models/input/new-password.model';
 
-import { RegistrationCommand } from './application/use-cases/registration.use-case';
-import { RegistrationConfirmationCommand } from './application/use-cases/registration-confirmation.use-case';
-import { PasswordRecoveryCommand } from './application/use-cases/password-recovery.use-case';
+import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
+import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
+import { PasswordRecoveryCommand } from './application/use-cases/password/password-recovery.use-case';
 import { LoginCommand } from './application/use-cases/login.use.case';
-import { AuthService } from './application/auth.service';
 import { CreateOAuthTokensCommand } from './application/use-cases/tokens/create-oauth-token.use-case';
 import { LogoutDeviceCommand } from './application/use-cases/devices/logout-device.use-case';
+import { CreateTokensCommand } from './application/use-cases/tokens/create-token.use-case';
+import { UpdateTokensCommand } from './application/use-cases/tokens/update-tokens.usecase';
+import { RegistrationEmailResendCommand } from './application/use-cases/registration/registration-email-resend.usecase';
+import { PasswordUpdateCommand } from './application/use-cases/password/password-update.usecase';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(
-    private commandBus: CommandBus,
-    private authService: AuthService,
+    private readonly commandBus: CommandBus,
+    private readonly jwtService: JwtService,
+    private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
+
+  @Get('me')
+  @SwaggerOptions(
+    'Get information about current user',
+    true,
+    false,
+    200,
+    'Success',
+    MeView,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(JwtBearerGuard)
+  async getProfile(@UserIdFromGuard() userId: string) {
+    const user = await this.usersQueryRepository.findUserById(userId);
+
+    if (!user) {
+      return exceptionHandler(ResultCode.NotFound, userNotFound, userIdField);
+    }
+
+    return {
+      email: user?.email,
+      username: user?.username,
+      userId,
+    };
+  }
+
+  @Post('refresh-token')
+  @SwaggerOptions(
+    'Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing) Device LastActiveDate should be overrode by issued Date of new refresh token',
+    false,
+    false,
+    200,
+    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    AccessTokenView,
+    'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    false,
+    false,
+    false,
+  )
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(200)
+  async refreshTokens(
+    @UserIdFromGuard() userId: string,
+    @Ip() ip: string,
+    @Headers() headers: string,
+    @RefreshToken() refreshToken: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const userAgent = headers['user-agent'] || 'unknown';
+
+    const decodedToken: any = this.jwtService.decode(refreshToken);
+
+    const tokens = await this.commandBus.execute(
+      new CreateTokensCommand(userId, decodedToken.deviceId),
+    );
+
+    const newToken = this.jwtService.decode(tokens.refreshToken);
+
+    await this.commandBus.execute(
+      new UpdateTokensCommand(newToken, ip, userAgent),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', tokens.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: tokens.accessToken });
+  }
 
   @Post('registration')
   @SwaggerOptions(
@@ -119,6 +211,38 @@ export class AuthController {
     return result;
   }
 
+  @Post('registration-email-resending')
+  @SwaggerOptions(
+    'Resend confirmation registration Email if user exists',
+    false,
+    false,
+    204,
+    'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+    false,
+    true,
+    ApiErrorMessages,
+    false,
+    false,
+    false,
+    false,
+  )
+  @HttpCode(204)
+  async resendEmail(@Body() emailInputModel: EmailInputModel) {
+    const result = await this.commandBus.execute(
+      new RegistrationEmailResendCommand(emailInputModel),
+    );
+
+    if (!result) {
+      return exceptionHandler(
+        ResultCode.BadRequest,
+        userNotFoundOrConfirmed,
+        emailField,
+      );
+    }
+
+    return result;
+  }
+
   @Post('password-recovery')
   @SwaggerOptions(
     'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
@@ -145,6 +269,40 @@ export class AuthController {
 
     if (result.code !== ResultCode.Success) {
       return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return result;
+  }
+
+  @Post('new-password')
+  @SwaggerOptions(
+    'Confirm Password recovery',
+    false,
+    false,
+    204,
+    'If code is valid and new password is accepted',
+    false,
+    'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
+    false,
+    false,
+    false,
+    false,
+    false,
+  )
+  @HttpCode(204)
+  async updatePassword(
+    @Body() newPasswordModel: NewPasswordModel,
+  ): Promise<void> {
+    const result = await this.commandBus.execute(
+      new PasswordUpdateCommand(newPasswordModel),
+    );
+
+    if (!result) {
+      return exceptionHandler(
+        ResultCode.BadRequest,
+        recoveryCodeIsIncorrect,
+        confirmCodeField,
+      );
     }
 
     return result;
@@ -269,7 +427,7 @@ export class AuthController {
       })
       .json({ accessToken: result.accessToken });
   }
-  @UseGuards(CheckRefreshToken)
+
   @Post('logout')
   @SwaggerOptions(
     'Logout of an authorized user',
@@ -278,22 +436,16 @@ export class AuthController {
     204,
     'No content',
     false,
-    '',
+    false,
     false,
     'If the JWT refreshToken inside cookie is missing, expired or incorrect',
     false,
     false,
     false,
   )
-  @HttpCode(200)
-  async logout(
-    @Ip() ip: string,
-    @Headers() headers: IncomingMessage,
-    @CookiesDecorator('refreshToken') refreshToken: string,
-    @Res() res: Response,
-  ): Promise<void> {
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(204)
+  async logout(@RefreshToken() refreshToken: string): Promise<void> {
     await this.commandBus.execute(new LogoutDeviceCommand(refreshToken));
-    res.clearCookie('refreshToken');
-    res.status(204);
   }
 }
