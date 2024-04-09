@@ -138,7 +138,7 @@ export class AuthController {
   @HttpCode(204)
   async passwordRecovery(
     @Body() userPasswdRecoveryInputModel: UserPasswdRecoveryInputModel,
-  ) {
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new PasswordRecoveryCommand(userPasswdRecoveryInputModel),
     );
