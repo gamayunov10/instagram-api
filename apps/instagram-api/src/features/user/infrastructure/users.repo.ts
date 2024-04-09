@@ -75,6 +75,15 @@ export class UsersRepository {
   ): Promise<void> {
     try {
       await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            isConfirmed: true,
+          },
+        });
+
         await prisma.userProviderInfo.update({
           where: {
             id: id,
@@ -135,6 +144,15 @@ export class UsersRepository {
   ): Promise<void> {
     try {
       await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            isConfirmed: true,
+          },
+        });
+
         await prisma.userProviderInfo.create({
           data: {
             provider: details.provider,
