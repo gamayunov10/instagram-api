@@ -1,4 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UnauthorizedException } from '@nestjs/common';
 
 import { UserDevicesRepository } from '../../../../../user/infrastructure/devices/user.devices.repo';
 import { UserDevicesQueryRepository } from '../../../../../user/infrastructure/devices/user.devices.query.repo';
@@ -26,7 +27,7 @@ export class UpdateTokensUseCase
     );
 
     if (!device) {
-      return null;
+      throw new UnauthorizedException();
     }
 
     return this.devicesRepository.updateDevice(

@@ -38,16 +38,13 @@ export class UsersQueryRepository {
   }
 
   async getUserWithRelations(email: string) {
-    return (await this.prismaClient.user.findFirst({
+    return await this.prismaClient.user.findFirst({
       where: { email },
       include: {
         confirmationCode: true,
+        PasswordRecoveryCode: true,
       },
-    })) as User & {
-      confirmationCode: {
-        confirmationCode: string;
-      } | null;
-    };
+    });
   }
 
   async findUserByEmailConfirmationCode(confirmationCode: string) {

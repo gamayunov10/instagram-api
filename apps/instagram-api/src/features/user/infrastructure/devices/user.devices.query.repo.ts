@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { DeviceAuthSession } from '@prisma/client';
 
 @Injectable()
 export class UserDevicesQueryRepository {
@@ -12,16 +11,13 @@ export class UserDevicesQueryRepository {
     private prismaClient: PrismaClient,
   ) {}
 
-  async findUserByDeviceId(
-    userId: string,
-    deviceId: string,
-  ): Promise<DeviceAuthSession> {
+  async findUserByDeviceId(userId: string, deviceId: string) {
     return this.prismaClient.deviceAuthSession.findFirst({
       where: { userId, deviceId },
     });
   }
 
-  async findDeviceByDeviceId(deviceId: string): Promise<DeviceAuthSession> {
+  async findDeviceByDeviceId(deviceId: string) {
     return this.prismaClient.deviceAuthSession.findFirst({
       where: { deviceId },
     });

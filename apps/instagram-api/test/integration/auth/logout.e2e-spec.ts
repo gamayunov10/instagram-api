@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
-import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { invalidRefreshToken } from '../../base/constants/tests-strings';
+import { beforeAllConfig } from '../../base/settings/before-all-config';
 
 const logout_url = '/api/v1/auth/logout';
 

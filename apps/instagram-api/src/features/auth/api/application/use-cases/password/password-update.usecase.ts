@@ -23,12 +23,12 @@ export class PasswordUpdateUseCase
       command.newPasswordModel.recoveryCode,
     );
 
-    if (!user || user.expirationDate < new Date()) {
+    if (!user || user?.expirationDate < new Date()) {
       return null;
     }
 
     const hash = await bcrypt.hash(command.newPasswordModel.newPassword, 10);
 
-    await this.usersRepository.updatePassword(user.userId, hash);
+    return await this.usersRepository.updatePassword(user.userId, hash);
   }
 }

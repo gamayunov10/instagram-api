@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
-import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
   userEmail1,
@@ -9,11 +8,10 @@ import {
   userPassword,
 } from '../../base/constants/tests-strings';
 import { TestManager } from '../../base/managers/test.manager';
+import { beforeAllConfig } from '../../base/settings/before-all-config';
 
-import {
-  registration_confirmation_url,
-  registration_url,
-} from './registration.e2e-spec';
+import { registration_confirmation_url } from './registration-confirmation.e2e-spec';
+import { registration_url } from './registration.e2e-spec';
 
 export const login_url = '/api/v1/auth/login';
 
@@ -119,13 +117,17 @@ describe('AuthController: /login', () => {
         })
         .expect(204);
 
-      await agent
+      const response = await agent
         .post(login_url)
         .send({
           password: userPassword,
           email: userEmail1,
         })
         .expect(200);
+
+      const refreshTokenUser01 = response.headers['set-cookie'][0];
+
+      expect(refreshTokenUser01).toMatch(/^refreshToken=/);
     });
   });
 });

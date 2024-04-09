@@ -229,7 +229,7 @@ export class UsersRepository {
   async updatePassword(userId: string, hash: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
-        await prisma.user.update({
+        const updateResult = await prisma.user.update({
           where: {
             id: userId,
           },
@@ -243,6 +243,8 @@ export class UsersRepository {
             userId: userId,
           },
         });
+
+        return !!updateResult;
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
