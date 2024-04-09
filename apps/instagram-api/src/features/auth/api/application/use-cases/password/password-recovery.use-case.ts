@@ -3,18 +3,18 @@ import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
-import { UserPasswdRecoveryInputModel } from '../../../models/input/user-passwd-recovery.input.model';
-import { UsersRepository } from '../../../../user/infrastructure/users.repo';
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
-import { SendPasswordRecoveryMailCommand } from '../../../../mail/application/use-cases/send-pass-recovery-mail.use-case';
-import { NodeEnv } from '../../../../../base/enums/node-env.enum';
-import { ResultCode } from '../../../../../base/enums/result-code.enum';
+import { UserPasswdRecoveryInputModel } from '../../../../models/input/user-passwd-recovery.input.model';
+import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { SendPasswordRecoveryMailCommand } from '../../../../../mail/application/use-cases/send-pass-recovery-mail.use-case';
+import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   emailField,
   emailNotExist,
-} from '../../../../../base/constants/constants';
-import { ExceptionResultType } from '../../../../../base/types/exception.type';
-import { UserDevicesRepository } from '../../../../user/infrastructure/user.devices.repo';
+} from '../../../../../../base/constants/constants';
+import { ExceptionResultType } from '../../../../../../base/types/exception.type';
+import { UserDevicesRepository } from '../../../../../user/infrastructure/devices/user.devices.repo';
 
 export class PasswordRecoveryCommand {
   constructor(public userEmailInputModel: UserPasswdRecoveryInputModel) {}

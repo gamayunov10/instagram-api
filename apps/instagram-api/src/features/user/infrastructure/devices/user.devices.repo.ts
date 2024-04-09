@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 
-import { NodeEnv } from '../../../base/enums/node-env.enum';
+import { NodeEnv } from '../../../../base/enums/node-env.enum';
 
 @Injectable()
 export class UserDevicesRepository {
@@ -46,6 +46,37 @@ export class UserDevicesRepository {
     }
   }
 
+  async updateDevice(
+    deviceId: string,
+    token: any,
+    ip: string,
+    userAgent: string,
+  ): Promise<void> {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const lastActiveDate = new Date(token.iat * 1000).toISOString();
+
+        await prisma.deviceAuthSession.update({
+          where: {
+            id: deviceId,
+          },
+          data: {
+            ip: ip,
+            title: userAgent,
+            lastActiveDate: lastActiveDate,
+          },
+          select: {
+            id: true,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
   async deleteUserSessions(userId: string): Promise<void> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
@@ -62,7 +93,7 @@ export class UserDevicesRepository {
     }
   }
 
-  async deleteUserDeviceId(userId: string, deviceId: string): Promise<boolean> {
+  async deleteUserDevices(userId: string, deviceId: string): Promise<boolean> {
     try {
       await this.prismaClient.$transaction(async (prisma) => {
         await prisma.deviceAuthSession.deleteMany({
@@ -72,6 +103,7 @@ export class UserDevicesRepository {
           },
         });
       });
+
       return true;
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {

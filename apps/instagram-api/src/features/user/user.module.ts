@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UsersRepository } from './infrastructure/users.repo';
-import { UserDevicesQueryRepository } from './infrastructure/user.devices.query.repo';
+import { UserDevicesQueryRepository } from './infrastructure/devices/user.devices.query.repo';
 
 const services = [PrismaClient];
 const repositories = [UsersRepository, UserDevicesQueryRepository];

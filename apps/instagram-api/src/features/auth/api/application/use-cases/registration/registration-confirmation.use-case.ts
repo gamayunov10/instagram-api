@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { UserConfirmationCodeInputModel } from '../../../models/input/user-confirmation-code.input.model';
-import { UsersRepository } from '../../../../user/infrastructure/users.repo';
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
+import { UserConfirmationCodeInputModel } from '../../../../models/input/user-confirmation-code.input.model';
+import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
 
 export class RegistrationConfirmationCommand {
   constructor(

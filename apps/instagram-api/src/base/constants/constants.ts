@@ -2,8 +2,14 @@
 export const confirmCodeField = 'code';
 export const emailField = 'email';
 export const environmentField = 'environment';
+export const userIdField = 'userId';
+export const deviceIDField = 'deviceId';
+export const deviceNotFound = 'Device not found';
 
 // Validation
+export const userNotFound = 'User not found';
+export const userNotFoundOrConfirmed =
+  'User with provided email not found or already confirmed';
 export const emailNotUnique = 'User with this email is already registered';
 export const emailNotExist = `User with this email doesn't exist`;
 export const emailNotSend = `An error occurred while sending a message`;
@@ -15,6 +21,7 @@ export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';
 export const emailIsIncorrect =
   'The email must match the format example@example.com';
+export const recoveryCodeIsIncorrect = 'Recovery code is incorrect or expired';
 
 export const linkIsExpired = `Looks like the verification link has expired. Not
 to worry, we can send the link again`;

@@ -1,16 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PrismaClient } from '@prisma/client';
-
-import { User } from '../entities/user.entity';
+import { Injectable } from '@nestjs/common';
+import { PasswordRecoveryCode, PrismaClient, User } from '@prisma/client';
 
 @Injectable()
 export class UsersQueryRepository {
-  private readonly logger = new Logger(UsersQueryRepository.name);
-  constructor(
-    private readonly configService: ConfigService,
-    private prismaClient: PrismaClient,
-  ) {}
+  constructor(private prismaClient: PrismaClient) {}
 
   async findUserById(id: string) {
     return this.prismaClient.user.findUnique({
@@ -30,9 +23,17 @@ export class UsersQueryRepository {
     });
   }
 
-  async findUserProviderInfo(userId: string): Promise<User | null> {
+  async findUserProviderInfo(userId: string) {
     return this.prismaClient.userProviderInfo.findMany({
       where: { userId: userId },
+    });
+  }
+
+  async findPasswordRecoveryRecord(
+    code: string,
+  ): Promise<PasswordRecoveryCode | null> {
+    return this.prismaClient.passwordRecoveryCode.findUnique({
+      where: { recoveryCode: code },
     });
   }
 

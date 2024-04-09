@@ -4,7 +4,10 @@ import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 
 export class CreateTokensCommand {
-  constructor(public userId: string) {}
+  constructor(
+    public userId: string,
+    public deviceId = randomUUID(),
+  ) {}
 }
 
 @CommandHandler(CreateTokensCommand)
@@ -17,13 +20,11 @@ export class CreateTokensUseCase
   ) {}
 
   async execute(command: CreateTokensCommand) {
-    const deviceId = randomUUID();
-
     const accessTokenPayload = { userId: command.userId };
 
     const refreshTokenPayload = {
       userId: command.userId,
-      deviceId: deviceId,
+      deviceId: command.deviceId,
     };
 
     const accessToken = this.jwtService.sign(accessTokenPayload, {

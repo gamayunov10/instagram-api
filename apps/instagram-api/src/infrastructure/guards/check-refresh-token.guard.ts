@@ -8,7 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import { UserDevicesQueryRepository } from '../../features/user/infrastructure/user.devices.query.repo';
+import { UserDevicesQueryRepository } from '../../features/user/infrastructure/devices/user.devices.query.repo';
 
 @Injectable()
 export class CheckRefreshToken implements CanActivate {
