@@ -2,7 +2,6 @@ import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
 import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
-import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
   lorem10,
@@ -16,10 +15,9 @@ import {
   userPassword,
 } from '../../base/constants/tests-strings';
 import { TestManager } from '../../base/managers/test.manager';
+import { beforeAllConfig } from '../../base/settings/before-all-config';
 
 export const registration_url = '/api/v1/auth/registration';
-export const registration_confirmation_url =
-  '/api/v1/auth/registration-confirmation';
 
 describe('AuthController: /registration', () => {
   let app: INestApplication;

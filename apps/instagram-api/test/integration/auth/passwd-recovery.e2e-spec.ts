@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
-import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { PasswordRecoveryUseCase } from '../../../src/features/auth/api/application/use-cases/password/password-recovery.use-case';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
@@ -9,8 +8,11 @@ import {
   username2,
   userPassword,
 } from '../../base/constants/tests-strings';
+import { beforeAllConfig } from '../../base/settings/before-all-config';
 
 import { registration_url } from './registration.e2e-spec';
+
+export const passwd_recovery_url = '/api/v1/auth/password-recovery';
 
 describe('AuthController: /password-recovery', () => {
   let app: INestApplication;
@@ -25,8 +27,6 @@ describe('AuthController: /password-recovery', () => {
   afterAll(async () => {
     await app.close();
   });
-
-  const passwd_recovery_url = '/api/v1/auth/password-recovery';
 
   describe('negative', () => {
     it(`should clear database`, async () => {

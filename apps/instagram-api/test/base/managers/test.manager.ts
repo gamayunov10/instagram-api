@@ -13,4 +13,10 @@ export class TestManager {
 
     return result?.confirmationCode?.confirmationCode;
   }
+
+  async getRecoveryCode(email: string): Promise<string> {
+    const result = await this.usersQueryRepository.getUserWithRelations(email);
+
+    return result?.PasswordRecoveryCode?.recoveryCode;
+  }
 }
