@@ -1,19 +1,21 @@
 version: 2
 
-exit_zero: false
+exit_zero: true
+
 verbose: false
-instance: https://dashboard.gitguardian.com
-max_commits_for_hook: 50
-allow_self_signed: false
+
+instance: ""
+
+max_commits_for_hook: 0
+
+allow_self_signed: true
 
 secret:
-  ignored_paths:
-    - '**/README.md'
-    - 'doc/*'
-    - 'LICENSE'
-    - 'apps/*/test'
+  ignored_paths: ['**/*']
+
+  ignored_matches: []
 
   show_secrets: false
-  ignore_known_secrets: false
-  ignored_detectors:
-    - Generic Password
+  ignore_known_secrets: true
+
+  ignored_detectors: []
