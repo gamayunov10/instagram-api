@@ -31,3 +31,5 @@ secret:
     - Basic Auth Credentials
     - Generic High
     - Entropy Secret
+    - Generic High Entropy Secret
+    - Username Password
