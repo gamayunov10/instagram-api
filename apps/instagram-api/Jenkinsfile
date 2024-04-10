@@ -24,7 +24,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh "pnpm install"
+                    sh "pnpm install --legacy-peer-deps"
                     sh "pnpm run test"
                 }
             }
