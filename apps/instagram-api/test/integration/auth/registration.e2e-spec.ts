@@ -156,6 +156,19 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'email');
     });
+
+    it(`should return 400 when trying to Register in the system with incorrect email`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: lorem20,
+          email: 'l.gmail',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+    });
   });
 
   describe('positive', () => {
