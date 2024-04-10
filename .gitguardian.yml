@@ -1,21 +1,31 @@
 version: 2
 
-exit_zero: true
-
+exit_zero: false
 verbose: false
-
-instance: ""
-
-max_commits_for_hook: 0
-
-allow_self_signed: true
+instance: https://dashboard.gitguardian.com
+max_commits_for_hook: 50
+allow_self_signed: false
 
 secret:
-  ignored_paths: ['**/*']
+  ignored_paths:
+    - '**/*'
 
-  ignored_matches: []
+  ignored_matches:
+    - name: Password
 
   show_secrets: false
-  ignore_known_secrets: true
+  ignore_known_secrets: false
 
-  ignored_detectors: []
+  ignored_detectors:
+    - Generic Password
+    - Password Hardcoded
+    - Password in Comments
+    - Password in URL
+    - Private Key
+    - SSH Private Key
+    - AWS Secret Key
+    - Google API Key
+    - API Key
+    - Token
+    - JWT Token
+    - Basic Auth Credentials
