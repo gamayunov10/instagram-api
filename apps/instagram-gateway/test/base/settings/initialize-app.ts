@@ -1,6 +1,5 @@
 import supertest from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaClient } from '@prisma/client';
 
 import { appSettings } from '../../../src/settings/app.settings';
 import { AppModule } from '../../../src/app.module';

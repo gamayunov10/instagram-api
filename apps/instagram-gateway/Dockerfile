@@ -32,4 +32,4 @@ RUN npm run build:${SERVICE}
 
 EXPOSE ${PORT}
 
-CMD npm run 'start:instagram-api'
+CMD npm run 'start:instagram-gateway'

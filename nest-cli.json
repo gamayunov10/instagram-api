@@ -1,26 +1,24 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/instagram-api/src",
+  "sourceRoot": "apps/instagram-gateway/src",
   "compilerOptions": {
-    "assets": [
-      "features/mail/templates/**/*"
-    ],
+    "assets": [],
     "watchAssets": true,
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/instagram-api/tsconfig.app.json"
+    "tsConfigPath": "apps/instagram-gateway/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/instagram-api",
+  "root": "apps/instagram-gateway",
   "projects": {
     "instagram-api": {
       "type": "application",
-      "root": "apps/instagram-api",
+      "root": "apps/instagram-gateway",
       "entryFile": "main",
-      "sourceRoot": "apps/instagram-api/src",
+      "sourceRoot": "apps/instagram-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/instagram-api/tsconfig.app.json"
+        "tsConfigPath": "apps/instagram-gateway/tsconfig.app.json"
       }
     },
     "files": {

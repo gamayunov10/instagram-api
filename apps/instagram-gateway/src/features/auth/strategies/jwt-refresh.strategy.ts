@@ -2,7 +2,7 @@ import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
+import * as process from 'process';
 
 import { StrategyType } from '../../../base/enums/strategy-type.enum';
 import { refreshTokenExtractor } from '../utils/refresh-token-extractor';
@@ -13,14 +13,11 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   Strategy,
   StrategyType.REFRESH,
 ) {
-  constructor(
-    private commandBus: CommandBus,
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private commandBus: CommandBus) {
     super({
       jwtFromRequest: refreshTokenExtractor,
       ignoreExpiration: false,
-      secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
+      secretOrKey: process.env.REFRESH_TOKEN_SECRET,
       algorithms: ['HS256'],
     });
   }

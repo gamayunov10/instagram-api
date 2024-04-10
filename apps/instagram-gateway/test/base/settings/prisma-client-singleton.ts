@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 class PrismaClientSingleton {
-  private prisma: PrismaClient;
+  private readonly prisma: PrismaClient;
   private static instance: PrismaClientSingleton;
 
   private constructor() {

@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: DEPLOYMENT_NAME
+  namespace: NAMESPACE
+  labels:
+    app: PROJECT
+spec:
+  selector:
+    matchLabels:
+      project: PROJECT
+  template:
+    metadata:
+      namespace: NAMESPACE
+      labels:
+        project: PROJECT
+    spec:
+      containers:
+         - name: PROJECT
+           image: REGISTRY_HOSTNAME/PROJECT:TAG_VERSION
+           ports:
+             - containerPort: PORT_CONTAINER
+
+           env:
+             - name: TEST_DATABASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: TEST_DATABASE_URL
+             - name: EMAIL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: EMAIL
+             - name: EMAIL_PASS
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: EMAIL_PASS
+             - name: APP_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: APP_PORT
+             - name: PUBLIC_FRONT_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: PUBLIC_FRONT_URL
+             - name: RECAPTCHA_SECRET_SITE
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: RECAPTCHA_SECRET_SITE
+             - name: RECAPTCHA_SECRET_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: RECAPTCHA_SECRET_KEY
+             - name: GOOGLE_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GOOGLE_CLIENT_ID
+             - name: GOOGLE_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GOOGLE_CLIENT_SECRET
+             - name: GOOGLE_CALL_BACK_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GOOGLE_CALL_BACK_URL
+             - name: GITHUB_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GITHUB_CLIENT_ID
+             - name: GITHUB_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GITHUB_CLIENT_SECRET
+             - name: GITHUB_CALL_BACK_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: GITHUB_CALL_BACK_URL
+             - name: ACCESS_TOKEN_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: ACCESS_TOKEN_SECRET
+             - name: ACCESS_TOKEN_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: ACCESS_TOKEN_EXP
+             - name: REFRESH_TOKEN_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: REFRESH_TOKEN_SECRET
+             - name: REFRESH_TOKEN_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: REFRESH_TOKEN_EXP
+             - name: ENV
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: ENV
+             - name: TEST_DATABASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: TEST_DATABASE_URL

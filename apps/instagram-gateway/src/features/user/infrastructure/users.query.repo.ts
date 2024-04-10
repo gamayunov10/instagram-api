@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PasswordRecoveryCode, PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -17,7 +17,7 @@ export class UsersQueryRepository {
     });
   }
 
-  async findUserByUsername(username: string): Promise<User | null> {
+  async findUserByUsername(username: string) {
     return this.prismaClient.user.findUnique({
       where: { username },
     });
@@ -29,9 +29,7 @@ export class UsersQueryRepository {
     });
   }
 
-  async findPasswordRecoveryRecord(
-    code: string,
-  ): Promise<PasswordRecoveryCode | null> {
+  async findPasswordRecoveryRecord(code: string) {
     return this.prismaClient.passwordRecoveryCode.findUnique({
       where: { recoveryCode: code },
     });
