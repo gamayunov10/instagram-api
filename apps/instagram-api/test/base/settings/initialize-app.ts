@@ -7,31 +7,18 @@ import { AppModule } from '../../../src/app.module';
 import { RecaptchaGuard } from '../../../src/infrastructure/guards/recaptcha.guard';
 import { ReCaptchaGuardMock } from '../mock/ReCaptchaGuardMock';
 
+import { prismaClientSingleton } from './prisma-client-singleton';
+
 export const initializeApp = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
-    providers: [
-      {
-        provide: PrismaClient,
-        useFactory: () => {
-          const prisma = new PrismaClient({
-            datasources: {
-              db: {
-                url: process.env.TEST_DATABASE_URL,
-              },
-            },
-          });
-          return prisma;
-        },
-      },
-    ],
   })
     .overrideGuard(RecaptchaGuard)
     .useValue(new ReCaptchaGuardMock())
     .compile();
 
   const app = moduleFixture.createNestApplication();
-  const prisma = moduleFixture.get<PrismaClient>(PrismaClient);
+  const prisma = prismaClientSingleton.getPrisma();
 
   appSettings.applySettings(app);
 
