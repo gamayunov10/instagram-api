@@ -36,7 +36,7 @@ model User {
 }
 
 model UserProviderInfo {
-  id             String  @id @default(uuid())
+  id             String  @id @default(uuid()) @map("user_provider_info_id")
   provider       String
   userProviderId String  @map("user_provider_id")
   displayName    String? @map("display_name")
