@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     sh "npm install -g pnpm"
-                    sh "pnpm install --legacy-peer-deps"
+                    sh "pnpm install"
                     sh "pnpm run test"
                 }
             }
