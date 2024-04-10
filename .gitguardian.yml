@@ -29,3 +29,5 @@ secret:
     - Token
     - JWT Token
     - Basic Auth Credentials
+    - Generic High
+    - Entropy Secret
