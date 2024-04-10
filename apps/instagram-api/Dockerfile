@@ -21,15 +21,15 @@ WORKDIR /home/node/dist/${SERVICE}
 
 COPY --chown=node package*.json ./
 
-RUN pnpm install
+RUN npm install
 
 # Bundle app source code
 COPY --chown=node . .
 
-RUN pnpm run build:${SERVICE}
+RUN npm run build:${SERVICE}
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 
 EXPOSE ${PORT}
 
-CMD pnpm run 'start:instagram-api'
+CMD npm run 'start:instagram-api'
