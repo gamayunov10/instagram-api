@@ -1,0 +1,21 @@
+version: 2
+
+exit_zero: true
+
+verbose: false
+
+instance: ""
+
+max_commits_for_hook: 0
+
+allow_self_signed: true
+
+secret:
+  ignored_paths: ['**/*']
+
+  ignored_matches: []
+
+  show_secrets: false
+  ignore_known_secrets: true
+
+  ignored_detectors: []

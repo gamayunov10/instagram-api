@@ -10,22 +10,85 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("TEST_DATABASE_URL")
 }
 
-
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
+  id                   String                @id @default(uuid())
+  email                String                @unique
+  username             String                @unique
+  firstname            String?
+  lastname             String?
+  birthDate            String?               @map("birth_date")
+  city                 String?
+  aboutMe              String?               @map("about_me")
+  passwordHash         String?               @map("password_hash")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  isConfirmed          Boolean               @default(false) @map("is_confirmed")
+  confirmationCode     ConfirmationCode?
+  PasswordRecoveryCode PasswordRecoveryCode?
+  posts                Post[]
+  device               DeviceAuthSession[]
+  providers            UserProviderInfo[]
+
+  @@unique([username, email])
+  @@map("user")
+}
+
+model UserProviderInfo {
+  id             String  @id @default(uuid()) @map("user_provider_info_id")
+  provider       String
+  userProviderId String  @map("user_provider_id")
+  displayName    String? @map("display_name")
+  email          String?
+  city           String?
+  user           User?   @relation(fields: [userId], references: [id])
+  userId         String?
+
+  @@map("user_provider_info")
+}
+
+model DeviceAuthSession {
+  id             String   @id @default(uuid()) @map("device_auth_session_id")
+  deviceId       String   @map("device_id")
+  ip             String
+  title          String
+  lastActiveDate DateTime @map("last_active_date")
+  expirationDate DateTime @map("expiration_date")
+  User           User?    @relation(fields: [userId], references: [id])
+  userId         String?  @map("user_id")
+
+  @@map("device_auth_session")
+}
+
+model ConfirmationCode {
+  id               String   @id @default(uuid()) @map("confirmation_code_id")
+  confirmationCode String   @unique @map("confirmation_code")
+  expirationDate   DateTime @map("expiration_date")
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String   @unique @map("user_id")
+
+  @@map("confirmation_code")
+}
+
+model PasswordRecoveryCode {
+  id             String   @id @default(uuid()) @map("password_recovery_code_id")
+  recoveryCode   String   @unique @map("recovery_code")
+  createdAt      DateTime @default(now()) @map("created_at")
+  expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '4 hours'")) @map("expiration_date")
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @unique @map("user_id")
+
+  @@map("password_recovery_code")
 }
 
 model Post {
-  id        Int      @default(autoincrement()) @id
+  id        String   @id @default(uuid())
   title     String
   content   String?
   published Boolean? @default(false)
   author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+  authorId  String?
+
+  @@map("post")
 }
