@@ -18,11 +18,11 @@
     "prisma:m": "npx prisma migrate dev",
     "prisma:g": "npx prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "cross-env ENV=TESTING jest --runInBand",
+    "test": "cross-env ENV=TESTING",
     "test:watch": "cross-env ENV=TESTING jest --watch",
     "test:cov": "cross-env ENV=TESTING jest --coverage",
     "test:debug": "cross-env ENV=TESTING node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env ENV=TESTING jest --config apps/instagram-gateway/test/jest-e2e.json --runInBand"
+    "test:e2e": "cross-env ENV=TESTING"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",

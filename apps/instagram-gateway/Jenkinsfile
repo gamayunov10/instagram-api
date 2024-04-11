@@ -4,15 +4,11 @@ pipeline {
     environment {
         ENV_TYPE = "production"
         PORT = 3312
-        PORT = 3312
         NAMESPACE = "inctagram-org"
         REGISTRY_HOSTNAME = "irinamartoyan"
         PROJECT = "instagram-api"
         SERVICE="instagram-gateway"
-        PROJECT = "instagram-api"
-        SERVICE="instagram-gateway"
         REGISTRY = "registry.hub.docker.com"
-        DEPLOYMENT_NAME = "instagram-api-deployment"
         DEPLOYMENT_NAME = "instagram-api-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
@@ -27,7 +23,6 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh "npx prisma generate"
                     sh "npm install"
                     sh "npm run test"
                 }
