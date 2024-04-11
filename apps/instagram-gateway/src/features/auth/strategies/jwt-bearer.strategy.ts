@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 
 import { StrategyType } from '../../../base/enums/strategy-type.enum';
 
@@ -10,11 +10,11 @@ export class JwtBearerStrategy extends PassportStrategy(
   Strategy,
   StrategyType.BEARER,
 ) {
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+      secretOrKey: configService.get<string>('ACCESS_TOKEN_SECRET'),
     });
   }
 

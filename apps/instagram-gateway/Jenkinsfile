@@ -24,8 +24,8 @@ pipeline {
             steps {
                 script {
                     sh "npm install -g pnpm"
+                    sh "npx prisma generate"
                     sh "pnpm install"
-                    sh "npx prisma migrate dev"
                     sh "pnpm run test"
                 }
             }

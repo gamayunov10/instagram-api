@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/instagram-gateway/main",
-    "start:instagram-gateway": "node dist/apps/instagram-gateway",
+    "start:instagram-gateway": "node dist/apps/instagram-gateway/main",
     "start:dev:instagram-gateway": "nest start instagram-gateway --watch",
     "build:instagram-gateway": "nest build instagram-gateway",
     "prisma:m": "npx prisma migrate dev",
