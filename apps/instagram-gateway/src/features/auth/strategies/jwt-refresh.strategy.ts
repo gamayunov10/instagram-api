@@ -2,11 +2,11 @@ import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
 
 import { StrategyType } from '../../../base/enums/strategy-type.enum';
 import { refreshTokenExtractor } from '../utils/refresh-token-extractor';
 import { ValidateRefreshTokenCommand } from '../api/application/use-cases/validations/validate-refresh-token.usecase';
+import { JwtConfig } from '../config/jwt.config';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
@@ -15,12 +15,12 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
 ) {
   constructor(
     private commandBus: CommandBus,
-    private readonly configService: ConfigService,
+    private readonly jwtConfig: JwtConfig,
   ) {
     super({
       jwtFromRequest: refreshTokenExtractor,
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('REFRESH_TOKEN_SECRET'),
+      secretOrKey: jwtConfig.refreshSecret,
       algorithms: ['HS256'],
     });
   }
