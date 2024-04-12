@@ -7,6 +7,7 @@ import { StrategyType } from '../../../base/enums/strategy-type.enum';
 import { refreshTokenExtractor } from '../utils/refresh-token-extractor';
 import { ValidateRefreshTokenCommand } from '../api/application/use-cases/validations/validate-refresh-token.usecase';
 import { JwtConfig } from '../config/jwt.config';
+import { JWTRTPayload } from '../../../base/interfaces/refresh-token-payload.interface';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
@@ -25,7 +26,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: JWTRTPayload) {
     const result = await this.commandBus.execute(
       new ValidateRefreshTokenCommand(payload),
     );

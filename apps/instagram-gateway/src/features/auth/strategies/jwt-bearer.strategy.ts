@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { StrategyType } from '../../../base/enums/strategy-type.enum';
 import { JwtConfig } from '../config/jwt.config';
+import { JWTATPayload } from '../../../base/interfaces/access-token-payload.interface';
 
 @Injectable()
 export class JwtBearerStrategy extends PassportStrategy(
@@ -18,7 +19,7 @@ export class JwtBearerStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: JWTATPayload) {
     return {
       id: payload.userId,
     };
