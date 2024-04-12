@@ -18,11 +18,11 @@
     "prisma:m": "npx prisma migrate dev",
     "prisma:g": "npx prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "cross-env ENV=TESTING",
-    "test:watch": "cross-env ENV=TESTING jest --watch",
-    "test:cov": "cross-env ENV=TESTING jest --coverage",
-    "test:debug": "cross-env ENV=TESTING node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env ENV=TESTING"
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./apps/instagram-gateway/test/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
@@ -35,7 +35,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/microservices": "^10.3.7",
-    "@nestjs/passport": "9.0.3",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.7",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.3.1",
@@ -85,7 +85,6 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
-    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
@@ -128,8 +127,8 @@
       "node_modules"
     ],
     "moduleNameMapper": {
-      "^@instagram-api/(.*)$": "<rootDir>/apps/inctagram-api/$1",
-      "^@file/(.*)$": "<rootDir>/apps/files-api/$1",
+      "^@instagram-api/(.*)$": "<rootDir>/apps/instagram-gateway/$1",
+      "^@file/(.*)$": "<rootDir>/apps/files/$1",
       "^@prisma/client$": "<rootDir>/node_modules/@prisma/client"
     },
     "testTimeout": 15000
