@@ -3,4 +3,6 @@ export enum StrategyType {
   BEARER = 'bearer',
   BASIC = 'basic',
   LOCAL = 'local',
+  GITHUB = 'github',
+  GOOGLE = 'google',
 }

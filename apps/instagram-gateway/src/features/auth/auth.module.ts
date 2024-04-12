@@ -32,6 +32,7 @@ import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 import { RegistrationEmailResendUseCase } from './api/application/use-cases/registration/registration-email-resend.usecase';
 import { PasswordUpdateUseCase } from './api/application/use-cases/password/password-update.usecase';
 import { JwtConfig } from './config/jwt.config';
+import { OAuthConfig } from './config/oauth.config';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -60,7 +61,7 @@ const strategy = [
   JwtBearerStrategy,
   JwtRefreshTokenStrategy,
 ];
-const config = [JwtConfig];
+const config = [JwtConfig, OAuthConfig];
 
 @Module({
   imports: [CqrsModule, PassportModule.register({ session: true })],

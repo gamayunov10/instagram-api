@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github';
 
@@ -10,18 +9,23 @@ import {
   emailField,
   githubEmailNotAvailable,
 } from '../../../base/constants/constants';
+import { OAuthConfig } from '../config/oauth.config';
+import { StrategyType } from '../../../base/enums/strategy-type.enum';
 
 @Injectable()
-export class GithubOAuth2Strategy extends PassportStrategy(Strategy, 'github') {
+export class GithubOAuth2Strategy extends PassportStrategy(
+  Strategy,
+  StrategyType.GITHUB,
+) {
   constructor(
     @Inject('AUTH_SERVICE')
     private readonly authService: AuthService,
-    protected readonly configService: ConfigService,
+    protected readonly oauthConfig: OAuthConfig,
   ) {
     super({
-      clientID: configService.get<string>('GITHUB_CLIENT_ID'),
-      clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET'),
-      callbackURL: configService.get<string>('GITHUB_CALL_BACK_URL'),
+      clientID: oauthConfig.githubClientIdValue,
+      clientSecret: oauthConfig.githubClientSecretValue,
+      callbackURL: oauthConfig.githubCallBackURLValue,
       scope: ['email', 'profile'],
     });
   }
