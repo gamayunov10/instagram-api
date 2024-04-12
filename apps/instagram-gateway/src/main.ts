@@ -10,7 +10,7 @@ async function bootstrap() {
 
   appSettings.applySettings(app);
 
-  await app.listen(appSettings.api.APP_PORT, () => {
+  await app.listen(appSettings.api.APP_PORT || '', () => {
     logger.log(
       `App starting listen port: ${appSettings.api.APP_PORT} | ENV: ${appSettings.env.getEnv()}`,
     );
