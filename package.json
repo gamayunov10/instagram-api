@@ -132,5 +132,9 @@
       "^@prisma/client$": "<rootDir>/node_modules/@prisma/client"
     },
     "testTimeout": 15000
+  }, 
+  "engines": {
+    "node": ">=20.5.1",
+    "npm": ">=9.8.0"
   }
 }
