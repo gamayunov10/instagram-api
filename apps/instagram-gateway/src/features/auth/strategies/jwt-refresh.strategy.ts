@@ -16,7 +16,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
 ) {
   constructor(
     private commandBus: CommandBus,
-    private readonly jwtConfig: JwtConfig,
+    protected readonly jwtConfig: JwtConfig,
   ) {
     super({
       jwtFromRequest: refreshTokenExtractor,

@@ -16,7 +16,7 @@ export class GithubOAuth2Strategy extends PassportStrategy(Strategy, 'github') {
   constructor(
     @Inject('AUTH_SERVICE')
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    protected readonly configService: ConfigService,
   ) {
     super({
       clientID: configService.get<string>('GITHUB_CLIENT_ID'),
