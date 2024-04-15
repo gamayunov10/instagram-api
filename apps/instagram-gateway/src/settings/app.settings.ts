@@ -99,7 +99,24 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
-    app.enableCors();
+    app.enableCors({
+      origin: [
+        'http://localhost:3000/',
+        'http://localhost:5000/',
+        'https://it-instagram-space/',
+        'http://inctagram.org',
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: [
+        'Content-Type',
+        'Origin',
+        'X-Requested-With',
+        'Accept',
+        'Authorization',
+      ],
+      exposedHeaders: ['Authorization'],
+      credentials: true,
+    });
     app.use(cookieParser());
 
     app.use(
