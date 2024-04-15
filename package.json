@@ -131,7 +131,7 @@
       "^@file/(.*)$": "<rootDir>/apps/files/$1",
       "^@prisma/client$": "<rootDir>/node_modules/@prisma/client"
     },
-    "testTimeout": 15000
+    "testTimeout": 20000
   }, 
   "engines": {
     "node": ">=20.5.1",

@@ -33,3 +33,45 @@ export const userPassword = 'userPassword1*';
 
 //refreshToken
 export const invalidRefreshToken = 'invalidRefreshToken';
+
+export const createUserInput = {
+  username: username1,
+  password: userPassword,
+  email: userEmail1,
+};
+
+export const createUserInput2 = {
+  username: username2,
+  password: userPassword,
+  email: userEmail2,
+};
+
+export const createUserInput3 = {
+  username: username3,
+  password: userPassword,
+  email: userEmail3,
+};
+
+export const createUserInput4 = {
+  username: username4,
+  password: userPassword,
+  email: userEmail4,
+};
+
+export const createUserInput5 = {
+  username: username5,
+  password: userPassword,
+  email: userEmail5,
+};
+
+export const createUserInput6 = {
+  username: username6,
+  password: userPassword,
+  email: userEmail6,
+};
+
+export const createUserInput7 = {
+  username: username7,
+  password: userPassword,
+  email: userEmail7,
+};

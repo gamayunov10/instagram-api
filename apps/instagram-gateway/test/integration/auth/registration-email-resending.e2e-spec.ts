@@ -25,6 +25,7 @@ describe('AuthController: /registration-email-resending', () => {
     app = config.app;
     agent = config.agent;
   });
+
   afterAll(async () => {
     await app.close();
   });
