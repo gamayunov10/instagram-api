@@ -77,6 +77,26 @@ export class UserDevicesRepository {
     }
   }
 
+  async deleteOthers(deviceId: string): Promise<boolean> {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const result = await prisma.deviceAuthSession.deleteMany({
+          where: {
+            deviceId: {
+              not: deviceId,
+            },
+          },
+        });
+
+        return result.count === 1;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
   async deleteUserSessions(userId: string): Promise<void> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
@@ -85,6 +105,24 @@ export class UserDevicesRepository {
             userId: userId,
           },
         });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    }
+  }
+
+  async deleteDevice(deviceId: string): Promise<boolean> {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const result = await prisma.deviceAuthSession.deleteMany({
+          where: {
+            deviceId: deviceId,
+          },
+        });
+
+        return result.count === 1;
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {

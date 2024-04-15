@@ -41,6 +41,7 @@ export class UsersQueryRepository {
       include: {
         confirmationCode: true,
         PasswordRecoveryCode: true,
+        device: true,
       },
     });
   }

@@ -33,6 +33,8 @@ import { RegistrationEmailResendUseCase } from './api/application/use-cases/regi
 import { PasswordUpdateUseCase } from './api/application/use-cases/password/password-update.usecase';
 import { JwtConfig } from './config/jwt.config';
 import { OAuthConfig } from './config/oauth.config';
+import { TerminateOtherSessionsUseCase } from './api/application/use-cases/devices/terminate-other-sessions.use-case';
+import { TerminateSessionUseCase } from './api/application/use-cases/devices/terminate-session.use-case';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -48,6 +50,8 @@ const useCases = [
   ValidateRefreshTokenUseCase,
   RegistrationEmailResendUseCase,
   PasswordUpdateUseCase,
+  TerminateOtherSessionsUseCase,
+  TerminateSessionUseCase,
 ];
 const repositories = [UsersRepository, UserDevicesRepository];
 const queryRepositories = [UsersQueryRepository, UserDevicesQueryRepository];

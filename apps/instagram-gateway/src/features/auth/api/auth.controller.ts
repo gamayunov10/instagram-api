@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
   Ip,
+  Param,
   Post,
   Req,
   Res,
@@ -46,6 +48,8 @@ import { RefreshToken } from '../decorators/refresh-token.param.decorator';
 import { MeView } from '../models/output/me-view.model';
 import { EmailInputModel } from '../models/input/email-input.model';
 import { NewPasswordModel } from '../models/input/new-password.model';
+import { DeviceViewModel } from '../models/output/device-view.model';
+import { UserDevicesQueryRepository } from '../../user/infrastructure/devices/user.devices.query.repo';
 
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
@@ -57,6 +61,8 @@ import { CreateTokensCommand } from './application/use-cases/tokens/create-token
 import { UpdateTokensCommand } from './application/use-cases/tokens/update-tokens.usecase';
 import { RegistrationEmailResendCommand } from './application/use-cases/registration/registration-email-resend.usecase';
 import { PasswordUpdateCommand } from './application/use-cases/password/password-update.usecase';
+import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
+import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -65,6 +71,7 @@ export class AuthController {
     private readonly commandBus: CommandBus,
     private readonly jwtService: JwtService,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
   ) {}
 
   @Get('me')
@@ -97,13 +104,123 @@ export class AuthController {
     };
   }
 
+  @Get('devices')
+  @SwaggerOptions(
+    'Get all other devices sessions',
+    false,
+    false,
+    200,
+    'Success',
+    DeviceViewModel,
+    false,
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    false,
+    false,
+    false,
+  )
+  @UseGuards(JwtRefreshGuard)
+  async findActiveDevices(
+    @RefreshToken() refreshToken: string,
+  ): Promise<DeviceViewModel[]> {
+    const decodedToken = this.jwtService.decode(refreshToken);
+
+    const userId = decodedToken?.userId;
+
+    return this.userDevicesQueryRepository.findActiveDevices(userId);
+  }
+
+  @Get('google/login')
+  @SwaggerOptions(
+    'Try login user to the system by Google (OAuth2)',
+    false,
+    false,
+    200,
+    'Returns JWT accessToken (expired after 3 hours) in body and JWT refreshToken in cookie (http-only, secure) (expired after 7 days).',
+    AccessTokenView,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(GoogleOAuth2Guard)
+  @HttpCode(200)
+  async googleLogin() {
+    return { msg: 'Google Auth' };
+  }
+
+  @Get('google/redirect')
+  @ApiExcludeEndpoint()
+  @UseGuards(GoogleOAuth2Guard)
+  async googleRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user: Partial<User> = req.user;
+
+    const result = await this.commandBus.execute(
+      new CreateOAuthTokensCommand(user),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: result.accessToken });
+  }
+
+  @Get('github/login')
+  @SwaggerOptions(
+    'Try login user to the system by Github (OAuth2)',
+    false,
+    false,
+    200,
+    'Returns JWT accessToken (expired after 3 hours) in body and JWT refreshToken in cookie (http-only, secure) (expired after 7 days).',
+    AccessTokenView,
+    'If the provider has not provided all the necessary data',
+    ApiErrorMessages,
+    false,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(GitHubOAuth2Guard)
+  @HttpCode(200)
+  async githubLogin() {
+    return { msg: 'GitHub Auth' };
+  }
+
+  @Get('github/redirect')
+  @ApiExcludeEndpoint()
+  @UseGuards(GitHubOAuth2Guard)
+  async githubRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user: Partial<User> = req.user;
+
+    const result = await this.commandBus.execute(
+      new CreateOAuthTokensCommand(user),
+    );
+
+    (res as Response)
+      .cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ accessToken: result.accessToken });
+  }
+
   @Post('refresh-token')
   @SwaggerOptions(
     'Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing) Device LastActiveDate should be overrode by issued Date of new refresh token',
     false,
     false,
     200,
-    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    'Returns JWT accessToken (expired after 3 hours) in body and JWT refreshToken in cookie (http-only, secure) (expired after 7 days).',
     AccessTokenView,
     'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
     false,
@@ -308,97 +425,13 @@ export class AuthController {
     return result;
   }
 
-  @Get('google/login')
-  @SwaggerOptions(
-    'Try login user to the system by Google (OAuth2)',
-    false,
-    false,
-    200,
-    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
-    AccessTokenView,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  )
-  @UseGuards(GoogleOAuth2Guard)
-  @HttpCode(200)
-  async googleLogin() {
-    return { msg: 'Google Auth' };
-  }
-
-  @Get('google/redirect')
-  @ApiExcludeEndpoint()
-  @UseGuards(GoogleOAuth2Guard)
-  async googleRedirect(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
-    const user: Partial<User> = req.user;
-
-    const result = await this.commandBus.execute(
-      new CreateOAuthTokensCommand(user),
-    );
-
-    (res as Response)
-      .cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: true,
-      })
-      .json({ accessToken: result.accessToken });
-  }
-
-  @Get('github/login')
-  @SwaggerOptions(
-    'Try login user to the system by Github (OAuth2)',
-    false,
-    false,
-    200,
-    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
-    AccessTokenView,
-    'If the provider has not provided all the necessary data',
-    ApiErrorMessages,
-    false,
-    false,
-    false,
-    false,
-  )
-  @UseGuards(GitHubOAuth2Guard)
-  @HttpCode(200)
-  async githubLogin() {
-    return { msg: 'GitHub Auth' };
-  }
-
-  @Get('github/redirect')
-  @ApiExcludeEndpoint()
-  @UseGuards(GitHubOAuth2Guard)
-  async githubRedirect(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
-    const user: Partial<User> = req.user;
-
-    const result = await this.commandBus.execute(
-      new CreateOAuthTokensCommand(user),
-    );
-
-    (res as Response)
-      .cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: true,
-      })
-      .json({ accessToken: result.accessToken });
-  }
-
   @Post('login')
   @SwaggerOptions(
     'Try login user to the system',
     false,
     false,
     200,
-    'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+    'Returns JWT accessToken (expired after 3 hours) in body and JWT refreshToken in cookie (http-only, secure) (expired after 7 days).',
     AccessTokenView,
     'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
     false,
@@ -447,5 +480,65 @@ export class AuthController {
   @HttpCode(204)
   async logout(@RefreshToken() refreshToken: string): Promise<void> {
     await this.commandBus.execute(new LogoutDeviceCommand(refreshToken));
+  }
+
+  @Delete('devices')
+  @SwaggerOptions(
+    'Terminate all other (exclude current) devices sessions',
+    false,
+    false,
+    204,
+    'No Content',
+    false,
+    false,
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    false,
+    false,
+    false,
+  )
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(204)
+  async deleteOldDevices(@RefreshToken() refreshToken: string) {
+    const decodedToken = this.jwtService.decode(refreshToken);
+
+    return this.commandBus.execute(
+      new TerminateOtherSessionsCommand(
+        decodedToken?.deviceId,
+        decodedToken?.userId,
+      ),
+    );
+  }
+
+  @Delete('devices/:id')
+  @SwaggerOptions(
+    'Terminate specified device session',
+    false,
+    false,
+    204,
+    'No Content',
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    false,
+    'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    'If try to delete the deviceId of other user',
+    true,
+    false,
+  )
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(204)
+  async terminateSession(
+    @Param('id') deviceId: string,
+    @UserIdFromGuard() userId: string,
+  ) {
+    const result = await this.commandBus.execute(
+      new TerminateSessionCommand(deviceId, userId),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return result;
   }
 }

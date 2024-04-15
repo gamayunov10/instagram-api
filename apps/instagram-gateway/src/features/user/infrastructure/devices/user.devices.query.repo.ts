@@ -22,4 +22,17 @@ export class UserDevicesQueryRepository {
       where: { deviceId },
     });
   }
+
+  async findDeviceByUserId(userId: string) {
+    return this.prismaClient.deviceAuthSession.findFirst({
+      where: { userId },
+    });
+  }
+
+  async findActiveDevices(userId: string) {
+    return this.prismaClient.deviceAuthSession.findMany({
+      where: { userId },
+      select: { deviceId: true, title: true, lastActiveDate: true },
+    });
+  }
 }
