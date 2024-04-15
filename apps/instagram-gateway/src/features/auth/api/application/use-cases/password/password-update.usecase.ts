@@ -24,7 +24,7 @@ export class PasswordUpdateUseCase
     );
 
     if (!user || user?.expirationDate < new Date()) {
-      return null;
+      return false;
     }
 
     const hash = await bcrypt.hash(command.newPasswordModel.newPassword, 10);

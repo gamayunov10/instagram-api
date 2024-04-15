@@ -27,6 +27,8 @@ import {
   confirmationCodeIsIncorrect,
   confirmCodeField,
   emailField,
+  emailOrPasswordField,
+  emailOrPasswordIncorrect,
   recoveryCodeIsIncorrect,
   userIdField,
   userNotFound,
@@ -279,19 +281,9 @@ export class AuthController {
   async registerUser(
     @Body() userAuthInputModel: UserAuthInputModel,
   ): Promise<void> {
-    const result = await this.commandBus.execute(
+    return await this.commandBus.execute(
       new RegistrationCommand(userAuthInputModel),
     );
-
-    if (!result) {
-      return exceptionHandler(
-        ResultCode.BadRequest,
-        confirmationCodeIsIncorrect,
-        confirmCodeField,
-      );
-    }
-
-    return result;
   }
 
   @Post('registration-confirmation')
@@ -452,6 +444,14 @@ export class AuthController {
     const result = await this.commandBus.execute(
       new LoginCommand(userLoginInputModel, userAgent, ip),
     );
+
+    if (!result) {
+      return exceptionHandler(
+        ResultCode.Unauthorized,
+        emailOrPasswordIncorrect,
+        emailOrPasswordField,
+      );
+    }
 
     (res as Response)
       .cookie('refreshToken', result.refreshToken, {

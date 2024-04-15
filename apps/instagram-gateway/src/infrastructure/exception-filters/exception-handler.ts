@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { ResultCode } from '../../base/enums/result-code.enum';
@@ -28,6 +29,9 @@ export const exceptionHandler = (
     }
     case ResultCode.Forbidden: {
       throw new ForbiddenException(exceptionObject);
+    }
+    case ResultCode.Unauthorized: {
+      throw new UnauthorizedException(exceptionObject);
     }
   }
 };

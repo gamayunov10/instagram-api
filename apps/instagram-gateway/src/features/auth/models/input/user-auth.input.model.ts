@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Length, Matches } from 'class-validator';
+import { Matches, MaxLength, MinLength } from 'class-validator';
 
 import { IsEmailAlreadyExist } from '../../../../infrastructure/decorators/unique-email.decorator';
 import {
   emailIsIncorrect,
   emailNotUnique,
+  maxChar20,
+  maxChar30,
+  minChar6,
   passwordIsIncorrect,
   usernameIsIncorrect,
   usernameNotUnique,
@@ -18,7 +21,8 @@ export class UserAuthInputModel {
     maxLength: 30,
     pattern: '^[a-zA-Z0-9_-]*$',
   })
-  @Length(6, 30)
+  @MinLength(6, { message: minChar6 })
+  @MaxLength(30, { message: maxChar30 })
   @Matches(/^[a-zA-Z0-9_-]*$/, {
     message: usernameIsIncorrect,
   })
@@ -31,7 +35,8 @@ export class UserAuthInputModel {
     maxLength: 20,
     pattern: '^[0-9A-Za-z!"#$%&\'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]*$',
   })
-  @Length(6, 20)
+  @MinLength(6, { message: minChar6 })
+  @MaxLength(20, { message: maxChar20 })
   @Matches(/^[0-9A-Za-z!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]*$/, {
     message: passwordIsIncorrect,
   })

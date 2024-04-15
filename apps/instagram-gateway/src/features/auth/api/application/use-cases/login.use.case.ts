@@ -1,5 +1,4 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UnauthorizedException } from '@nestjs/common';
 
 import { UserLoginInputModel } from '../../../models/input/user-login.input.model';
 import { AuthService } from '../auth.service';
@@ -29,7 +28,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     );
 
     if (!userId) {
-      throw new UnauthorizedException();
+      return false;
     }
 
     const tokens = await this.commandBus.execute(

@@ -4,10 +4,11 @@ export const emailField = 'email';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
 export const deviceIDField = 'deviceId';
-export const deviceNotFound = 'Device not found';
+export const emailOrPasswordField = 'email or password';
 
 // Validation
 export const userNotFound = 'User not found';
+export const deviceNotFound = 'Device not found';
 export const userNotFoundOrConfirmed =
   'User with provided email not found or already confirmed';
 export const emailNotUnique = 'User with this email is already registered';
@@ -17,6 +18,9 @@ export const githubEmailNotAvailable = `An error occurred while trying to access
 export const usernameNotUnique =
   'User with this username is already registered';
 export const usernameIsIncorrect = 'The username must contain a-zA-Z0-9_-';
+export const minChar6 = 'Minimum number of characters 6';
+export const maxChar30 = 'Maximum number of characters 30';
+export const maxChar20 = 'Maximum number of characters 20';
 export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';
 export const emailIsIncorrect =
@@ -27,7 +31,8 @@ export const linkIsExpired = `Looks like the verification link has expired. Not
 to worry, we can send the link again`;
 export const confirmationCodeIsIncorrect =
   'Confirmation code is incorrect, expired or user already confirmed';
+export const emailOrPasswordIncorrect =
+  'The email or password are incorrect. Try again please';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;
-export const loginIsIncorrect = 'If the password or login is wrong';
