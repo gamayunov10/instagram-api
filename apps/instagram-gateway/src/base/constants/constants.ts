@@ -1,6 +1,6 @@
 // Fields
-export const confirmCodeField = 'code';
 export const emailField = 'email';
+export const usernameField = 'username';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
 export const deviceIDField = 'deviceId';

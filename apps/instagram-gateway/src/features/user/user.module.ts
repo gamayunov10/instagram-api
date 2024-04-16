@@ -9,7 +9,7 @@ import { FillOutProfileUseCase } from './api/application/use-cases/fill-out-prof
 import { UsersQueryRepository } from './infrastructure/users.query.repo';
 
 const services = [PrismaClient];
-const usecases = [FillOutProfileUseCase];
+const useCases = [FillOutProfileUseCase];
 const repositories = [UsersRepository];
 const queryRepositories = [UsersQueryRepository];
 
@@ -21,7 +21,7 @@ const queryRepositories = [UsersQueryRepository];
     ...repositories,
     ...queryRepositories,
     ...services,
-    ...usecases,
+    ...useCases,
   ],
 })
 export class UserModule {}

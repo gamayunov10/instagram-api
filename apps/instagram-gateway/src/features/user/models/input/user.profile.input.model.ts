@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Matches, MaxLength, MinLength } from 'class-validator';
+import { IsOptional, Matches, MaxLength, MinLength } from 'class-validator';
 
 import {
   firstNameIsIncorrect,
@@ -10,9 +10,8 @@ import {
   minChar1,
   minChar6,
   usernameIsIncorrect,
-  usernameNotUnique,
 } from '../../../../base/constants/constants';
-import { IsUsernameAlreadyExist } from '../../../../infrastructure/decorators/unique-username.decorator';
+import { IsNotEmptyString } from '../../../../infrastructure/decorators/is-not-empty-string.decorator';
 import { AgePolicy } from '../../../../infrastructure/decorators/age-policy.decorator';
 
 export class UserProfileInputModel {
@@ -27,7 +26,6 @@ export class UserProfileInputModel {
   @Matches(/^[a-zA-Z0-9_-]*$/, {
     message: usernameIsIncorrect,
   })
-  @IsUsernameAlreadyExist({ message: usernameNotUnique })
   username: string;
 
   @ApiProperty({
@@ -59,17 +57,28 @@ export class UserProfileInputModel {
   @ApiProperty({
     type: String,
     example: '01.07.1990',
+    required: false,
   })
   @AgePolicy()
   @Matches(/^\d{2}.\d{2}.\d{4}$/, {
     message: 'format is invalid',
   })
-  dateOfBirth: Date;
+  @IsOptional()
+  dateOfBirth?: Date;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsNotEmptyString()
+  @IsOptional()
+  city?: string;
 
   @ApiProperty({
     type: String,
     minLength: 0,
     maxLength: 200,
+    required: false,
   })
   @MaxLength(200, { message: maxChar200 })
   aboutMe: string;

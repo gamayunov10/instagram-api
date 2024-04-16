@@ -1,5 +1,12 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SwaggerOptions } from 'apps/instagram-gateway/src/infrastructure/decorators/swagger.decorator';
 import { ApiErrorMessages } from 'apps/instagram-gateway/src/base/schemas/api-error-messages.schema';
 import { CommandBus } from '@nestjs/cqrs';
@@ -7,6 +14,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UserProfileInputModel } from '../models/input/user.profile.input.model';
 import { JwtBearerGuard } from '../../auth/guards/jwt-bearer.guard';
 import { UserIdFromGuard } from '../../auth/decorators/user-id-from-guard.guard.decorator';
+import { ResultCode } from '../../../base/enums/result-code.enum';
+import { exceptionHandler } from '../../../infrastructure/exception-filters/exception-handler';
 
 import { UserService } from './application/user.service';
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
@@ -34,14 +43,24 @@ export class UserController {
     false,
     false,
   )
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Settings are not saved',
+  })
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async fillOutProfile(
     @UserIdFromGuard() userId: string,
     @Body() userProfileInputModel: UserProfileInputModel,
   ): Promise<void> {
-    return await this.commandBus.execute(
+    const result = await this.commandBus.execute(
       new FillOutProfileCommand(userId, userProfileInputModel),
     );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return result;
   }
 }
