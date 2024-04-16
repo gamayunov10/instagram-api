@@ -40,7 +40,7 @@ export class UsersQueryRepository {
       where: { email },
       include: {
         confirmationCode: true,
-        PasswordRecoveryCode: true,
+        passwordRecoveryCode: true,
         device: true,
       },
     });

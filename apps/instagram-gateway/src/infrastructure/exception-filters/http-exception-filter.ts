@@ -19,7 +19,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (
       status === HttpStatus.BAD_REQUEST ||
       status === HttpStatus.NOT_FOUND ||
-      status === HttpStatus.UNAUTHORIZED
+      status === HttpStatus.UNAUTHORIZED ||
+      status === HttpStatus.INTERNAL_SERVER_ERROR
     ) {
       const errorsResponse: exceptionResponseType = {
         errorsMessages: [],

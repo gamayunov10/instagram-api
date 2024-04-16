@@ -4,4 +4,5 @@ export enum ResultCode {
   NotFound,
   Forbidden,
   Unauthorized,
+  InternalServerError,
 }

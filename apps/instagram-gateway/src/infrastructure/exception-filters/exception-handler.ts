@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -32,6 +33,9 @@ export const exceptionHandler = (
     }
     case ResultCode.Unauthorized: {
       throw new UnauthorizedException(exceptionObject);
+    }
+    case ResultCode.InternalServerError: {
+      throw new InternalServerErrorException(exceptionObject);
     }
   }
 };
