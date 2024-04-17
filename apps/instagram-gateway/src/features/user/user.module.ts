@@ -7,9 +7,10 @@ import { UserController } from './api/user.controller';
 import { UsersRepository } from './infrastructure/users.repo';
 import { FillOutProfileUseCase } from './api/application/use-cases/fill-out-profile.use-case';
 import { UsersQueryRepository } from './infrastructure/users.query.repo';
+import { GetInfoProfileUseCase } from './api/application/use-cases/get-info-profile.use-case';
 
 const services = [PrismaClient];
-const useCases = [FillOutProfileUseCase];
+const useCases = [FillOutProfileUseCase, GetInfoProfileUseCase];
 const repositories = [UsersRepository];
 const queryRepositories = [UsersQueryRepository];
 
