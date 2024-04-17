@@ -67,7 +67,7 @@ class APISettings {
 
   constructor(private readonly envVariables: EnvironmentVariable) {
     // Application
-    this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT, 9876);
+    this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT);
 
     // Urls & CORS
     this.PUBLIC_FRONT_URL =
@@ -81,14 +81,8 @@ class APISettings {
     this.GOOGLE_CLIENT_SECRET = this.envVariables.GOOGLE_CLIENT_SECRET;
   }
 
-  private getNumberOrDefault(value: string, defaultValue: number): number {
-    const parsedValue = Number(value);
-
-    if (isNaN(parsedValue)) {
-      return defaultValue;
-    }
-
-    return parsedValue;
+  private getNumberOrDefault(value: string): number {
+    return Number(value);
   }
 }
 
@@ -100,10 +94,20 @@ export class AppSettings {
 
   applySettings(app: INestApplication) {
     app.enableCors({
-      allowedHeaders: ['content-type'],
       origin: 'http://localhost:3000',
       credentials: true,
+      allowedHeaders: [
+        'Content-Type',
+        'Origin',
+        'X-Requested-With',
+        'Accept',
+        'Authorization',
+      ],
+      exposedHeaders: ['Authorization'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      maxAge: 3600,
     });
+
     app.use(cookieParser());
 
     app.use(
