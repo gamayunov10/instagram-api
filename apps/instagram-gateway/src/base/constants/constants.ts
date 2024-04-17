@@ -1,6 +1,7 @@
 // Fields
 export const confirmCodeField = 'code';
 export const emailField = 'email';
+export const usernameField = 'username';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
 export const deviceIDField = 'deviceId';
@@ -18,9 +19,14 @@ export const githubEmailNotAvailable = `An error occurred while trying to access
 export const usernameNotUnique =
   'User with this username is already registered';
 export const usernameIsIncorrect = 'The username must contain a-zA-Z0-9_-';
+export const firstNameIsIncorrect = 'The firstName must contain a-z A-Z';
+export const lastNameIsIncorrect = 'The lastName must contain a-z A-Z';
+export const minChar1 = 'Minimum number of characters 1';
 export const minChar6 = 'Minimum number of characters 6';
-export const maxChar30 = 'Maximum number of characters 30';
 export const maxChar20 = 'Maximum number of characters 20';
+export const maxChar30 = 'Maximum number of characters 30';
+export const maxChar50 = 'Maximum number of characters 50';
+export const maxChar200 = 'Maximum number of characters 200';
 export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';
 export const emailIsIncorrect =

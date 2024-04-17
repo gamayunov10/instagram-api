@@ -1,61 +1,125 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+
+import { NodeEnv } from '../../../base/enums/node-env.enum';
 
 @Injectable()
 export class UsersQueryRepository {
-  constructor(private prismaClient: PrismaClient) {}
+  private readonly logger = new Logger(UsersQueryRepository.name);
+
+  constructor(
+    private prismaClient: PrismaClient,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findUserById(id: string) {
-    return this.prismaClient.user.findUnique({
-      where: { id },
-    });
+    try {
+      return this.prismaClient.user.findUnique({
+        where: { id },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findUserByEmail(email: string) {
-    return this.prismaClient.user.findUnique({
-      where: { email },
-    });
+    try {
+      return this.prismaClient.user.findUnique({
+        where: { email },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findUserByUsername(username: string) {
-    return this.prismaClient.user.findUnique({
-      where: { username },
-    });
+    try {
+      return this.prismaClient.user.findUnique({
+        where: { username },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findUserProviderInfo(userId: string) {
-    return this.prismaClient.userProviderInfo.findMany({
-      where: { userId: userId },
-    });
+    try {
+      return this.prismaClient.userProviderInfo.findMany({
+        where: { userId: userId },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findPasswordRecoveryRecord(code: string) {
-    return this.prismaClient.passwordRecoveryCode.findUnique({
-      where: { recoveryCode: code },
-    });
+    try {
+      return this.prismaClient.passwordRecoveryCode.findUnique({
+        where: { recoveryCode: code },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async getUserWithRelations(email: string) {
-    return await this.prismaClient.user.findFirst({
-      where: { email },
-      include: {
-        confirmationCode: true,
-        PasswordRecoveryCode: true,
-        device: true,
-      },
-    });
+    try {
+      return await this.prismaClient.user.findFirst({
+        where: { email },
+        include: {
+          confirmationCode: true,
+          passwordRecoveryCode: true,
+          device: true,
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findUserByEmailConfirmationCode(confirmationCode: string) {
-    return this.prismaClient.user.findFirst({
-      where: {
-        confirmationCode: {
-          confirmationCode: confirmationCode,
+    try {
+      return this.prismaClient.user.findFirst({
+        where: {
+          confirmationCode: {
+            confirmationCode: confirmationCode,
+          },
         },
-      },
-      include: {
-        confirmationCode: true,
-      },
-    });
+        include: {
+          confirmationCode: true,
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 }

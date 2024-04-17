@@ -8,6 +8,7 @@ import {
   userPassword,
 } from '../../base/constants/tests-strings';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
 import { registration_url } from './registration.e2e-spec';
 
@@ -28,6 +29,7 @@ describe('AuthController: /registration-confirmation', () => {
 
   afterAll(async () => {
     await app.close();
+    await prismaClientSingleton.getPrisma().$disconnect();
   });
 
   describe('negative', () => {

@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 
+import { NodeEnv } from '../../../../base/enums/node-env.enum';
+
 @Injectable()
 export class UserDevicesQueryRepository {
   private readonly logger = new Logger(UserDevicesQueryRepository.name);
@@ -12,27 +14,59 @@ export class UserDevicesQueryRepository {
   ) {}
 
   async findUserByDeviceId(userId: string, deviceId: string) {
-    return this.prismaClient.deviceAuthSession.findFirst({
-      where: { userId, deviceId },
-    });
+    try {
+      return this.prismaClient.deviceAuthSession.findFirst({
+        where: { userId, deviceId },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findDeviceByDeviceId(deviceId: string) {
-    return this.prismaClient.deviceAuthSession.findFirst({
-      where: { deviceId },
-    });
+    try {
+      return this.prismaClient.deviceAuthSession.findFirst({
+        where: { deviceId },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findDeviceByUserId(userId: string) {
-    return this.prismaClient.deviceAuthSession.findFirst({
-      where: { userId },
-    });
+    try {
+      return this.prismaClient.deviceAuthSession.findFirst({
+        where: { userId },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async findActiveDevices(userId: string) {
-    return this.prismaClient.deviceAuthSession.findMany({
-      where: { userId },
-      select: { deviceId: true, title: true, lastActiveDate: true },
-    });
+    try {
+      return this.prismaClient.deviceAuthSession.findMany({
+        where: { userId },
+        select: { deviceId: true, title: true, lastActiveDate: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 }

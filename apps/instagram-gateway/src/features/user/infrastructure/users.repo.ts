@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserAuthInputModel } from '../../auth/models/input/user-auth.input.model';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UserOauthCredInputModel } from '../../auth/models/input/user-oauth-cred.input.model';
+import { UserProfileInputModel } from '../models/input/user.profile.input.model';
 
 @Injectable()
 export class UsersRepository {
@@ -20,29 +21,37 @@ export class UsersRepository {
     hash: string,
     confirmationCode: string,
   ): Promise<string> {
-    return await this.prismaClient.$transaction(async (prisma) => {
-      const expirationDate = new Date();
-      expirationDate.setHours(expirationDate.getHours() + 1);
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = new Date();
+        expirationDate.setHours(expirationDate.getHours() + 1);
 
-      const user = await prisma.user.create({
-        data: {
-          username: userAuthInputModel.username,
-          passwordHash: hash,
-          email: userAuthInputModel.email,
-        },
-        select: {
-          id: true,
-        },
+        const user = await prisma.user.create({
+          data: {
+            username: userAuthInputModel.username,
+            passwordHash: hash,
+            email: userAuthInputModel.email,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        const userId = user.id;
+
+        await prisma.confirmationCode.create({
+          data: { userId, confirmationCode, expirationDate },
+        });
+
+        return userId;
       });
-
-      const userId = user.id;
-
-      await prisma.confirmationCode.create({
-        data: { userId, confirmationCode, expirationDate },
-      });
-
-      return userId;
-    });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 
   async confirmUser(id: string): Promise<boolean> {
@@ -65,6 +74,8 @@ export class UsersRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -103,6 +114,8 @@ export class UsersRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -135,6 +148,8 @@ export class UsersRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -168,6 +183,8 @@ export class UsersRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -192,6 +209,8 @@ export class UsersRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -223,6 +242,8 @@ export class UsersRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -252,14 +273,57 @@ export class UsersRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async fillOutProfile(
+    userId: string,
+    userProfileInputModel: UserProfileInputModel,
+  ) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const updateResult = await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            username: userProfileInputModel.username,
+            firstName: userProfileInputModel.firstName,
+            lastName: userProfileInputModel.lastName,
+            birthDate: userProfileInputModel?.dateOfBirth?.toString() || null,
+            city: userProfileInputModel?.city || null,
+            aboutMe: userProfileInputModel?.aboutMe || null,
+          },
+        });
+
+        return !!updateResult;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
   async deleteUser(userId: string): Promise<void> {
-    return await this.prismaClient.$transaction(async (prisma) => {
-      await prisma.user.delete({
-        where: { id: userId },
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.user.delete({
+          where: { id: userId },
+        });
       });
-    });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
   }
 }
