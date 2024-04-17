@@ -6,7 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { config } from 'dotenv';
 import session from 'express-session';
-import cors from 'cors';
 
 import { AppModule } from '../app.module';
 import { customExceptionFactory } from '../infrastructure/exception-filters/exception-factory';
@@ -100,13 +99,8 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
-    app.enableCors();
-    app.use(
-      cors({
-        credentials: true,
-        origin: 'http://localhost:3000',
-      }),
-    );
+    // app.enableCors();
+
     app.use(cookieParser());
 
     app.use(
