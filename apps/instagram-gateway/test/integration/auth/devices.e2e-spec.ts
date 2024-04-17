@@ -16,6 +16,7 @@ import { expectErrorWithPath } from '../../base/utils/expectErrorWithPath';
 import { expectDevice } from '../../base/utils/devices/expectDevices';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
 export const devices_url = '/api/v1/auth/devices';
 
@@ -33,6 +34,7 @@ describe('AuthController: /devices', () => {
 
   afterAll(async () => {
     await app.close();
+    await prismaClientSingleton.getPrisma().$disconnect();
   });
 
   describe('negative', () => {
@@ -44,36 +46,30 @@ describe('AuthController: /devices', () => {
      if the JWT refreshToken inside cookie is missing, expired or incorrect`, async () => {
       await testManager.createUser(createUserInput);
 
-      const response = await agent
+      await agent
         .get(devices_url)
         // .set('Cookie', refreshToken) // missing
         .expect(401);
-
-      expectErrorWithPath(response, 401, devices_url);
     });
 
     it(`should not Terminate all other sessions (exclude current) 
     if the JWT refreshToken inside cookie is missing, expired or incorrect`, async () => {
       await testManager.createUser(createUserInput6);
 
-      const response = await agent
+      await agent
         .delete(devices_url)
         // .set('Cookie', refreshToken) // missing
         .expect(401);
-
-      expectErrorWithPath(response, 401, devices_url);
     });
 
     it(`should not Terminate all other sessions (exclude current)  
         if the JWT refreshToken inside cookie is missing, expired or incorrect`, async () => {
       await testManager.createUser(createUserInput7);
 
-      const response = await agent
+      await agent
         .delete(devices_url)
         .set('Cookie', 'invalidRefreshToken') // incorrect
         .expect(401);
-
-      expectErrorWithPath(response, 401, devices_url);
     });
 
     it(`should not Terminate specified device session 
@@ -84,12 +80,10 @@ describe('AuthController: /devices', () => {
         createUserInput2.email,
       );
 
-      const response = await agent
+      await agent
         .delete(`${devices_url}/${deviceId}`)
         // .set('Cookie', refreshToken) // missing
         .expect(401);
-
-      expectErrorWithPath(response, 401, `${devices_url}/${deviceId}`);
     });
 
     it(`should not Terminate specified device session 

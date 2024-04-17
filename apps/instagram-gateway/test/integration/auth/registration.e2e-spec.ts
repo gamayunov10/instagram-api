@@ -16,6 +16,7 @@ import {
 } from '../../base/constants/tests-strings';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
 export const registration_url = '/api/v1/auth/registration';
 
@@ -33,6 +34,7 @@ describe('AuthController: /registration', () => {
 
   afterAll(async () => {
     await app.close();
+    await prismaClientSingleton.getPrisma().$disconnect();
   });
 
   describe('negative', () => {
