@@ -9,6 +9,7 @@ import {
   userPassword,
 } from '../../base/constants/tests-strings';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
 import { passwd_recovery_url } from './passwd-recovery.e2e-spec';
 import { registration_url } from './registration.e2e-spec';
@@ -29,6 +30,7 @@ describe('AuthController: /new-password', () => {
 
   afterAll(async () => {
     await app.close();
+    await prismaClientSingleton.getPrisma().$disconnect();
   });
 
   describe('negative', () => {

@@ -10,6 +10,7 @@ import {
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
 import { registration_url } from './registration.e2e-spec';
 
@@ -28,6 +29,7 @@ describe('AuthController: /registration-email-resending', () => {
 
   afterAll(async () => {
     await app.close();
+    await prismaClientSingleton.getPrisma().$disconnect();
   });
 
   describe('negative', () => {

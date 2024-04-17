@@ -75,3 +75,12 @@ export const createUserInput7 = {
   password: userPassword,
   email: userEmail7,
 };
+
+export const userProfileInputModel = {
+  username: 'DiegoM',
+  firstName: 'Armando',
+  lastName: 'YouKnow',
+  dateOfBirth: '31.10.1960',
+  city: 'q',
+  aboutMe: lorem10,
+};

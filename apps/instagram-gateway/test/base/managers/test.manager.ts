@@ -5,6 +5,7 @@ import { UsersQueryRepository } from '../../../src/features/user/infrastructure/
 import { registration_url } from '../../integration/auth/registration.e2e-spec';
 import { registration_confirmation_url } from '../../integration/auth/registration-confirmation.e2e-spec';
 import { login_url } from '../../integration/auth/login.e2e-spec';
+import { UserCredentialsType, UserInputModelType } from '../types/testing.type';
 
 export class TestManager {
   constructor(
@@ -24,7 +25,9 @@ export class TestManager {
     return result?.device[0].deviceId;
   }
 
-  async createUser(createModel: any) {
+  async createUser(
+    createModel: UserInputModelType,
+  ): Promise<UserCredentialsType> {
     await supertest(this.app.getHttpServer())
       .post(registration_url)
       .send(createModel)
@@ -63,6 +66,10 @@ export class TestManager {
   async getRecoveryCode(email: string): Promise<string> {
     const result = await this.usersQueryRepository.getUserWithRelations(email);
 
-    return result?.PasswordRecoveryCode?.recoveryCode;
+    return result?.passwordRecoveryCode?.recoveryCode;
+  }
+
+  async getUserProfile(email: string) {
+    return await this.usersQueryRepository.getUserWithRelations(email);
   }
 }
