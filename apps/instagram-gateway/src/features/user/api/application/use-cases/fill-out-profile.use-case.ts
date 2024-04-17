@@ -33,7 +33,7 @@ export class FillOutProfileUseCase
     if (!user) {
       return {
         data: false,
-        code: ResultCode.NotFound,
+        code: ResultCode.Unauthorized,
         field: userIdField,
         message: userNotFound,
       };
