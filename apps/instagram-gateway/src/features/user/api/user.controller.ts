@@ -17,16 +17,12 @@ import { exceptionHandler } from '../../../infrastructure/exception-filters/exce
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
 
-import { UserService } from './application/user.service';
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
 
 @Controller('user')
 @ApiTags('User')
 export class UserController {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Put('fill-out-profile')
   @SwaggerOptions(
