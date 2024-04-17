@@ -31,8 +31,8 @@ model User {
   device               DeviceAuthSession[]
   providers            UserProviderInfo[]
 
-  @@unique([username, email])
-  @@map("user")
+@@unique([username, email])
+@@map("user")
 }
 
 model UserProviderInfo {
