@@ -94,9 +94,11 @@ export class AppSettings {
 
   applySettings(app: INestApplication) {
     app.enableCors({
-      allowedHeaders: ['content-type'],
       origin: 'http://localhost:3000',
       credentials: true,
+      allowedHeaders: ['Content-Type'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      maxAge: 3600,
     });
 
     app.use(cookieParser());
