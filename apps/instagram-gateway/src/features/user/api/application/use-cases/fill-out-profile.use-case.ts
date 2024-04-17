@@ -54,8 +54,6 @@ export class FillOutProfileUseCase
       }
     }
 
-    // upload image
-
     const result = await this.usersRepository.fillOutProfile(
       command.userId,
       command.userProfileInputModel,
