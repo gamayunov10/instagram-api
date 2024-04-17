@@ -104,7 +104,7 @@ export class AppSettings {
     app.use(
       cors({
         credentials: true,
-        origin: true,
+        origin: 'http://localhost:3000',
       }),
     );
     app.use(cookieParser());
