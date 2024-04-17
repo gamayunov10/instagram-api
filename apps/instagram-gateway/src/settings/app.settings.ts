@@ -96,7 +96,14 @@ export class AppSettings {
     app.enableCors({
       origin: 'http://localhost:3000',
       credentials: true,
-      allowedHeaders: ['Content-Type'],
+      allowedHeaders: [
+        'Content-Type',
+        'Origin',
+        'X-Requested-With',
+        'Accept',
+        'Authorization',
+      ],
+      exposedHeaders: ['Authorization'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       maxAge: 3600,
     });
