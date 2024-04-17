@@ -43,6 +43,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -74,6 +76,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -94,6 +98,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -110,6 +116,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -128,6 +136,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -147,6 +157,8 @@ export class UserDevicesRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 }

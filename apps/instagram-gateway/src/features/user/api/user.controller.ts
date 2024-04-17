@@ -3,12 +3,10 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SwaggerOptions } from 'apps/instagram-gateway/src/infrastructure/decorators/swagger.decorator';
-import { ApiErrorMessages } from 'apps/instagram-gateway/src/base/schemas/api-error-messages.schema';
 import { CommandBus } from '@nestjs/cqrs';
 
 import { UserProfileInputModel } from '../models/input/user.profile.input.model';
@@ -16,6 +14,8 @@ import { JwtBearerGuard } from '../../auth/guards/jwt-bearer.guard';
 import { UserIdFromGuard } from '../../auth/decorators/user-id-from-guard.guard.decorator';
 import { ResultCode } from '../../../base/enums/result-code.enum';
 import { exceptionHandler } from '../../../infrastructure/exception-filters/exception-handler';
+import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
+import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
 
 import { UserService } from './application/user.service';
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
@@ -28,7 +28,7 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
 
-  @Post('fill-out-profile')
+  @Put('fill-out-profile')
   @SwaggerOptions(
     'Fill out profile',
     true,
