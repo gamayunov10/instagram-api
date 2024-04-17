@@ -67,7 +67,7 @@ class APISettings {
 
   constructor(private readonly envVariables: EnvironmentVariable) {
     // Application
-    this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT, 9876);
+    this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT);
 
     // Urls & CORS
     this.PUBLIC_FRONT_URL =
@@ -81,14 +81,8 @@ class APISettings {
     this.GOOGLE_CLIENT_SECRET = this.envVariables.GOOGLE_CLIENT_SECRET;
   }
 
-  private getNumberOrDefault(value: string, defaultValue: number): number {
-    const parsedValue = Number(value);
-
-    if (isNaN(parsedValue)) {
-      return defaultValue;
-    }
-
-    return parsedValue;
+  private getNumberOrDefault(value: string): number {
+    return Number(value);
   }
 }
 
