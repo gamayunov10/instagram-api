@@ -10,7 +10,7 @@ import {
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
-import { registration_url } from './registration.e2e-spec';
+import { registration_url } from './registration.spec';
 
 export const registration_confirmation_url =
   '/api/v1/auth/registration-confirmation';

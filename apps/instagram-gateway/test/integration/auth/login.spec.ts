@@ -11,8 +11,8 @@ import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
-import { registration_confirmation_url } from './registration-confirmation.e2e-spec';
-import { registration_url } from './registration.e2e-spec';
+import { registration_confirmation_url } from './registration-confirmation.spec';
+import { registration_url } from './registration.spec';
 
 export const login_url = '/api/v1/auth/login';
 

@@ -1,22 +1,23 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
-import { randomUUID } from 'crypto';
 
-import { TestManager } from '../../base/managers/test.manager';
 import {
+  invalidRefreshToken,
   userEmail1,
   username1,
   userPassword,
 } from '../../base/constants/tests-strings';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
+import { TestManager } from '../../base/managers/test.manager';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
-import { passwd_recovery_url } from './passwd-recovery.e2e-spec';
-import { registration_url } from './registration.e2e-spec';
+import { registration_url } from './registration.spec';
+import { registration_confirmation_url } from './registration-confirmation.spec';
+import { login_url } from './login.spec';
 
-export const new_password_url = '/api/v1/auth/new-password';
+const logout_url = '/api/v1/auth/logout';
 
-describe('AuthController: /new-password', () => {
+describe('AuthController: /logout', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -38,24 +39,15 @@ describe('AuthController: /new-password', () => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should return 400 If the inputModel has incorrect value`, async () => {
-      await agent
-        .post(new_password_url)
-        .send({
-          newPassword: 'new271543523',
-          recoveryCode: '',
-        })
-        .expect(400);
+    it(`should return the 401 status if there is no token in the cookies`, async () => {
+      await agent.post(logout_url).expect(401);
     });
 
-    it(`should return 400 If the inputModel has incorrect value`, async () => {
+    it(`should return the 401 status if there is invalid token in the cookies`, async () => {
       await agent
-        .post(new_password_url)
-        .send({
-          newPassword: 'new271543523',
-          recoveryCode: randomUUID(),
-        })
-        .expect(400);
+        .post(logout_url)
+        .set('Cookie', `refreshToken=${invalidRefreshToken}`)
+        .expect(401);
     });
   });
 
@@ -64,7 +56,7 @@ describe('AuthController: /new-password', () => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should Confirm Password recovery`, async () => {
+    it(`the value 204 should be returned after the user has successfully logged in and logged out`, async () => {
       await agent
         .post(registration_url)
         .send({
@@ -73,34 +65,30 @@ describe('AuthController: /new-password', () => {
           email: userEmail1,
         })
         .expect(204);
-
       const confirmationCode =
         await testManager.getEmailConfirmationCode(userEmail1);
 
       await agent
-        .post('/api/v1/auth/registration-confirmation/')
+        .post(registration_confirmation_url)
         .send({
           code: confirmationCode,
         })
         .expect(204);
 
-      await agent
-        .post(passwd_recovery_url)
+      const res = await agent
+        .post(login_url)
         .send({
+          password: userPassword,
           email: userEmail1,
-          reCaptcha: 'sfadsfg',
         })
-        .expect(204);
+        .expect(200);
+      expect(res.body).toEqual({ accessToken: expect.any(String) });
 
-      const recoveryCode = await testManager.getRecoveryCode(userEmail1);
-
+      const refreshTokenUser01 = res.headers['set-cookie'][0];
       await agent
-        .post(new_password_url)
-        .send({
-          newPassword: 'new271543523',
-          recoveryCode: recoveryCode,
-        })
+        .post(logout_url)
+        .set('Cookie', refreshTokenUser01)
         .expect(204);
-    }, 10000);
+    });
   });
 });

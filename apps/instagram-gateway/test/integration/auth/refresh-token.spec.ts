@@ -2,22 +2,19 @@ import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
 import {
-  invalidRefreshToken,
-  userEmail1,
-  username1,
+  userEmail2,
+  username2,
   userPassword,
 } from '../../base/constants/tests-strings';
-import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { TestManager } from '../../base/managers/test.manager';
+import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 
-import { registration_url } from './registration.e2e-spec';
-import { registration_confirmation_url } from './registration-confirmation.e2e-spec';
-import { login_url } from './login.e2e-spec';
+import { registration_url } from './registration.spec';
 
-const logout_url = '/api/v1/auth/logout';
+export const refresh_token_url = '/api/v1/auth/refresh-token';
 
-describe('AuthController: /logout', () => {
+describe('AuthController: /refresh-token', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -38,16 +35,8 @@ describe('AuthController: /logout', () => {
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
     });
-
-    it(`should return the 401 status if there is no token in the cookies`, async () => {
-      await agent.post(logout_url).expect(401);
-    });
-
-    it(`should return the 401 status if there is invalid token in the cookies`, async () => {
-      await agent
-        .post(logout_url)
-        .set('Cookie', `refreshToken=${invalidRefreshToken}`)
-        .expect(401);
+    it(`should return 401 if refreshToken is missing`, async () => {
+      await agent.post(refresh_token_url).expect(401);
     });
   });
 
@@ -55,40 +44,50 @@ describe('AuthController: /logout', () => {
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
     });
-
-    it(`the value 204 should be returned after the user has successfully logged in and logged out`, async () => {
+    it(`should Get information about current user`, async () => {
       await agent
         .post(registration_url)
         .send({
-          username: username1,
+          username: username2,
           password: userPassword,
-          email: userEmail1,
+          email: userEmail2,
         })
         .expect(204);
+
       const confirmationCode =
-        await testManager.getEmailConfirmationCode(userEmail1);
+        await testManager.getEmailConfirmationCode(userEmail2);
 
       await agent
-        .post(registration_confirmation_url)
+        .post('/api/v1/auth/registration-confirmation/')
         .send({
           code: confirmationCode,
         })
         .expect(204);
 
-      const res = await agent
-        .post(login_url)
+      const response = await agent
+        .post('/api/v1/auth/login/')
         .send({
           password: userPassword,
-          email: userEmail1,
+          email: userEmail2,
         })
         .expect(200);
-      expect(res.body).toEqual({ accessToken: expect.any(String) });
 
-      const refreshTokenUser01 = res.headers['set-cookie'][0];
+      const setCookieHeader = response.headers['set-cookie'][0];
+      const match = setCookieHeader.match(/refreshToken=(.*?);/);
+      const refreshToken = match ? match[1] : null;
+
       await agent
-        .post(logout_url)
-        .set('Cookie', refreshTokenUser01)
-        .expect(204);
+        .post(refresh_token_url)
+        .set('Cookie', `refreshToken=${refreshToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.accessToken).toEqual(expect.any(String));
+          const refreshTokenCookie = res
+            .get('Set-Cookie')
+            .find((cookie) => cookie.startsWith('refreshToken'));
+
+          expect(refreshTokenCookie).toBeDefined();
+        });
     });
   });
 });

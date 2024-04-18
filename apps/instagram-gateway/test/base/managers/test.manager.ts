@@ -2,9 +2,9 @@ import { INestApplication } from '@nestjs/common';
 import supertest from 'supertest';
 
 import { UsersQueryRepository } from '../../../src/features/user/infrastructure/users.query.repo';
-import { registration_url } from '../../integration/auth/registration.e2e-spec';
-import { registration_confirmation_url } from '../../integration/auth/registration-confirmation.e2e-spec';
-import { login_url } from '../../integration/auth/login.e2e-spec';
+import { registration_url } from '../../integration/auth/registration.spec';
+import { registration_confirmation_url } from '../../integration/auth/registration-confirmation.spec';
+import { login_url } from '../../integration/auth/login.spec';
 import { UserCredentialsType, UserInputModelType } from '../types/testing.type';
 
 export class TestManager {
