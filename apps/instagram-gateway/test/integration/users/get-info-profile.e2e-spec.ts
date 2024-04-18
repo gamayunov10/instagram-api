@@ -69,7 +69,7 @@ describe('UserController: /profile-information', () => {
         .auth(user.accessToken, { type: 'bearer' })
         .expect(200);
       expect(result.body).toEqual({
-        userName: userProfileInputModel.username,
+        username: userProfileInputModel.username,
         firstName: userProfileInputModel.firstName,
         lastName: userProfileInputModel.lastName,
         dateOfBirth: userProfileInputModel.dateOfBirth,
