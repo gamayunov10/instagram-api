@@ -25,7 +25,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/instagram-gateway/test/jest-e2e.json --runInBand"
+    "test:instagram-gateway:e2e": "jest --config ./apps/instagram-gateway/test/jest-e2e.json --runInBand",
+    "test:files:e2e": "jest --config ./apps/files/test/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",

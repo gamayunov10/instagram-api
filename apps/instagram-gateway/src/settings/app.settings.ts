@@ -65,10 +65,6 @@ class APISettings {
   // OAuth2
   public readonly GOOGLE_CLIENT_SECRET: string;
 
-  // FILE_SERVICE
-  public readonly FILE_SERVICE_HOST: string;
-  public readonly FILE_SERVICE_PORT: string;
-
   constructor(private readonly envVariables: EnvironmentVariable) {
     // Application
     this.APP_PORT = this.getNumberOrDefault(this.envVariables.APP_PORT);
@@ -83,10 +79,6 @@ class APISettings {
 
     // OAuth2
     this.GOOGLE_CLIENT_SECRET = this.envVariables.GOOGLE_CLIENT_SECRET;
-
-    // FILE_SERVICE
-    this.FILE_SERVICE_HOST = this.envVariables.FILE_SERVICE_HOST;
-    this.FILE_SERVICE_PORT = this.envVariables.FILE_SERVICE_PORT;
   }
 
   private getNumberOrDefault(value: string): number {

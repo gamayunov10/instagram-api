@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
@@ -11,11 +11,12 @@ import { AuthModule } from './features/auth/auth.module';
 import { MailModule } from './features/mail/mail.module';
 import { TestingController } from './testing/testing.controller';
 import { AppService } from './app.service';
-import { appSettings } from './settings/app.settings';
 
 const services = [AppService, PrismaClient, PrismaService];
 const modules = [PostModule, UserModule, AuthModule, MailModule];
 const controllers = [AppController, TestingController];
+
+const configService = new ConfigService();
 
 @Module({
   imports: [
@@ -25,8 +26,9 @@ const controllers = [AppController, TestingController];
         transport: Transport.TCP,
         options: {
           host:
-            appSettings.api.FILE_SERVICE_HOST || 'instagram-api-files-service',
-          port: Number(appSettings.api.FILE_SERVICE_PORT) || 3339,
+            configService.get<string>('FILE_SERVICE_HOST') ||
+            'instagram-api-files-service',
+          port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3339,
         },
       },
     ]),

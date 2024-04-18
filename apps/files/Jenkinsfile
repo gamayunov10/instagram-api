@@ -28,13 +28,6 @@ pipeline {
                 }
             }
         }
-        stage('e2e tests') {
-            steps {
-                script {
-                    sh "npm run test:e2e"
-                }
-            }
-        }
         stage('Build docker image') {
             steps {
                 echo "Build image started..."
