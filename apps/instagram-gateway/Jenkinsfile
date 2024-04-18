@@ -20,6 +20,14 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Unit tests') {
+            steps {
+                script {
+                    sh "npm install"
+                    sh "npx prisma migrate dev"
+                }
+            }
+        }
         stage('Build docker image') {
             steps {
                 echo "Build image started..."
