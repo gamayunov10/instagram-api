@@ -10,8 +10,9 @@ import {
   userProfileInputModel,
 } from '../../base/constants/tests-strings';
 
-export const get_info_profile_url = '/api/v1/user/profile-information';
-export const fill_out_profile_url = '/api/v1/user/fill-out-profile';
+import { fill_out_profile_url } from './fill-out-profile.spec';
+
+export const get_profile_info_url = '/api/v1/user/profile-information';
 
 describe('UserController: /profile-information', () => {
   let app: INestApplication;
@@ -36,12 +37,12 @@ describe('UserController: /profile-information', () => {
     });
 
     it(`should return 401 access token is missing`, async () => {
-      await agent.get(get_info_profile_url).expect(401);
+      await agent.get(get_profile_info_url).expect(401);
     });
 
     it(`should return 401 access token is invalid`, async () => {
       await agent
-        .get(get_info_profile_url)
+        .get(get_profile_info_url)
         .auth('my-super-unexpected-token', { type: 'bearer' })
         .expect(401);
     });
@@ -56,6 +57,7 @@ describe('UserController: /profile-information', () => {
 
     it(`creating a user and filling in data`, async () => {
       user = await testManager.createUser(createUserInput);
+
       await agent
         .put(fill_out_profile_url)
         .auth(user.accessToken, { type: 'bearer' })
@@ -65,11 +67,12 @@ describe('UserController: /profile-information', () => {
 
     it(`should return 200 and get profile info`, async () => {
       const result = await agent
-        .get(get_info_profile_url)
+        .get(get_profile_info_url)
         .auth(user.accessToken, { type: 'bearer' })
         .expect(200);
+
       expect(result.body).toEqual({
-        userName: userProfileInputModel.username,
+        username: userProfileInputModel.username,
         firstName: userProfileInputModel.firstName,
         lastName: userProfileInputModel.lastName,
         dateOfBirth: userProfileInputModel.dateOfBirth,
