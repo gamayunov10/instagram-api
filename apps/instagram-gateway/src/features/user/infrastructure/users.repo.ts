@@ -247,7 +247,7 @@ export class UsersRepository {
     }
   }
 
-  async updatePassword(userId: string, hash: string) {
+  async updatePassword(userId: string, hash: string): Promise<boolean> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
         const updateResult = await prisma.user.update({

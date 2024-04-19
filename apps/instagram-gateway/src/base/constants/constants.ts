@@ -1,5 +1,7 @@
 // Fields
 export const confirmCodeField = 'code';
+export const noneField = 'none';
+export const passwordField = 'password';
 export const emailField = 'email';
 export const usernameField = 'username';
 export const environmentField = 'environment';
@@ -39,6 +41,8 @@ export const confirmationCodeIsIncorrect =
   'Confirmation code is incorrect, expired or user already confirmed';
 export const emailOrPasswordIncorrect =
   'The email or password are incorrect. Try again please';
+export const serverNotAvailable = 'Error! Server is not available';
+export const passwordNotSaved = 'Password not saved';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;

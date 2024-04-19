@@ -5,6 +5,8 @@ import { UsersRepository } from '../../../infrastructure/users.repo';
 import { UsersQueryRepository } from '../../../infrastructure/users.query.repo';
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import {
+  noneField,
+  serverNotAvailable,
   userIdField,
   usernameField,
   usernameNotUnique,
@@ -68,8 +70,8 @@ export class FillOutProfileUseCase
       return {
         data: false,
         code: ResultCode.InternalServerError,
-        field: 'None',
-        message: 'Error! Server is not available',
+        field: noneField,
+        message: serverNotAvailable,
       };
     }
   }

@@ -5,6 +5,7 @@ import {
   Get,
   Headers,
   HttpCode,
+  HttpStatus,
   Ip,
   Param,
   Post,
@@ -14,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
@@ -29,7 +30,7 @@ import {
   emailField,
   emailOrPasswordField,
   emailOrPasswordIncorrect,
-  recoveryCodeIsIncorrect,
+  passwordNotSaved,
   userIdField,
   userNotFound,
   userNotFoundOrConfirmed,
@@ -391,13 +392,17 @@ export class AuthController {
     204,
     'If code is valid and new password is accepted',
     false,
-    'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
-    false,
+    'If the inputModel has incorrect value or RecoveryCode is incorrect or expired',
+    ApiErrorMessages,
     false,
     false,
     false,
     false,
   )
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: passwordNotSaved,
+  })
   @HttpCode(204)
   async updatePassword(
     @Body() newPasswordModel: NewPasswordModel,
@@ -406,12 +411,8 @@ export class AuthController {
       new PasswordUpdateCommand(newPasswordModel),
     );
 
-    if (!result) {
-      return exceptionHandler(
-        ResultCode.BadRequest,
-        recoveryCodeIsIncorrect,
-        confirmCodeField,
-      );
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
     }
 
     return result;
