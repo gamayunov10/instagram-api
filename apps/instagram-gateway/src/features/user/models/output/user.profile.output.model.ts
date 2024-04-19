@@ -8,7 +8,7 @@ export class UserProfileOutputModel {
   @ApiProperty({
     type: String,
   })
-  userName: string;
+  username: string;
 
   @ApiProperty({
     type: String,
@@ -22,7 +22,7 @@ export class UserProfileOutputModel {
 
   @ApiProperty({
     type: String,
-    example: `(Date in the format 01.12.1990)`,
+    example: 'Date in the format 01.12.1990',
     required: false,
   })
   @AgePolicy()

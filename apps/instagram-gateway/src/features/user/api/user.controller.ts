@@ -20,7 +20,7 @@ import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schem
 import { UserProfileOutputModel } from '../models/output/user.profile.output.model';
 
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
-import { GetInfoProfileCommand } from './application/use-cases/get-info-profile.use-case';
+import { GetProfileInfoCommand } from './application/use-cases/get-profile-info-use.case';
 
 @Controller('user')
 @ApiTags('User')
@@ -44,13 +44,15 @@ export class UserController {
   @Get('profile-information')
   @UseGuards(JwtBearerGuard)
   @HttpCode(200)
-  async getInformation(@UserIdFromGuard() userId: string): Promise<void> {
+  async getProfileInfo(@UserIdFromGuard() userId: string): Promise<void> {
     const result = await this.commandBus.execute(
-      new GetInfoProfileCommand(userId),
+      new GetProfileInfoCommand(userId),
     );
+
     if (result.code === ResultCode.Unauthorized) {
       return exceptionHandler(result.code, result.message, result.field);
     }
+
     return result;
   }
 

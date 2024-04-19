@@ -8,17 +8,17 @@ import {
 } from '../../../../../base/constants/constants';
 import { UserProfileOutputModel } from '../../../models/output/user.profile.output.model';
 
-export class GetInfoProfileCommand {
+export class GetProfileInfoCommand {
   constructor(public userId: string) {}
 }
 
-@CommandHandler(GetInfoProfileCommand)
-export class GetInfoProfileUseCase
-  implements ICommandHandler<GetInfoProfileCommand>
+@CommandHandler(GetProfileInfoCommand)
+export class GetProfileInfoUseCase
+  implements ICommandHandler<GetProfileInfoCommand>
 {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(command: GetInfoProfileCommand) {
+  async execute(command: GetProfileInfoCommand) {
     const user = await this.usersQueryRepository.findUserById(command.userId);
 
     if (!user) {
@@ -29,14 +29,16 @@ export class GetInfoProfileUseCase
         message: userNotFound,
       };
     }
+
     const result: UserProfileOutputModel = {
-      userName: user.username,
+      username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
       dateOfBirth: user.birthDate,
       city: user.city,
       aboutMe: user.aboutMe,
     };
+
     return result;
   }
 }
