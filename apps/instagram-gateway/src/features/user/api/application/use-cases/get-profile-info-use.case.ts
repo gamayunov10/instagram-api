@@ -29,6 +29,7 @@ export class GetProfileInfoUseCase
         message: userNotFound,
       };
     }
+
     const result: UserProfileOutputModel = {
       username: user.username,
       firstName: user.firstName,
@@ -37,6 +38,7 @@ export class GetProfileInfoUseCase
       city: user.city,
       aboutMe: user.aboutMe,
     };
+
     return result;
   }
 }

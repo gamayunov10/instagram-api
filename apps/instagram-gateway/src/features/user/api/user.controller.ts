@@ -44,7 +44,7 @@ export class UserController {
   @Get('profile-information')
   @UseGuards(JwtBearerGuard)
   @HttpCode(200)
-  async getInformation(@UserIdFromGuard() userId: string): Promise<void> {
+  async getProfileInfo(@UserIdFromGuard() userId: string): Promise<void> {
     const result = await this.commandBus.execute(
       new GetProfileInfoCommand(userId),
     );
@@ -52,6 +52,7 @@ export class UserController {
     if (result.code === ResultCode.Unauthorized) {
       return exceptionHandler(result.code, result.message, result.field);
     }
+
     return result;
   }
 
