@@ -40,8 +40,8 @@ export class TestingController {
   async clearDatabase(): Promise<void> {
     try {
       if (
-        this.configService.get('ENV') !== NodeEnv.PRODUCTION ||
-        this.configService.get('ENV') !== NodeEnv.STAGING
+        this.configService.get('ENV') === NodeEnv.TESTING ||
+        this.configService.get('ENV') === NodeEnv.DEVELOPMENT
       ) {
         await this.prismaClient.$transaction([
           this.prismaClient.confirmationCode.deleteMany({}),
@@ -64,6 +64,12 @@ export class TestingController {
       }
     } catch (e) {
       this.logger.error(`Error deleting data: ${e.message}`);
+
+      return exceptionHandler(
+        ResultCode.Forbidden,
+        productionDbGuard,
+        environmentField,
+      );
     }
   }
 }
