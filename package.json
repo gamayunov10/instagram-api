@@ -25,10 +25,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:instagram-gateway": "jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
-    "test:instagram-gateway:e2e": "jest --config apps/instagram-gateway/test/e2e/jest-e2e.json --runInBand",
-    "test:files": "jest --config apps/files/test/integration/jest-integration.json --runInBand",
-    "test:files:e2e": "jest --config apps/files/test/e2e/jest-e2e.json --runInBand"
+    "test:instagram-gateway": "ENV=TESTING jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
+    "test:instagram-gateway:e2e": "ENV=TESTING jest --config apps/instagram-gateway/test/e2e/jest-e2e.json --runInBand",
+    "test:files": "ENV=TESTING jest --config apps/files/test/integration/jest-integration.json --runInBand",
+    "test:files:e2e": "ENV=TESTING jest --config apps/files/test/e2e/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
