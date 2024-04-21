@@ -106,6 +106,7 @@ export class AppSettings {
       exposedHeaders: ['Authorization'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       maxAge: 3600,
+      optionsSuccessStatus: 204,
     });
 
     app.use(cookieParser());
