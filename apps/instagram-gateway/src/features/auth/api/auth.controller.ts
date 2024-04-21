@@ -172,8 +172,7 @@ export class AuthController {
         httpOnly: true,
         secure: true,
       })
-      .header('Access-Control-Allow-Origin', 'http://localhost:3000')
-      .header('Access-Control-Allow-Origin', 'http://127.0.0.1:3000')
+      .header('Access-Control-Allow-Origin', req.headers.origin || '*')
       .json({ accessToken: result.accessToken });
   }
 
