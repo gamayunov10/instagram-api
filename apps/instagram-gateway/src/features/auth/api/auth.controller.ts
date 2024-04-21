@@ -172,7 +172,8 @@ export class AuthController {
         httpOnly: true,
         secure: true,
       })
-      .json({ accessToken: result.accessToken });
+      .json({ accessToken: result.accessToken })
+      .header('Access-Control-Allow-Origin', 'http://localhost:3000');
   }
 
   @Get('github/login')

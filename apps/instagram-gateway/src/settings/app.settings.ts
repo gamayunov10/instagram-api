@@ -94,7 +94,10 @@ export class AppSettings {
 
   applySettings(app: INestApplication) {
     app.enableCors({
-      origin: 'http://localhost:3000',
+      origin: [
+        'http://localhost:3000',
+        'https://instagram-api-dw99.onrender.com',
+      ],
       credentials: true,
       allowedHeaders: [
         'Content-Type',
@@ -104,7 +107,7 @@ export class AppSettings {
         'Authorization',
       ],
       exposedHeaders: ['Authorization'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       maxAge: 3600,
       optionsSuccessStatus: 204,
     });
