@@ -136,20 +136,18 @@ export class AppSettings {
   }
 
   private setSwagger(app: INestApplication) {
-    if (this.env.isDevelopment()) {
-      const swaggerPath = APP_PREFIX + '/doc';
+    const swaggerPath = APP_PREFIX + '/doc';
 
-      const config = new DocumentBuilder()
-        .setTitle('INSTAGRAM API')
-        .addBearerAuth()
-        .setVersion('1.0')
-        .build();
+    const config = new DocumentBuilder()
+      .setTitle('INSTAGRAM API')
+      .addBearerAuth()
+      .setVersion('1.0')
+      .build();
 
-      const document = SwaggerModule.createDocument(app, config);
-      SwaggerModule.setup(swaggerPath, app, document, {
-        customSiteTitle: 'INSTAGRAM Documentation',
-      });
-    }
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(swaggerPath, app, document, {
+      customSiteTitle: 'INSTAGRAM Documentation',
+    });
   }
 
   private setAppPipes(app: INestApplication) {
