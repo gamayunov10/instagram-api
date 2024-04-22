@@ -32,7 +32,10 @@ const configService = new ConfigService();
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: true,
+      envFilePath:
+        process.env.NODE_ENV === 'DEVELOPMENT'
+          ? '.env.development'
+          : '.env.test',
     }),
     ...modules,
   ],
