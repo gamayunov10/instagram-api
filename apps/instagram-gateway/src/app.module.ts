@@ -22,18 +22,17 @@ const configService = new ConfigService();
   imports: [
     ClientsModule.register([
       {
-        name: 'FILES_SERVICE',
+        name: 'FILE_SERVICE',
         transport: Transport.TCP,
         options: {
-          host:
-            configService.get<string>('FILE_SERVICE_HOST') ||
-            'instagram-api-files-service',
+          host: configService.get<string>('FILE_SERVICE_HOST') || '0.0.0.0',
           port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3339,
         },
       },
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: true,
     }),
     ...modules,
   ],
