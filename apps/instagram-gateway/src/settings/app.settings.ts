@@ -93,8 +93,15 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
+    const corsWhiteList = [
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://inctagram.org',
+      'https://instagram-api-dw99.onrender.com',
+    ];
+
     app.enableCors({
-      origin: 'http://localhost:3000',
+      origin: corsWhiteList,
       credentials: true,
       allowedHeaders: [
         'Content-Type',
