@@ -172,7 +172,6 @@ export class AuthController {
         httpOnly: true,
         secure: true,
       })
-      .header('Access-Control-Allow-Origin', req.headers.origin || '*')
       .json({ accessToken: result.accessToken });
   }
 
