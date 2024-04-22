@@ -171,6 +171,7 @@ export class AuthController {
       .cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: 'none',
       })
       .json({ accessToken: result.accessToken });
   }
@@ -213,6 +214,7 @@ export class AuthController {
       .cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: 'none',
       })
       .json({ accessToken: result.accessToken });
   }
