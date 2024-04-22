@@ -1,0 +1,14 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../../",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleDirectories": ["<rootDir>/", "node_modules"],
+  "moduleNameMapper": {
+    "^@instagram/(.*)$": "<rootDir>/$1"
+  },
+  "testTimeout": 20000
+}

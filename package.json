@@ -11,16 +11,24 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/instagram-api/main",
-    "start:instagram-api": "nest start --watch --debug ./apps/instagram-api/src/main.ts",
+    "start:prod": "node dist/apps/instagram-gateway/main",
+    "start:instagram-gateway": "NODE_ENV=TESTING node dist/apps/instagram-gateway/main",
+    "start:dev:instagram-gateway": "NODE_ENV=TESTING nest start instagram-gateway --watch",
+    "build:instagram-gateway": "NODE_ENV=TESTING nest build instagram-gateway",
+    "start:files": "NODE_ENV=TESTING node dist/apps/files/main",
+    "start:dev:files": "NODE_ENV=TESTING nest start files --watch",
+    "build:files": "NODE_ENV=TESTING nest build files",
     "prisma:m": "npx prisma migrate dev",
     "prisma:g": "npx prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "cross-env ENV=TESTING jest --runInBand",
-    "test:watch": "cross-env ENV=TESTING jest --watch",
-    "test:cov": "cross-env ENV=TESTING jest --coverage",
-    "test:debug": "cross-env ENV=TESTING node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env ENV=TESTING jest --config ./apps/instagram-api/test/jest-e2e.json --runInBand"
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:instagram-gateway": "ENV=TESTING jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
+    "test:instagram-gateway:e2e": "ENV=TESTING jest --config apps/instagram-gateway/test/e2e/jest-e2e.json --runInBand",
+    "test:files": "ENV=TESTING jest --config apps/files/test/integration/jest-integration.json --runInBand",
+    "test:files:e2e": "ENV=TESTING jest --config apps/files/test/e2e/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
@@ -33,12 +41,13 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/microservices": "^10.3.7",
-    "@nestjs/passport": "9.0.3",
+    "@nestjs/mongoose": "^10.0.6",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.7",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/throttler": "^5.1.2",
-    "@prisma/client": "5.11.0",
+    "@prisma/client": "^5.12.1",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -58,6 +67,7 @@
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "prisma": "^5.12.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.3"
@@ -82,14 +92,12 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
-    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.1.3",
     "jest": "^29.7.0",
     "prettier": "^3.2.5",
-    "prisma": "^5.12.1",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.4",
     "swagger-ui-express": "^5.0.0",
@@ -126,9 +134,10 @@
       "node_modules"
     ],
     "moduleNameMapper": {
-      "^@instagram-api/(.*)$": "<rootDir>/apps/inctagram-api/$1",
-      "^@file/(.*)$": "<rootDir>/apps/files-api/$1"
+      "^@instagram-api/(.*)$": "<rootDir>/apps/instagram-gateway/$1",
+      "^@file/(.*)$": "<rootDir>/apps/files/$1",
+      "^@prisma/client$": "<rootDir>/node_modules/@prisma/client"
     },
-    "testTimeout": 15000
+    "testTimeout": 20000
   }
 }
