@@ -24,7 +24,14 @@ pipeline {
             steps {
                 script {
                     sh "npm install"
-                    sh "npx prisma migrate dev"
+                    sh "npm run test:instagram-gateway"
+                }
+            }
+        }
+        stage('e2e tests') {
+            steps {
+                script {
+                    sh "npm run test:instagram-gateway:e2e"
                 }
             }
         }
