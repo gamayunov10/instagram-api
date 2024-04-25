@@ -93,12 +93,15 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
+    const corsWhiteList = [
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://inctagram.org',
+      'https://instagram-api-dw99.onrender.com',
+    ];
+
     app.enableCors({
-      origin: [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'https://instagram-api-dw99.onrender.com',
-      ],
+      origin: corsWhiteList,
       credentials: true,
       allowedHeaders: [
         'Content-Type',
@@ -108,9 +111,8 @@ export class AppSettings {
         'Authorization',
       ],
       exposedHeaders: ['Authorization'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
       maxAge: 3600,
-      optionsSuccessStatus: 204,
     });
 
     app.use(cookieParser());

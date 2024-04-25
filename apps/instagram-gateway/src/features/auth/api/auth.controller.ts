@@ -171,8 +171,8 @@ export class AuthController {
       .cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: 'none',
       })
-      .header('Access-Control-Allow-Origin', req.headers.origin || '*')
       .json({ accessToken: result.accessToken });
   }
 
@@ -214,6 +214,7 @@ export class AuthController {
       .cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: 'none',
       })
       .json({ accessToken: result.accessToken });
   }
