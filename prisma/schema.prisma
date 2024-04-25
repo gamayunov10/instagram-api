@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:100200@localhost/local-instagram?"
 }
 
 model User {
@@ -25,6 +25,7 @@ model User {
   passwordHash         String?               @map("password_hash")
   createdAt            DateTime              @default(now()) @map("created_at")
   isConfirmed          Boolean               @default(false) @map("is_confirmed")
+  avatarId             String?               @map("avatar_id")
   confirmationCode     ConfirmationCode?
   passwordRecoveryCode PasswordRecoveryCode?
   posts                Post[]
