@@ -53,6 +53,7 @@ import { EmailInputModel } from '../models/input/email-input.model';
 import { NewPasswordModel } from '../models/input/new-password.model';
 import { DeviceViewModel } from '../models/output/device-view.model';
 import { UserDevicesQueryRepository } from '../../user/infrastructure/devices/user.devices.query.repo';
+import { RecaptchaV2Guard } from '../../../infrastructure/guards/recaptchaV2.guard';
 
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
@@ -370,7 +371,7 @@ export class AuthController {
     `If User with this email doesn't exist`,
     false,
   )
-  @UseGuards(RecaptchaGuard)
+  @UseGuards(RecaptchaV2Guard)
   @HttpCode(204)
   async passwordRecovery(
     @Body() userPasswdRecoveryInputModel: UserPasswdRecoveryInputModel,

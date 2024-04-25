@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { appSettings } from '../../../src/settings/app.settings';
 import { AppModule } from '../../../src/app.module';
-import { RecaptchaGuard } from '../../../src/infrastructure/guards/recaptcha.guard';
 import { ReCaptchaGuardMock } from '../mock/ReCaptchaGuardMock';
+import { RecaptchaV2Guard } from '../../../src/infrastructure/guards/recaptchaV2.guard';
 
 import { prismaClientSingleton } from './prisma-client-singleton';
 
@@ -12,7 +12,7 @@ export const initializeApp = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   })
-    .overrideGuard(RecaptchaGuard)
+    .overrideGuard(RecaptchaV2Guard)
     .useValue(new ReCaptchaGuardMock())
     .compile();
 

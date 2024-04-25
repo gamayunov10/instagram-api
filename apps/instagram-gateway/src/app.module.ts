@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import * as process from 'process';
 
 import { AppController } from './app.controller';
 import { PostModule } from './features/post/post.module';
