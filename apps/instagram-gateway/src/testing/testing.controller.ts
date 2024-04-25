@@ -11,6 +11,7 @@ import {
   productionDbGuard,
 } from '../base/constants/constants';
 import { NodeEnv } from '../base/enums/node-env.enum';
+import { FileServiceAdapter } from '../base/application/adapters/file-service.adapter';
 
 @Controller('testing')
 @ApiTags('Testing')
@@ -19,6 +20,7 @@ export class TestingController {
   constructor(
     private readonly configService: ConfigService,
     private readonly prismaClient: PrismaClient,
+    private readonly fileServiceAdapter: FileServiceAdapter,
   ) {}
 
   @Delete('all-data')
@@ -40,8 +42,8 @@ export class TestingController {
   async clearDatabase(): Promise<void> {
     try {
       if (
-        this.configService.get('ENV') !== NodeEnv.PRODUCTION ||
-        this.configService.get('ENV') !== NodeEnv.STAGING
+        this.configService.get('ENV') === NodeEnv.TESTING ||
+        this.configService.get('ENV') === NodeEnv.DEVELOPMENT
       ) {
         await this.prismaClient.$transaction([
           this.prismaClient.confirmationCode.deleteMany({}),
@@ -51,6 +53,12 @@ export class TestingController {
           this.prismaClient.post.deleteMany({}),
           this.prismaClient.user.deleteMany({}),
         ]);
+
+        const deleteFileResult = await this.fileServiceAdapter.deleteAllFiles();
+
+        if (!deleteFileResult.data) {
+          this.logger.log('Data has not been deleted');
+        }
 
         this.logger.log('All data has been deleted.');
       } else {
@@ -64,6 +72,12 @@ export class TestingController {
       }
     } catch (e) {
       this.logger.error(`Error deleting data: ${e.message}`);
+
+      return exceptionHandler(
+        ResultCode.Forbidden,
+        productionDbGuard,
+        environmentField,
+      );
     }
   }
 }

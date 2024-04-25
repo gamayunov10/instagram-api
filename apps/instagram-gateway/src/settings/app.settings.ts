@@ -93,8 +93,15 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
+    const corsWhiteList = [
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://inctagram.org',
+      'https://instagram-api-dw99.onrender.com',
+    ];
+
     app.enableCors({
-      origin: 'http://localhost:3000',
+      origin: corsWhiteList,
       credentials: true,
       allowedHeaders: [
         'Content-Type',
@@ -136,20 +143,18 @@ export class AppSettings {
   }
 
   private setSwagger(app: INestApplication) {
-    if (this.env.isDevelopment()) {
-      const swaggerPath = APP_PREFIX + '/doc';
+    const swaggerPath = APP_PREFIX + '/doc';
 
-      const config = new DocumentBuilder()
-        .setTitle('INSTAGRAM API')
-        .addBearerAuth()
-        .setVersion('1.0')
-        .build();
+    const config = new DocumentBuilder()
+      .setTitle('INSTAGRAM API')
+      .addBearerAuth()
+      .setVersion('1.0')
+      .build();
 
-      const document = SwaggerModule.createDocument(app, config);
-      SwaggerModule.setup(swaggerPath, app, document, {
-        customSiteTitle: 'INSTAGRAM Documentation',
-      });
-    }
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(swaggerPath, app, document, {
+      customSiteTitle: 'INSTAGRAM Documentation',
+    });
   }
 
   private setAppPipes(app: INestApplication) {

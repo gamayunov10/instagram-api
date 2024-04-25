@@ -326,4 +326,25 @@ export class UsersRepository {
       await this.prismaClient.$disconnect();
     }
   }
+
+  async updateAvatarId(userId: string, avatarId: string): Promise<boolean> {
+    try {
+      await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { avatarId },
+        });
+      });
+
+      return true;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
 }

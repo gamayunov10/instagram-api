@@ -1,5 +1,6 @@
 // Fields
 export const confirmCodeField = 'code';
+export const fileField = 'file';
 export const noneField = 'none';
 export const passwordField = 'password';
 export const emailField = 'email';
@@ -43,6 +44,7 @@ export const emailOrPasswordIncorrect =
   'The email or password are incorrect. Try again please';
 export const serverNotAvailable = 'Error! Server is not available';
 export const passwordNotSaved = 'Password not saved';
+export const invalidUserPhoto = `The photo must be less than 10 Mb and have JPEG or PNG format`;
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;

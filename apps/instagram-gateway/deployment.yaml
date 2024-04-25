@@ -32,21 +32,16 @@ spec:
                  secretKeyRef:
                    name: instagram-api-production-config-secret
                    key: EMAIL_PASS
+             - name: APP_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: APP_PORT
              - name: PUBLIC_FRONT_URL
                valueFrom:
                  secretKeyRef:
                    name: instagram-api-production-config-secret
                    key: PUBLIC_FRONT_URL
-             - name: RECAPTCHA_SECRET_SITE
-               valueFrom:
-                 secretKeyRef:
-                   name: instagram-api-production-config-secret
-                   key: RECAPTCHA_SECRET_SITE
-             - name: RECAPTCHA_SECRET_KEY
-               valueFrom:
-                 secretKeyRef:
-                   name: instagram-api-production-config-secret
-                   key: RECAPTCHA_SECRET_KEY
              - name: GOOGLE_CLIENT_ID
                valueFrom:
                  secretKeyRef:
@@ -77,6 +72,51 @@ spec:
                  secretKeyRef:
                    name: instagram-api-production-config-secret
                    key: GITHUB_CALL_BACK_URL
+             - name: S3_ACCESS_KEY_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: S3_ACCESS_KEY_ID
+             - name: S3_SECRET_ACCESS_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: S3_SECRET_ACCESS_KEY
+             - name: BUCKET_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: BUCKET_NAME
+             - name: S3_DOMAIN
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: S3_DOMAIN
+             - name: S3_BUCKET_NAME_PLUS_S3_DOMAIN
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: S3_BUCKET_NAME_PLUS_S3_DOMAIN
+             - name: MONGO_URL_FILES
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: MONGO_URL_FILES
+             - name: SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: SERVICE_HOST
+             - name: FILE_SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: FILE_SERVICE_HOST
+             - name: FILE_SERVICE_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-production-config-secret
+                   key: FILE_SERVICE_PORT
              - name: ACCESS_TOKEN_SECRET
                valueFrom:
                  secretKeyRef:
@@ -102,21 +142,6 @@ spec:
                  secretKeyRef:
                    name: instagram-api-production-config-secret
                    key: ENV
-             - name: APP_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: instagram-api-production-config-secret
-                   key: APP_PORT
-             - name: FILE_SERVICE_HOST
-               valueFrom:
-                 secretKeyRef:
-                   name: instagram-api-production-config-secret
-                   key: FILE_SERVICE_HOST
-             - name: FILE_SERVICE_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: instagram-api-production-config-secret
-                   key: FILE_SERVICE_PORT
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

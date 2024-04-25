@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     sh "npm install"
-                    sh "npx prisma migrate dev"
+                    sh "npm run test:instagram-gateway"
                 }
             }
         }
