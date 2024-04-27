@@ -111,7 +111,7 @@ export class AppSettings {
         'Authorization',
       ],
       exposedHeaders: ['Authorization'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
       maxAge: 3600,
     });
 
