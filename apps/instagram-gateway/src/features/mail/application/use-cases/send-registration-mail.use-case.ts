@@ -22,7 +22,7 @@ export class SendRegistrationMailUseCase
   ) {}
   async execute(command: SendRegistrationMailCommand): Promise<void> {
     if (this.configService.get('ENV') !== NodeEnv.TESTING) {
-      const url = `${this.configService.get('PUBLIC_FRONT_URL')}/confirm-email?code=${command.confirmationCode}`;
+      const url = `${this.configService.get('PUBLIC_FRONT_URL')}/auth/confirm-email?code=${command.confirmationCode}`;
 
       await this.mailerService.sendMail({
         to: command.email,
