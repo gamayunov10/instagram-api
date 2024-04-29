@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { UploadFileRequest } from '../../../../../../../../libs/common/base/user/upload-file-request';
+import { UploadFileResponse } from '../../../../../../../../libs/common/base/user/upload-file-response';
 import { S3Adapter } from '../../../../../base/application/adapters/s3.adapter';
-import { UploadFileRequest } from '../../../../../../../../libs/services/user/upload-file-request';
 import { FileRepository } from '../../../infrastructure/file.repo';
-import { UploadFileResponse } from '../../../../../../../../libs/services/user/upload-file-response';
 import { IFile } from '../../../../../base/ts/interfaces/file.interface';
 import { FileEntity } from '../../../entity/file.entity';
 

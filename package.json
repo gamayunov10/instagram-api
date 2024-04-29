@@ -127,7 +127,8 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
     ],
     "moduleDirectories": [
       "<rootDir>/../",
@@ -136,7 +137,8 @@
     "moduleNameMapper": {
       "^@instagram-api/(.*)$": "<rootDir>/apps/instagram-gateway/$1",
       "^@file/(.*)$": "<rootDir>/apps/files/$1",
-      "^@prisma/client$": "<rootDir>/node_modules/@prisma/client"
+      "^@prisma/client$": "<rootDir>/node_modules/@prisma/client",
+      "^@app/common(|/.*)$": "<rootDir>/libs/$1"
     },
     "testTimeout": 20000
   }

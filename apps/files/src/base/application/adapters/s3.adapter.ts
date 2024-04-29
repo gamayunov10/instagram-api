@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 
-import { UploadFileRequest } from '../../../../../../libs/services/user/upload-file-request';
+import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
 import { FileSaveResponse } from '../../ts/types/file-save-response.type';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { FileType } from '../../../../../../libs/services/ts/enums/file-type.enum';
+import { FileType } from '../../../../../../libs/common/base/ts/enums/file-type.enum';
 
 export interface IFile {
   _id?: string;

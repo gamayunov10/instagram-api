@@ -6,11 +6,11 @@ import {
   DELETE_ALL_FILES,
   DELETE_FILE,
   UPLOAD_FILE,
-} from '../../../../../../libs/services/constants/service.constants';
-import { UploadFileRequest } from '../../../../../../libs/services/user/upload-file-request';
-import { UploadFileResponse } from '../../../../../../libs/services/user/upload-file-response';
+} from '../../../../../../libs/common/base/constants/service.constants';
+import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
+import { UploadFileResponse } from '../../../../../../libs/common/base/user/upload-file-response';
+import { DeleteFileRequest } from '../../../../../../libs/common/base/user/delete-file-request';
 import { FileRepository } from '../infrastructure/file.repo';
-import { DeleteFileRequest } from '../../../../../../libs/services/user/delete-file-request';
 
 import { UploadFileCommand } from './applications/use-cases/upload-file.use-case';
 import { DeleteUserPhotoCommand } from './applications/use-cases/delete-file.use-case';

@@ -1,5 +1,5 @@
+import { FileType } from '../../../../../../libs/common/base/ts/enums/file-type.enum';
 import { IFile } from '../../../base/ts/interfaces/file.interface';
-import { FileType } from '../../../../../../libs/services/ts/enums/file-type.enum';
 
 export class FileEntity implements IFile {
   _id?: string;

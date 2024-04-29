@@ -3,16 +3,16 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, timeout } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 
-import { UploadFileRequest } from '../../../../../../libs/services/user/upload-file-request';
+import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
+import { UploadFileResponse } from '../../../../../../libs/common/base/user/upload-file-response';
+import { ResultCode } from '../../enums/result-code.enum';
+import { fileField } from '../../constants/constants';
+import { NodeEnv } from '../../enums/node-env.enum';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
   UPLOAD_FILE,
-} from '../../../../../../libs/services/constants/service.constants';
-import { ResultCode } from '../../enums/result-code.enum';
-import { fileField } from '../../constants/constants';
-import { UploadFileResponse } from '../../../../../../libs/services/user/upload-file-response';
-import { NodeEnv } from '../../enums/node-env.enum';
+} from '../../../../../../libs/common/base/constants/service.constants';
 
 @Injectable()
 export class FileServiceAdapter {
