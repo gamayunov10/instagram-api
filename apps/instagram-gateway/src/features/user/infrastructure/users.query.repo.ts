@@ -43,7 +43,7 @@ export class UsersQueryRepository {
 
   async findUserByUsername(username: string) {
     try {
-      return this.prismaClient.user.findFirst({
+      return this.prismaClient.user.findUnique({
         where: { username },
       });
     } catch (e) {
