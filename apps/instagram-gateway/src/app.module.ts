@@ -28,7 +28,7 @@ const configService = new ConfigService();
         transport: Transport.TCP,
         options: {
           host: configService.get<string>('FILE_SERVICE_HOST') || '0.0.0.0',
-          port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3348,
+          port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3368,
         },
       },
     ]),
