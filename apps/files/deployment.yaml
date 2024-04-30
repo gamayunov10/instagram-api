@@ -21,3 +21,9 @@ spec:
            ports:
              - containerPort: PORT_CONTAINER
 
+           env:
+             - name: MONGO_URL_FILES
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-api-files-service-production-config-secret
+                   key: MONGO_URL_FILES

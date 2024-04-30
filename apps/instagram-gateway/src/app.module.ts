@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import * as process from 'process';
+import { ClientsModule } from '@nestjs/microservices';
 
 import { AppController } from './app.controller';
 import { PostModule } from './features/post/post.module';
@@ -13,31 +12,17 @@ import { MailModule } from './features/mail/mail.module';
 import { TestingController } from './testing/testing.controller';
 import { AppService } from './app.service';
 import { FileServiceAdapter } from './base/application/adapters/file-service.adapter';
+import { fileServiceConfig } from './base/application/config/file-service.congig';
 
 const services = [AppService, PrismaClient, PrismaService, FileServiceAdapter];
 const modules = [PostModule, UserModule, AuthModule, MailModule];
 const controllers = [AppController, TestingController];
 
-const configService = new ConfigService();
-
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'FILE_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: configService.get<string>('FILE_SERVICE_HOST') || '0.0.0.0',
-          port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3379,
-        },
-      },
-    ]),
+    ClientsModule.registerAsync([fileServiceConfig()]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:
-        process.env.NODE_ENV === 'DEVELOPMENT'
-          ? '.env.development'
-          : '.env.test',
     }),
     ...modules,
   ],
