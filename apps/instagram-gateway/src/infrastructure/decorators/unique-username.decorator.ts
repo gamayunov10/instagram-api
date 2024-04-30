@@ -15,9 +15,6 @@ export class IsUsernameAlreadyExistConstraint
 {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
   async validate(username: string): Promise<boolean> {
-    if (!username) {
-      return false;
-    }
     const user = await this.usersQueryRepository.findUserByUsername(username);
     return !user;
   }

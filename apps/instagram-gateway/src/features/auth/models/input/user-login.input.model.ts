@@ -7,8 +7,8 @@ export class UserLoginInputModel {
   @ApiProperty({
     type: String,
   })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   password: string;
 
   @ApiProperty({
@@ -17,7 +17,7 @@ export class UserLoginInputModel {
   @Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
     message: emailIsIncorrect,
   })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   email: string;
 }
