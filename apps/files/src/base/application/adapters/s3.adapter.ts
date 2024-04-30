@@ -5,7 +5,6 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
-import { randomUUID } from 'crypto';
 
 import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
 import { FileSaveResponse } from '../../ts/types/file-save-response.type';
@@ -36,8 +35,7 @@ export class S3Adapter {
     format,
     fileType,
   }: UploadFileRequest): Promise<FileSaveResponse> {
-    const key = `user-images/${userId}/${fileType}/${randomUUID()}.${format}`;
-
+    const key = `content/users/${userId}/${fileType}.${format}`;
     const extractedBuffer = Buffer.from(buffer);
 
     const bucketParams = {
