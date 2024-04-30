@@ -23,6 +23,7 @@ const controllers = [AppController, TestingController];
     ClientsModule.registerAsync([fileServiceConfig()]),
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV !== 'local' ? '.env.test' : '.env',
     }),
     ...modules,
   ],
