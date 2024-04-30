@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://test-inctagram-db-postgres_owner:SJAvQcR3MYf7@ep-polished-dust-a2ccxwfb-pooler.eu-central-1.aws.neon.tech/test-inctagram-db-postgres?sslmode=require"
 }
 
 model User {

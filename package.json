@@ -25,8 +25,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:instagram-gateway": "DATABASE_URL=postgresql://test-inctagram-db-postgres_owner:SJAvQcR3MYf7@ep-polished-dust-a2ccxwfb-pooler.eu-central-1.aws.neon.tech/test-inctagram-db-postgres?sslmode=require && jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
-    "test:instagram-gateway:local": "jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
+    "test:instagram-gateway": "jest --config apps/instagram-gateway/test/integration/jest-integration.json --runInBand",
     "test:instagram-gateway:e2e": "jest --config apps/instagram-gateway/test/e2e/jest-e2e.json --runInBand",
     "test:files": "jest --config apps/files/test/integration/jest-integration.json --runInBand",
     "test:files:e2e": "jest --config apps/files/test/e2e/jest-e2e.json --runInBand"
