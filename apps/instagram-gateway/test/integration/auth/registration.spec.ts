@@ -80,6 +80,30 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'username');
     });
+    it(`should return 400 when trying to Register in the system with incorrect username`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: undefined, //undefined
+          password: 'password123',
+          email: '11leto111@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'username');
+    });
+    it(`should return 400 when trying to Register in the system with incorrect object key for body (userName)`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          userName: lorem10, //key incorrect
+          password: 'password123',
+          email: '11leto111@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'username');
+    });
 
     it(`should return 400 when trying to Register in the system with empty password`, async () => {
       const response = await agent
@@ -113,6 +137,30 @@ describe('AuthController: /registration', () => {
         .send({
           username: lorem10,
           password: lorem30, //maxLength: 20
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: undefined, //undefined
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+    it(`should return 400 when trying to Register in the system with incorrect object key for body (paSSword)`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          paSSword: lorem20, //key incorrect
           email: 'some@gmail.com',
         })
         .expect(400);
@@ -170,6 +218,63 @@ describe('AuthController: /registration', () => {
         .expect(400);
 
       expectErrorMessages(response, 'email');
+    });
+    it(`should return 400 when trying to Register in the system with incorrect email`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: lorem20,
+          email: undefined,
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect object key for body (email)`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: lorem20,
+          eMail: userEmail1,
+        })
+        .expect(400);
+      expectErrorMessages(response, 'email');
+    });
+
+    it(`should return 400 when attempting to Register in the system with an existing email address or username`, async () => {
+      await agent
+        .post(registration_url)
+        .send({
+          username: username1,
+          password: lorem20,
+          email: userEmail1,
+        })
+        .expect(204);
+
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: username2,
+          password: lorem20,
+          email: userEmail1,
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+
+      const response2 = await agent
+        .post(registration_url)
+        .send({
+          username: username1,
+          password: lorem20,
+          email: userEmail2,
+        })
+        .expect(400);
+
+      expectErrorMessages(response2, 'username');
     });
   });
 

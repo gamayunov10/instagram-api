@@ -72,6 +72,35 @@ describe('AuthController: /password-recovery', () => {
 
       expect(executeSpy).not.toHaveBeenCalled();
     });
+    it(`should return 400 when trying to password-recovery with 
+    incorrect object key for body (email & reCaptcha)`, async () => {
+      const executeSpy = jest.spyOn(
+        PasswordRecoveryUseCase.prototype,
+        'execute',
+      );
+
+      const response = await agent
+        .post(passwd_recovery_url)
+        .send({
+          Email: 'some@email', //key incorrect
+          reCaptcha: 'reCaptcha',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+
+      const response2 = await agent
+        .post(passwd_recovery_url)
+        .send({
+          email: userEmail2,
+          ReCaptcha: 'reCaptcha', //key incorrect
+        })
+        .expect(400);
+
+      expectErrorMessages(response2, 'reCaptcha');
+
+      expect(executeSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('positive', () => {

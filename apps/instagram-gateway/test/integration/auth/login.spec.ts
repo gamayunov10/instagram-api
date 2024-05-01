@@ -61,12 +61,34 @@ describe('AuthController: /login', () => {
 
       expectErrorMessages(response, 'email');
     });
+    it(`should return 400 when trying to Log in the system with incorrect object key for body (email)`, async () => {
+      const response = await agent
+        .post(login_url)
+        .send({
+          password: 'password123',
+          eMail: userEmail1, //key incorrect
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+    });
 
     it(`should return 400 when trying to Log in the system with empty password`, async () => {
       const response = await agent
         .post(login_url)
         .send({
           password: '',
+          email: '11leto111@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+    it(`should return 400 when trying to Log in the system with incorrect object key for body (password)`, async () => {
+      const response = await agent
+        .post(login_url)
+        .send({
+          paSSword: userPassword, //key incorrect
           email: '11leto111@gmail.com',
         })
         .expect(400);
