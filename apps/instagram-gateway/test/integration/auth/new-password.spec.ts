@@ -59,7 +59,7 @@ describe('AuthController: /new-password', () => {
     });
 
     it(`should return 400 when trying to new-password with 
-    incorrect object key for body (newPassword & recoveryCode)`, async () => {
+             incorrect object key for body (newPassword & recoveryCode)`, async () => {
       await agent
         .post(new_password_url)
         .send({
@@ -67,6 +67,7 @@ describe('AuthController: /new-password', () => {
           recoveryCode: randomUUID(),
         })
         .expect(400);
+
       await agent
         .post(new_password_url)
         .send({

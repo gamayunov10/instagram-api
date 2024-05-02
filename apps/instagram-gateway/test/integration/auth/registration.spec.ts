@@ -80,6 +80,7 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'username');
     });
+
     it(`should return 400 when trying to Register in the system with incorrect username`, async () => {
       const response = await agent
         .post(registration_url)
@@ -92,6 +93,7 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'username');
     });
+
     it(`should return 400 when trying to Register in the system with incorrect object key for body (userName)`, async () => {
       const response = await agent
         .post(registration_url)
@@ -143,6 +145,7 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'password');
     });
+
     it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
       const response = await agent
         .post(registration_url)
@@ -155,6 +158,7 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'password');
     });
+
     it(`should return 400 when trying to Register in the system with incorrect object key for body (paSSword)`, async () => {
       const response = await agent
         .post(registration_url)
@@ -219,6 +223,7 @@ describe('AuthController: /registration', () => {
 
       expectErrorMessages(response, 'email');
     });
+
     it(`should return 400 when trying to Register in the system with incorrect email`, async () => {
       const response = await agent
         .post(registration_url)

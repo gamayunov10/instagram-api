@@ -61,6 +61,7 @@ describe('AuthController: /login', () => {
 
       expectErrorMessages(response, 'email');
     });
+
     it(`should return 400 when trying to Log in the system with incorrect object key for body (email)`, async () => {
       const response = await agent
         .post(login_url)
@@ -84,6 +85,7 @@ describe('AuthController: /login', () => {
 
       expectErrorMessages(response, 'password');
     });
+
     it(`should return 400 when trying to Log in the system with incorrect object key for body (password)`, async () => {
       const response = await agent
         .post(login_url)
