@@ -47,6 +47,18 @@ describe('AuthController: /registration-email-resending', () => {
 
       expectErrorMessages(response, 'email');
     });
+
+    it(`should return 400 when trying to registration-email-resending with 
+    incorrect object key for body (email)`, async () => {
+      const response = await agent
+        .post(registration_email_resending_url)
+        .send({
+          Email: userEmail2, //key incorrect
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+    });
   });
 
   describe('positive', () => {

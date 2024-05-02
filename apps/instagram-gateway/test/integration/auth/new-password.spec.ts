@@ -57,6 +57,24 @@ describe('AuthController: /new-password', () => {
         })
         .expect(400);
     });
+
+    it(`should return 400 when trying to new-password with 
+    incorrect object key for body (newPassword & recoveryCode)`, async () => {
+      await agent
+        .post(new_password_url)
+        .send({
+          NewPassword: 'new271543523', //key incorrect
+          recoveryCode: randomUUID(),
+        })
+        .expect(400);
+      await agent
+        .post(new_password_url)
+        .send({
+          newPassword: 'new271543523',
+          RecoveryCode: randomUUID(), //key incorrect
+        })
+        .expect(400);
+    });
   });
 
   describe('positive', () => {
