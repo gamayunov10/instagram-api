@@ -23,7 +23,6 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh "npm install -g npm@10.5.2"
                     sh "npm install"
                     sh "npm run test:instagram-gateway"
                 }
