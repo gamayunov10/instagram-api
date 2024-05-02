@@ -147,6 +147,11 @@ spec:
                  secretKeyRef:
                    name: instagram-gateway-service-production-config-secret
                    key: FILE_SERVICE_HOST
+             - name: APP_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-service-production-config-secret
+                   key: APP_PORT
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
