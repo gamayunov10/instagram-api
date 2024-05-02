@@ -32,11 +32,6 @@ spec:
                  secretKeyRef:
                    name: fs-production-config-secret
                    key: EMAIL_PASS
-             - name: APP_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: fs-production-config-secret
-                   key: APP_PORT
              - name: PUBLIC_FRONT_URL
                valueFrom:
                  secretKeyRef:
