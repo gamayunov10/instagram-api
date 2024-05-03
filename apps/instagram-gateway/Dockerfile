@@ -14,12 +14,12 @@ RUN mkdir -p /home/node/dist/${SERVICE}
 WORKDIR /home/node/dist/${SERVICE}
 
 COPY --chown=node package*.json ./
-RUN pnpm install --no-prefer-frozen-lockfile --no-cache
+RUN pnpm install
 
 # Bundle app source code
 COPY --chown=node . .
 
-RUN pnpm run build:${SERVICE} --no-cache
+RUN pnpm run build:${SERVICE}
 
 EXPOSE ${PORT}
 
