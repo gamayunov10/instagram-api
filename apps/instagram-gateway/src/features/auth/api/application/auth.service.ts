@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 import { UsersQueryRepository } from '../../../user/infrastructure/users.query.repo';
 import { UsersRepository } from '../../../user/infrastructure/users.repo';
@@ -10,7 +11,24 @@ export class AuthService {
   constructor(
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly configService: ConfigService,
   ) {}
+
+  async hashPassword(
+    password: string,
+    rounds = 10,
+    salt = this.configService.get('CRYPTO_SALT'),
+  ) {
+    return new Promise((resolve, reject) => {
+      crypto.pbkdf2(password, salt, rounds, 64, 'sha256', (err, derivedKey) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(derivedKey.toString('hex'));
+        }
+      });
+    });
+  }
 
   async checkCredentials(email: string, password: string) {
     const user = await this.usersQueryRepository.findUserByEmail(email);
@@ -25,14 +43,19 @@ export class AuthService {
 
     const isHashesEquals: boolean = await this._isPasswordCorrect(
       password,
+      this.configService.get('CRYPTO_SALT'),
       user.passwordHash,
     );
 
     return isHashesEquals ? user.id : false;
   }
 
-  async _isPasswordCorrect(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+  async _isPasswordCorrect(password, salt, storedHash): Promise<boolean> {
+    const hashedPassword = crypto
+      .pbkdf2Sync(password, salt, 10, 64, 'sha256')
+      .toString('hex');
+
+    return hashedPassword === storedHash;
   }
 
   async validateUser(data: UserOauthCredInputModel) {
