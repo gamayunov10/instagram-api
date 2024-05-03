@@ -1,5 +1,4 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -8,6 +7,7 @@ import { UserAuthInputModel } from '../../../../models/input/user-auth.input.mod
 import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
 import { SendRegistrationMailCommand } from '../../../../../mail/application/use-cases/send-registration-mail.use-case';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
+import { AuthService } from '../../auth.service';
 
 export class RegistrationCommand {
   constructor(public userAuthInputModel: UserAuthInputModel) {}
@@ -23,16 +23,19 @@ export class RegistrationUseCase
     private commandBus: CommandBus,
     private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
+    private readonly authService: AuthService,
   ) {}
 
   async execute(command: RegistrationCommand): Promise<string | null> {
-    const hash = await bcrypt.hash(command.userAuthInputModel.password, 10);
+    const hash = await this.authService.hashPassword(
+      command.userAuthInputModel.password,
+    );
 
     const code = randomUUID();
 
     const userId = await this.usersRepository.registerUser(
       command.userAuthInputModel,
-      hash,
+      hash.toString(),
       code,
     );
 

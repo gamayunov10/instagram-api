@@ -3,7 +3,7 @@ pipeline {
     agent any
     environment {
         ENV_TYPE = "production"
-        PORT = 3401
+        PORT = 3405
         NAMESPACE = "inctagram-org"
         REGISTRY_HOSTNAME = "irinamartoyan"
         PROJECT = "instagram-gateway"

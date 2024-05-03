@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import * as bcrypt from 'bcrypt';
 
 import { NewPasswordModel } from '../../../../models/input/new-password.model';
 import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
@@ -13,6 +12,7 @@ import {
   recoveryCodeIsIncorrect,
 } from '../../../../../../base/constants/constants';
 import { ExceptionResultType } from '../../../../../../base/types/exception.type';
+import { AuthService } from '../../auth.service';
 
 export class PasswordUpdateCommand {
   constructor(public newPasswordModel: NewPasswordModel) {}
@@ -25,6 +25,7 @@ export class PasswordUpdateUseCase
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly authService: AuthService,
   ) {}
 
   async execute(
@@ -42,11 +43,13 @@ export class PasswordUpdateUseCase
       );
     }
 
-    const hash = await bcrypt.hash(command.newPasswordModel.newPassword, 10);
+    const hash = await this.authService.hashPassword(
+      command.newPasswordModel.newPassword,
+    );
 
     const updateResult = await this.usersRepository.updatePassword(
       user.userId,
-      hash,
+      hash.toString(),
     );
 
     if (!updateResult) {
