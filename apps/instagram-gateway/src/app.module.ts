@@ -20,11 +20,10 @@ const controllers = [AppController, TestingController];
 
 @Module({
   imports: [
-    ClientsModule.registerAsync([fileServiceConfig()]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV !== 'local' ? '.env.test' : '.env',
     }),
+    ClientsModule.registerAsync([fileServiceConfig()]),
     ...modules,
   ],
   controllers: [...controllers],
