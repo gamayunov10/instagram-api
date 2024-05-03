@@ -24,6 +24,7 @@ pipeline {
             steps {
                 script {
                     sh "pnpm install"
+                    sh "pnpm run test:instagram-gateway"
                 }
             }
         }
