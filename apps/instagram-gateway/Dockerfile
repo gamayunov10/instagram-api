@@ -21,12 +21,12 @@ WORKDIR /home/node/dist/${SERVICE}
 
 COPY --chown=node package*.json ./
 
-RUN npm install --prefer-online
+RUN npm install --no-cache
 
 # Bundle app source code
 COPY --chown=node . .
 
-RUN npm run build:${SERVICE}
+RUN npm run build:${SERVICE} --no-cache
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 
