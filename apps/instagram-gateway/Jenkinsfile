@@ -23,7 +23,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh "npm install"
+                    sh "pnpm install"
                 }
             }
         }
