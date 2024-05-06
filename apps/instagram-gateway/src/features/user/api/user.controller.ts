@@ -28,6 +28,7 @@ import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decor
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
 import { UserProfileOutputModel } from '../models/output/user.profile.output.model';
 import { UserImageInputModel } from '../models/input/user.image.input.model';
+import { invalidUserPhoto } from '../../../base/constants/constants';
 
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
 import { GetProfileInfoCommand } from './application/use-cases/get-profile-info-use.case';
@@ -110,7 +111,9 @@ export class UserController {
         ],
         fileIsRequired: true,
         exceptionFactory: (e) => {
-          throw new BadRequestException([{ message: e, field: 'file' }]);
+          throw new BadRequestException([
+            { message: invalidUserPhoto, field: 'file' },
+          ]);
         },
       }),
     )
