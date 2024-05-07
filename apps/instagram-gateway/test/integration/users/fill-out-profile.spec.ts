@@ -11,6 +11,7 @@ import {
   lorem100,
   lorem1000,
   userProfileInputModel,
+  userProfileInputModel2,
 } from '../../base/constants/tests-strings';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import { expectUserProfile } from '../../base/utils/user/expectUserProfile';
@@ -431,6 +432,18 @@ describe('UserController: /fill-out-profile', () => {
       const profile = await testManager.getUserProfile(createUserInput.email);
 
       expectUserProfile(profile, userProfileInputModel);
+    });
+
+    it(`should return 204, update lastName and firstName`, async () => {
+      await agent
+        .put(fill_out_profile_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send(userProfileInputModel2)
+        .expect(204);
+
+      const profile = await testManager.getUserProfile(createUserInput.email);
+
+      expectUserProfile(profile, userProfileInputModel2);
     });
 
     it(`should update unique username if it's belong one user`, async () => {
