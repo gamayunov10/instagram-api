@@ -40,7 +40,6 @@ import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schem
 import { UserPasswdRecoveryInputModel } from '../models/input/user-passwd-recovery.input.model';
 import { UserLoginInputModel } from '../models/input/user-login.input.model';
 import { AccessTokenView } from '../models/output/access-token-view.model';
-import { RecaptchaGuard } from '../../../infrastructure/guards/recaptcha.guard';
 import { GoogleOAuth2Guard } from '../../../infrastructure/guards/google-oauth2.guard';
 import { GitHubOAuth2Guard } from '../../../infrastructure/guards/github-oauth2.guard';
 import { UsersQueryRepository } from '../../user/infrastructure/users.query.repo';
@@ -53,7 +52,8 @@ import { EmailInputModel } from '../models/input/email-input.model';
 import { NewPasswordModel } from '../models/input/new-password.model';
 import { DeviceViewModel } from '../models/output/device-view.model';
 import { UserDevicesQueryRepository } from '../../user/infrastructure/devices/user.devices.query.repo';
-import { RecaptchaV2Guard } from '../../../infrastructure/guards/recaptchaV2.guard';
+import { RecaptchaV2Guard } from '../../../infrastructure/guards/recaptcha-v2.guard';
+import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
 
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
@@ -93,6 +93,7 @@ export class AuthController {
     false,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   async getProfile(@UserIdFromGuard() userId: string) {
     const user = await this.usersQueryRepository.findUserById(userId);

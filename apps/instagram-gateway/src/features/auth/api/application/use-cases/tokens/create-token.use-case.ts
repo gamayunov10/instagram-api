@@ -20,19 +20,17 @@ export class CreateTokensUseCase
   ) {}
 
   async execute(command: CreateTokensCommand) {
-    const accessTokenPayload = { userId: command.userId };
-
-    const refreshTokenPayload = {
+    const tokenPayload = {
       userId: command.userId,
       deviceId: command.deviceId,
     };
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
+    const accessToken = this.jwtService.sign(tokenPayload, {
       secret: this.configService.get('ACCESS_TOKEN_SECRET'),
       expiresIn: this.configService.get('ACCESS_TOKEN_EXP'),
     });
 
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+    const refreshToken = this.jwtService.sign(tokenPayload, {
       secret: this.configService.get('REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('REFRESH_TOKEN_EXP'),
     });

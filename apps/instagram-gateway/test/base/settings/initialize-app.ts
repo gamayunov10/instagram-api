@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { appSettings } from '../../../src/settings/app.settings';
 import { AppModule } from '../../../src/app.module';
 import { ReCaptchaGuardMock } from '../mock/ReCaptchaGuardMock';
-import { RecaptchaV2Guard } from '../../../src/infrastructure/guards/recaptchaV2.guard';
+import { RecaptchaV2Guard } from '../../../src/infrastructure/guards/recaptcha-v2.guard';
 
 import { prismaClientSingleton } from './prisma-client-singleton';
 
