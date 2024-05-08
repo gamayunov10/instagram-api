@@ -15,7 +15,7 @@ import { registration_url } from './registration.spec';
 import { registration_confirmation_url } from './registration-confirmation.spec';
 import { login_url } from './login.spec';
 
-const logout_url = '/api/v1/auth/logout';
+export const logout_url = '/api/v1/auth/logout';
 
 describe('AuthController: /logout', () => {
   let app: INestApplication;

@@ -11,12 +11,17 @@ import {
   createUserInput5,
   createUserInput6,
   createUserInput7,
+  userEmail3,
+  username3,
 } from '../../base/constants/tests-strings';
 import { expectErrorWithPath } from '../../base/utils/expectErrorWithPath';
 import { expectDevice } from '../../base/utils/devices/expectDevices';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
+
+import { me_url } from './me.spec';
+import { logout_url } from './logout.spec';
 
 export const devices_url = '/api/v1/auth/devices';
 
@@ -153,6 +158,27 @@ describe('AuthController: /devices', () => {
       await agent
         .delete(`${devices_url}/${deviceId}`)
         .set('Cookie', user.refreshToken)
+        .expect(401);
+    });
+
+    it(`should create user; login; get info about current user; logout`, async () => {
+      const user = await testManager.createUser(createUserInput3);
+
+      await agent
+        .get(me_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.email).toEqual(userEmail3);
+          expect(res.body.username).toEqual(username3);
+          expect(res.body.userId).toEqual(expect.anything());
+        });
+
+      await agent.post(logout_url).set('Cookie', user.refreshToken).expect(204);
+
+      await agent
+        .get(me_url)
+        .auth(user.accessToken, { type: 'bearer' })
         .expect(401);
     });
   });
