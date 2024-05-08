@@ -84,3 +84,12 @@ export const userProfileInputModel = {
   city: 'q',
   aboutMe: lorem10,
 };
+
+export const userProfileInputModel2 = {
+  username: 'DiegoM',
+  firstName: 'Армандо',
+  lastName: 'Фамилия',
+  dateOfBirth: '31.10.1960',
+  city: 'q',
+  aboutMe: lorem10,
+};
