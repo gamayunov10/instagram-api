@@ -2,11 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import sharp from 'sharp';
 
-import { UploadFileRequest } from '../../../../../../../../libs/common/base/user/upload-file-request';
-import { FileType } from '../../../../../../../../libs/common/base/ts/enums/file-type.enum';
-import { UserImageInputModel } from '../../../models/input/user.image.input.model';
+import { UserImageInputModel } from '../../../../user/models/input/user.image.input.model';
+import { PostImageInputModel } from '../../../models/input/post.image.input.model';
 import { FileServiceAdapter } from '../../../../../base/application/adapters/file-service.adapter';
-import { UsersQueryRepository } from '../../../infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import {
   fileField,
@@ -14,25 +13,25 @@ import {
   userIdField,
   userNotFound,
 } from '../../../../../base/constants/constants';
-import { UsersRepository } from '../../../infrastructure/users.repo';
+import { UploadFileRequest } from '../../../../../../../../libs/common/base/user/upload-file-request';
+import { FileType } from '../../../../../../../../libs/common/base/ts/enums/file-type.enum';
 
-export class UploadUserPhotoCommand {
-  constructor(public data: UserImageInputModel) {}
+export class UploadPostPhotoCommand {
+  constructor(public data: PostImageInputModel) {}
 }
 
-@CommandHandler(UploadUserPhotoCommand)
-export class UploadUserPhotoUseCase
-  implements ICommandHandler<UploadUserPhotoCommand>
+@CommandHandler(UploadPostPhotoCommand)
+export class UploadPostPhotoUseCase
+  implements ICommandHandler<UploadPostPhotoCommand>
 {
-  logger = new Logger(UploadUserPhotoUseCase.name);
+  logger = new Logger(UploadPostPhotoUseCase.name);
 
   constructor(
     private readonly fileServiceAdapter: FileServiceAdapter,
-    private readonly usersRepository: UsersRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
-  async execute({ data }: UploadUserPhotoCommand) {
+  async execute({ data }: UploadPostPhotoCommand) {
     const user = await this.usersQueryRepository.findUserById(data.userId);
 
     if (!user) {
@@ -63,29 +62,16 @@ export class UploadUserPhotoUseCase
     if (!uploadResult.data) {
       return {
         data: false,
-        code: ResultCode.BadRequest,
-        field: fileField,
-        message: 'Upload error',
-      };
-    }
-
-    const updateAvatarId = await this.usersRepository.updateAvatarId(
-      data.userId,
-      uploadResult.res.toString(),
-    );
-
-    if (!updateAvatarId) {
-      return {
-        data: false,
         code: ResultCode.InternalServerError,
         field: fileField,
-        message: 'Update error',
+        message: 'Upload error',
       };
     }
 
     return {
       data: true,
       code: ResultCode.Success,
+      res: uploadResult.res,
     };
   }
 
@@ -116,7 +102,7 @@ export class UploadUserPhotoUseCase
       originalname: data.originalname,
       buffer: data.buffer,
       format: metadata.format,
-      fileType: FileType.Avatar,
+      fileType: FileType.PostImage,
       ownerId: data.userId,
     };
   }

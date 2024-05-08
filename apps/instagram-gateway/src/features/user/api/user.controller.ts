@@ -31,8 +31,8 @@ import { UserImageInputModel } from '../models/input/user.image.input.model';
 
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
 import { GetProfileInfoCommand } from './application/use-cases/get-profile-info-use.case';
-import { UploadUserPhotoCommand } from './application/use-cases/upload-user-photo.use-case';
 import { DeleteUserPhotoCommand } from './application/use-cases/delete-user-photo.use-case';
+import { UploadUserPhotoCommand } from './application/use-cases/upload-user-photo.use-case';
 
 @Controller('user')
 @ApiTags('User')
@@ -118,7 +118,7 @@ export class UserController {
   ): Promise<void> {
     const data: UserImageInputModel = {
       userId,
-      originalName: file.originalname,
+      originalname: file.originalname,
       buffer: file.buffer,
     };
 

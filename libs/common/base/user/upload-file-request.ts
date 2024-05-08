@@ -3,7 +3,7 @@ import { FileType } from '../ts/enums/file-type.enum';
 export class UploadFileRequest {
   id?: string;
   userId: string;
-  originalName: string;
+  originalname: string;
   buffer: Buffer;
   format: string;
   fileType: FileType;

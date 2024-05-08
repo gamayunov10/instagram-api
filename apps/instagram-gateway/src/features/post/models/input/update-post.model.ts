@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
 
-import { CreatePostModel } from './create-post.model';
+import { PostInputModel } from './post.input.model';
 
-export class UpdatePostModel extends PartialType(CreatePostModel) {}
+export class UpdatePostModel extends PartialType(PostInputModel) {}
