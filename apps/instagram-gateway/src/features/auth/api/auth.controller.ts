@@ -177,7 +177,10 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
+      .redirect(
+        this.configService.get<string>('PUBLIC_FRONT_URL') +
+          `/google-auth/?access-token=${result.accessToken}`,
+      );
   }
 
   @Get('github/login')
@@ -220,7 +223,10 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
+      .redirect(
+        this.configService.get<string>('PUBLIC_FRONT_URL') +
+          `/github-auth/?access-token=${result.accessToken}`,
+      );
   }
 
   @Post('refresh-token')
@@ -264,7 +270,7 @@ export class AuthController {
     (res as Response)
       .cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .json({ accessToken: tokens.accessToken });
   }
