@@ -17,7 +17,9 @@ export class PostsRepository {
   async createPost(postInputModel: PostInputModel, userId: string) {
     try {
       const postId = await this.prismaClient.$transaction(async (prisma) => {
-        const images = postInputModel.images.map((image) => ({
+        const uniqueImages = Array.from(new Set(postInputModel.images));
+
+        const images = uniqueImages.map((image) => ({
           imageId: image,
         }));
 

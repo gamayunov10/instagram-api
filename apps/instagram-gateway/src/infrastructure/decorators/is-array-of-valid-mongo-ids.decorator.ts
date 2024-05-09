@@ -3,13 +3,12 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator';
+import mongoose from 'mongoose';
 
-import { isValidUUID } from '../../base/utils/validations/uuid.validator';
-
-export function IsValidArrayOfUuid(validationOptions?: ValidationOptions) {
+export function IsValidArrayOfMongoIds(validationOptions?: ValidationOptions) {
   return (object: unknown, propertyName: string): void => {
     registerDecorator({
-      name: 'isValidArrayOfUuid',
+      name: 'isValidArrayOfMongoIds',
       target: object.constructor,
       propertyName,
       options: validationOptions,
@@ -17,11 +16,12 @@ export function IsValidArrayOfUuid(validationOptions?: ValidationOptions) {
         validate(value: any) {
           if (!Array.isArray(value)) return false;
           return value.every(
-            (item: any) => typeof item === 'string' && isValidUUID(item),
+            (item: any) =>
+              typeof item === 'string' && mongoose.Types.ObjectId.isValid(item),
           );
         },
         defaultMessage(args: ValidationArguments) {
-          return `${args.property} must be an array of valid UUIDs.`;
+          return `${args.property} must be an array of valid MongoDB ObjectIds.`;
         },
       },
     });

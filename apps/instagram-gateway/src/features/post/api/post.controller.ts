@@ -25,6 +25,7 @@ import { JwtBearerGuard } from '../../auth/guards/jwt-bearer.guard';
 import { PostInputModel } from '../models/input/post.input.model';
 import { PostImageInputModel } from '../models/input/post.image.input.model';
 import { PostViewModel } from '../models/output/post.view.model';
+import { PostImageViewModel } from '../models/output/post-images.view.model';
 
 import { UploadPostPhotoCommand } from './application/use-cases/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/create-post.use-case';
@@ -57,9 +58,9 @@ export class PostController {
     'Upload post photo',
     true,
     false,
-    204,
+    201,
     'Photo are saved',
-    false,
+    PostImageViewModel,
     'If photo has incorrect format or size exceeding 20 MB',
     ApiErrorMessages,
     true,
@@ -85,7 +86,7 @@ export class PostController {
       }),
     )
     file: Express.Multer.File,
-  ): Promise<UploadFileResponse | void> {
+  ): Promise<PostImageViewModel | void> {
     const data: PostImageInputModel = {
       userId,
       originalname: file.originalname,
@@ -100,7 +101,7 @@ export class PostController {
       return exceptionHandler(result.code, result.message, result.field);
     }
 
-    return { fileId: result.res };
+    return { imageId: result.res };
   }
 
   @Post()

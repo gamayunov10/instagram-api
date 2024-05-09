@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 import { maxChar500 } from '../../../../base/constants/constants';
-import { IsValidArrayOfUuid } from '../../../../infrastructure/decorators/is-valid-array-of-uuid.decorator';
+import { IsValidArrayOfMongoIds } from '../../../../infrastructure/decorators/is-array-of-valid-mongo-ids.decorator';
 
 export class PostInputModel {
   @ApiProperty({
@@ -17,7 +17,7 @@ export class PostInputModel {
   @IsString({ each: true })
   @ArrayNotEmpty()
   @IsArray()
-  @IsValidArrayOfUuid()
+  @IsValidArrayOfMongoIds()
   images: string[];
 
   @ApiProperty({
