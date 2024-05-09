@@ -418,7 +418,7 @@ describe('UserController: /fill-out-profile', () => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should create 2 users`, async () => {
+    it(`should create user`, async () => {
       user = await testManager.createUser(createUserInput);
     });
 
