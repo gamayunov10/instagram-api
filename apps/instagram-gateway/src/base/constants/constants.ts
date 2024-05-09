@@ -8,10 +8,12 @@ export const usernameField = 'username';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
 export const deviceIDField = 'deviceId';
+export const imagesField = 'images';
 export const emailOrPasswordField = 'email or password';
 
 // Validation
 export const userNotFound = 'User not found';
+export const postNotSaved = 'Post has not been saved';
 export const deviceNotFound = 'Device not found';
 export const userNotFoundOrConfirmed =
   'User with provided email not found or already confirmed';
@@ -31,6 +33,7 @@ export const maxChar20 = 'Maximum number of characters 20';
 export const maxChar30 = 'Maximum number of characters 30';
 export const maxChar50 = 'Maximum number of characters 50';
 export const maxChar200 = 'Maximum number of characters 200';
+export const maxChar500 = 'Maximum number of characters 500';
 export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';
 export const emailIsIncorrect =
@@ -46,6 +49,7 @@ export const emailOrPasswordIncorrect =
 export const serverNotAvailable = 'Error! Server is not available';
 export const passwordNotSaved = 'Password not saved';
 export const invalidUserPhoto = `The photo must be less than 10 Mb and have JPEG or PNG format`;
+export const invalidImagesIds = 'images should be valid array of image ids';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;
