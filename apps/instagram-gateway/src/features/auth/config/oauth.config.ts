@@ -11,39 +11,18 @@ export class OAuthConfig {
   private readonly googleCallBackURL: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.githubClientId = this.getSecret(
-      'GITHUB_CLIENT_ID',
-      'default_client_id',
-    );
-    this.githubClientSecret = this.getSecret(
-      'GITHUB_CLIENT_SECRET',
-      'default_client_secret',
-    );
-    this.githubCallBackURL = this.getSecret(
-      'GITHUB_CALL_BACK_URL',
-      'default_url_id',
-    );
-    this.googleClientId = this.getSecret(
-      'GOOGLE_CLIENT_ID',
-      'default_client_id',
-    );
-    this.googleClientSecret = this.getSecret(
-      'GOOGLE_CLIENT_SECRET',
-      'default_client_secret',
-    );
-    this.googleCallBackURL = this.getSecret(
-      'GOOGLE_CALL_BACK_URL',
-      'default_url_id',
-    );
+    this.githubClientId = this.getSecret('GITHUB_CLIENT_ID');
+    this.githubClientSecret = this.getSecret('GITHUB_CLIENT_SECRET');
+    this.githubCallBackURL = this.getSecret('GITHUB_CALL_BACK_URL');
+    this.googleClientId = this.getSecret('GOOGLE_CLIENT_ID');
+    this.googleClientSecret = this.getSecret('GOOGLE_CLIENT_SECRET');
+    this.googleCallBackURL = this.getSecret('GOOGLE_CALL_BACK_URL');
   }
 
-  private getSecret(key: string, defaultValue: string): string {
-    const secret = this.configService.get<string>(key, defaultValue);
+  private getSecret(key: string): string {
+    const secret = this.configService.get<string>(key);
 
     if (!secret) {
-      if (this.configService.get<string>('ENV') === 'TESTING') {
-        return defaultValue;
-      }
       throw new Error(`Missing environment variable: ${key}`);
     }
 

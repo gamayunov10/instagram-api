@@ -25,6 +25,9 @@ export class RecaptchaV2Guard implements CanActivate {
       },
     );
     const data: ReCaptchaResponse = await response.json();
+    console.log(`response, ${response}`);
+    console.log(`body, ${response.headers}`);
+    console.log(`data, ${data}`);
 
     if (!data.success) {
       throw new ForbiddenException();

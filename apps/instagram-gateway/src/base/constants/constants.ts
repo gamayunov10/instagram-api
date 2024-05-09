@@ -24,8 +24,9 @@ export const githubEmailNotAvailable = `An error occurred while trying to access
 export const usernameNotUnique =
   'User with this username is already registered';
 export const usernameIsIncorrect = 'The username must contain a-zA-Z0-9_-';
-export const firstNameIsIncorrect = 'The firstName must contain a-z A-Z';
-export const lastNameIsIncorrect = 'The lastName must contain a-z A-Z';
+export const firstNameIsIncorrect =
+  'The firstName must contain A-Z a-z А-Я а-я';
+export const lastNameIsIncorrect = 'The lastName must contain A-Z a-z А-Я а-я';
 export const minChar1 = 'Minimum number of characters 1';
 export const minChar6 = 'Minimum number of characters 6';
 export const maxChar20 = 'Maximum number of characters 20';

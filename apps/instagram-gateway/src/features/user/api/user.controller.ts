@@ -28,6 +28,8 @@ import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decor
 import { ApiErrorMessages } from '../../../base/schemas/api-error-messages.schema';
 import { UserProfileOutputModel } from '../models/output/user.profile.output.model';
 import { UserImageInputModel } from '../models/input/user.image.input.model';
+import { invalidUserPhoto } from '../../../base/constants/constants';
+import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
 
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
 import { GetProfileInfoCommand } from './application/use-cases/get-profile-info-use.case';
@@ -54,6 +56,7 @@ export class UserController {
     false,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(200)
   async getProfileInfo(@UserIdFromGuard() userId: string): Promise<void> {
@@ -97,6 +100,7 @@ export class UserController {
     false,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(204)
@@ -105,12 +109,14 @@ export class UserController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 10000000 }),
+          new MaxFileSizeValidator({ maxSize: 10485760 }),
           new FileTypeValidator({ fileType: 'image/jpeg|image/png' }),
         ],
         fileIsRequired: true,
-        exceptionFactory: (e) => {
-          throw new BadRequestException([{ message: e, field: 'file' }]);
+        exceptionFactory: (): void => {
+          throw new BadRequestException([
+            { message: invalidUserPhoto, field: 'file' },
+          ]);
         },
       }),
     )
@@ -152,6 +158,7 @@ export class UserController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Settings are not saved',
   })
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async fillOutProfile(
@@ -184,6 +191,7 @@ export class UserController {
     false,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async deleteUserPhoto(@UserIdFromGuard() userId: string): Promise<void> {
