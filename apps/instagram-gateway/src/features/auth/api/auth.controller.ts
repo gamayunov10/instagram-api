@@ -19,6 +19,7 @@ import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { UserAuthInputModel } from '../models/input/user-auth.input.model';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -74,6 +75,7 @@ export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
   ) {}
@@ -175,7 +177,7 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .json({ accessToken: result.accessToken });
+      .redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
   }
 
   @Get('github/login')
@@ -218,7 +220,7 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .json({ accessToken: result.accessToken });
+      .redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
   }
 
   @Post('refresh-token')
