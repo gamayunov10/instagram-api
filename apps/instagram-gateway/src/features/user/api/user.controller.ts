@@ -184,7 +184,7 @@ export class UserController {
     204,
     'User photo has been deleted',
     false,
-    'If JWT access token is incorrect',
+    '',
     ApiErrorMessages,
     true,
     false,
