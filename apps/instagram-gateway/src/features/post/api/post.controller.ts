@@ -5,8 +5,10 @@ import {
   FileTypeValidator,
   HttpCode,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
+  Put,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -26,10 +28,12 @@ import { PostInputModel } from '../models/input/post.input.model';
 import { PostImageInputModel } from '../models/input/post.image.input.model';
 import { PostViewModel } from '../models/output/post.view.model';
 import { PostImageViewModel } from '../models/output/post-images.view.model';
+import { UpdatePostModel } from '../models/input/update-post.model';
 
 import { UploadPostPhotoCommand } from './application/use-cases/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/create-post.use-case';
 import { PostViewCommand } from './application/use-cases/public-post-view.use-case';
+import { UpdatePostCommand } from './application/use-cases/update-post.use-case';
 
 @Controller('post')
 @ApiTags('Post')
@@ -138,5 +142,35 @@ export class PostController {
     );
 
     return postView.response;
+  }
+
+  @Put(':id')
+  @SwaggerOptions(
+    'Update post',
+    true,
+    false,
+    204,
+    'No Content',
+    false,
+    ` If input model has incorrect values`,
+    ApiErrorMessages,
+    true,
+    true,
+    true,
+    false,
+  )
+  @UseGuards(JwtBearerGuard)
+  @HttpCode(201)
+  async updatePost(
+    @Param('id') postId: string,
+    @UserIdFromGuard() userId: string,
+    @Body() updatePostModel: UpdatePostModel,
+  ) {
+    const result = await this.commandBus.execute(
+      new UpdatePostCommand(updatePostModel, userId, postId),
+    );
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
   }
 }

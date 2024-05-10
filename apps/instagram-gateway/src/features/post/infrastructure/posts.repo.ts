@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { PostInputModel } from '../models/input/post.input.model';
+import { UpdatePostModel } from '../models/input/update-post.model';
 
 @Injectable()
 export class PostsRepository {
@@ -46,6 +47,30 @@ export class PostsRepository {
       return false;
     } finally {
       await this.prismaClient.$disconnect();
+    }
+  }
+
+  async updatePost(
+    updatePostModel: UpdatePostModel,
+    userId: string,
+    postId: string,
+  ): Promise<true | null> {
+    try {
+      const result = await this.prismaClient.post.update({
+        where: { id: postId, authorId: userId },
+        data: {
+          description: updatePostModel.description,
+        },
+      });
+      if (!result) {
+        return null;
+      }
+      return true;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return null;
     }
   }
 }
