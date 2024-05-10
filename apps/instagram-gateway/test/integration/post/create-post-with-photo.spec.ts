@@ -48,6 +48,16 @@ describe('PostController: /post/photo; /post;', (): void => {
         .attach('file', imagePath)
         .expect(401);
     });
+
+    it(`should not Upload post photo if token has incorrect type`, async (): Promise<void> => {
+      const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
+      await agent
+        .post(post_photo_url)
+        .auth(user.accessToken + imagePath, { type: 'bearer' })
+        .attach('file', imagePath)
+        .expect(401);
+    });
   });
 
   describe('positive', () => {
