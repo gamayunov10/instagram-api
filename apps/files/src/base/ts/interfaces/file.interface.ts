@@ -4,7 +4,7 @@ export interface IFile {
   _id?: string;
   userId: string;
   fileType: FileType;
-  originalName: string;
+  originalname: string;
   format: string;
   url: string;
   fileId: string;
