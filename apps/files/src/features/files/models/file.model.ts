@@ -13,7 +13,7 @@ export class File extends Document implements IFile {
   fileType: FileType;
 
   @Prop({ required: true })
-  originalName: string;
+  originalname: string;
 
   @Prop({ required: true })
   format: string;
