@@ -58,6 +58,16 @@ describe('PostController: /post/photo; /post;', (): void => {
         .attach('file', imagePath)
         .expect(401);
     });
+
+    it(`should not Upload post photo if file is missing`, async (): Promise<void> => {
+      // const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
+      await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        // .attach('file', imagePath) // missing
+        .expect(400);
+    });
   });
 
   describe('positive', () => {
