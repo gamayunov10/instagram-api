@@ -16,7 +16,6 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { UserIdFromGuard } from '../../auth/decorators/user-id-from-guard.guard.decorator';
-import { UploadFileResponse } from '../../../../../../libs/common/base/user/upload-file-response';
 import { ResultCode } from '../../../base/enums/result-code.enum';
 import { exceptionHandler } from '../../../infrastructure/exception-filters/exception-handler';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -81,7 +80,7 @@ export class PostController {
         ],
         fileIsRequired: true,
         exceptionFactory: (e) => {
-          throw new BadRequestException([{ message: e, field: 'photo' }]);
+          throw new BadRequestException([{ message: e, field: 'file' }]);
         },
       }),
     )
@@ -124,7 +123,7 @@ export class PostController {
   async createPost(
     @UserIdFromGuard() userId: string,
     @Body() postInputModel: PostInputModel,
-  ): Promise<UploadFileResponse | void> {
+  ): Promise<PostViewModel | void> {
     const result = await this.commandBus.execute(
       new CreatePostCommand(postInputModel, userId),
     );
