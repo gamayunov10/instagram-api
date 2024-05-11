@@ -1,12 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 import { maxChar500 } from '../../../../base/constants/constants';
 
-import { PostInputModel } from './post.input.model';
-
-export class UpdatePostModel extends PartialType(PostInputModel) {
+export class UpdatePostModel {
   @ApiProperty({
     type: String,
     minLength: 0,

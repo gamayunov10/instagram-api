@@ -159,7 +159,7 @@ export class PostController {
     false,
   )
   @UseGuards(JwtBearerGuard)
-  @HttpCode(201)
+  @HttpCode(204)
   async updatePost(
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
