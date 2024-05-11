@@ -8,6 +8,7 @@ import {
   lorem20,
   lorem30,
   lorem50,
+  password,
   userEmail1,
   userEmail2,
   username1,
@@ -47,7 +48,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: '',
-          password: 'password123',
+          password: password,
           email: '11leto111@gmail.com',
         })
         .expect(400);
@@ -59,8 +60,8 @@ describe('AuthController: /registration', () => {
       const response = await agent
         .post(registration_url)
         .send({
-          username: 'qw', //minLength: 3
-          password: 'password123',
+          username: 'qw', // minLength: 3
+          password: password,
           email: '11leto111@gmail.com',
         })
         .expect(400);
@@ -72,8 +73,8 @@ describe('AuthController: /registration', () => {
       const response = await agent
         .post(registration_url)
         .send({
-          username: lorem50, //maxLength: 30
-          password: 'password123',
+          username: lorem50, // maxLength: 30
+          password: password,
           email: '11leto111@gmail.com',
         })
         .expect(400);
@@ -85,8 +86,8 @@ describe('AuthController: /registration', () => {
       const response = await agent
         .post(registration_url)
         .send({
-          username: undefined, //undefined
-          password: 'password123',
+          username: undefined, // undefined
+          password: password,
           email: '11leto111@gmail.com',
         })
         .expect(400);
@@ -98,8 +99,8 @@ describe('AuthController: /registration', () => {
       const response = await agent
         .post(registration_url)
         .send({
-          userName: lorem10, //key incorrect
-          password: 'password123',
+          userName: lorem10,
+          password: password,
           email: '11leto111@gmail.com',
         })
         .expect(400);
@@ -125,7 +126,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: '12345', //minLength: 6
+          password: '12345', // minLength: 6
           email: 'some@gmail.com',
         })
         .expect(400);
@@ -138,7 +139,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem30, //maxLength: 20
+          password: lorem30, // maxLength: 20
           email: 'some@gmail.com',
         })
         .expect(400);
@@ -151,7 +152,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: undefined, //undefined
+          password: undefined, // undefined
           email: 'some@gmail.com',
         })
         .expect(400);
@@ -159,12 +160,90 @@ describe('AuthController: /registration', () => {
       expectErrorMessages(response, 'password');
     });
 
-    it(`should return 400 when trying to Register in the system with incorrect object key for body (paSSword)`, async () => {
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
       const response = await agent
         .post(registration_url)
         .send({
           username: lorem10,
-          paSSword: lorem20, //key incorrect
+          password: 'qwe123',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: 'QWE123',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: '123456',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: 'urururr',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: 'KDKDKDKDKD',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: '***@@@!!!',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect field (password)`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          Password: lorem20,
           email: 'some@gmail.com',
         })
         .expect(400);
@@ -177,7 +256,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           email: '',
         })
         .expect(400);
@@ -190,7 +269,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           email: 'some@gmail',
         })
         .expect(400);
@@ -203,7 +282,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           email: 'some-gmail.com',
         })
         .expect(400);
@@ -216,7 +295,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           email: 'l.gmail',
         })
         .expect(400);
@@ -229,7 +308,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           email: undefined,
         })
         .expect(400);
@@ -242,7 +321,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: lorem10,
-          password: lorem20,
+          password: password,
           eMail: userEmail1,
         })
         .expect(400);
@@ -254,7 +333,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: username1,
-          password: lorem20,
+          password: password,
           email: userEmail1,
         })
         .expect(204);
@@ -263,7 +342,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: username2,
-          password: lorem20,
+          password: password,
           email: userEmail1,
         })
         .expect(400);
@@ -274,7 +353,7 @@ describe('AuthController: /registration', () => {
         .post(registration_url)
         .send({
           username: username1,
-          password: lorem20,
+          password: password,
           email: userEmail2,
         })
         .expect(400);
