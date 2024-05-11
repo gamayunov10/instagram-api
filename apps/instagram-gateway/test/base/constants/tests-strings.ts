@@ -1,3 +1,4 @@
+export const password = 'Abc123!';
 export const lorem10 = 'string_123';
 export const lorem15 = 'string_12345678';
 export const lorem20 = 'string_12345678efgtr';
@@ -29,7 +30,7 @@ export const username6 = 'username6';
 export const username7 = 'username7';
 
 // password
-export const userPassword = 'userPassword1*';
+export const userPassword = 'userPassword1#%*';
 
 //refreshToken
 export const invalidRefreshToken = 'invalidRefreshToken';

@@ -147,6 +147,11 @@ spec:
                  secretKeyRef:
                    name: fs-production-config-secret
                    key: RECAPTCHA_SECRET_KEY
+             - name: CRYPTO_SALT
+               valueFrom:
+                 secretKeyRef:
+                   name: fs-production-config-secret
+                   key: CRYPTO_SALT
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

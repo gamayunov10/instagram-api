@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
 import { PostInputModel } from '../../../models/input/post.input.model';
@@ -25,7 +24,6 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   private readonly logger = new Logger(CreatePostUseCase.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly postsRepo: PostsRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}

@@ -34,13 +34,17 @@ export class UserAuthInputModel {
     type: String,
     minLength: 6,
     maxLength: 20,
-    pattern: '^[0-9A-Za-z!"#$%&\'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]*$',
+    pattern:
+      '(?=.*[a-z])(?=.*[A-Z])(?=.*[!\\"#$%&\'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~])',
   })
   @MinLength(6, { message: minChar6 })
   @MaxLength(20, { message: maxChar20 })
-  @Matches(/^[0-9A-Za-z!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]*$/, {
-    message: passwordIsIncorrect,
-  })
+  @Matches(
+    /(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/,
+    {
+      message: passwordIsIncorrect,
+    },
+  )
   @IsNotEmpty()
   password: string;
 

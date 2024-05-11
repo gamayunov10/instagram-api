@@ -147,6 +147,11 @@ spec:
                  secretKeyRef:
                    name: instagram-gateway-production-config-secret
                    key: APP_PORT
+             - name: CRYPTO_SALT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: CRYPTO_SALT
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
