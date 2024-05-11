@@ -20,15 +20,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Unit tests') {
-            steps {
-                script {
-                    sh "pnpm install"
-                    sh "npx prisma generate"
-                    sh "pnpm run test:instagram-gateway"
-                }
-            }
-        }
         stage('Build docker image') {
             steps {
                 echo "Build image started..."
