@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Logger } from '@nestjs/common';
 
 import { PostsRepository } from '../../../infrastructure/posts.repo';
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
