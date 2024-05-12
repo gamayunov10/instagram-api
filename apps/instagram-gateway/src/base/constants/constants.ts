@@ -15,7 +15,7 @@ export const emailOrPasswordField = 'email or password';
 
 // Validation
 export const userNotFound = 'User not found';
-export const postNotFound = 'User not found';
+export const postNotFound = 'Post not found';
 export const postNotSaved = 'Post has not been saved';
 export const deviceNotFound = 'Device not found';
 export const userNotFoundOrConfirmed =
