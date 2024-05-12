@@ -168,6 +168,7 @@ export class PostController {
     const result = await this.commandBus.execute(
       new UpdatePostCommand(updatePostModel, userId, postId),
     );
+
     if (result.code !== ResultCode.Success) {
       return exceptionHandler(result.code, result.message, result.field);
     }

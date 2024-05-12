@@ -62,15 +62,14 @@ export class PostsRepository {
           description: updatePostModel.description,
         },
       });
-      if (!result) {
-        return null;
-      }
-      return true;
+
+      return !!result;
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
-      return null;
+
+      return false;
     }
   }
 }

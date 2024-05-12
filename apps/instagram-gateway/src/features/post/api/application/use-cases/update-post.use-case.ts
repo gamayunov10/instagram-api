@@ -23,8 +23,6 @@ export class UpdatePostCommand {
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
-  private readonly logger = new Logger(UpdatePostUseCase.name);
-
   constructor(
     private readonly postsRepo: PostsRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
@@ -53,17 +51,20 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         message: postNotFound,
       };
     }
+
     if (post.authorId !== userId) {
       return {
         data: false,
         code: ResultCode.Forbidden,
       };
     }
+
     const result: boolean = await this.postsRepo.updatePost(
       updatePostModel,
       userId,
       postId,
     );
+
     if (!result) {
       return {
         data: false,
@@ -72,6 +73,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         message: postNotFound,
       };
     }
+
     return {
       data: true,
       code: ResultCode.Success,
