@@ -13,7 +13,9 @@ import { UserCredentialsType } from '../../base/types/testing.type';
 import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
 
 export const post_photo_url = '/api/v1/post/photo/';
+
 export const post_with_photo_url = '/api/v1/post/';
+
 export const post_update_photo_url = '/api/v1/post/';
 
 describe('PostController: /post/:id, update post', (): void => {

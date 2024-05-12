@@ -54,7 +54,7 @@ export class PostsRepository {
     updatePostModel: UpdatePostModel,
     userId: string,
     postId: string,
-  ): Promise<true | null> {
+  ): Promise<boolean> {
     try {
       const result = await this.prismaClient.post.update({
         where: { id: postId, authorId: userId },

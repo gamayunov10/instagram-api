@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
 import { PostsRepository } from '../../../infrastructure/posts.repo';
@@ -27,7 +26,6 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   private readonly logger = new Logger(UpdatePostUseCase.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly postsRepo: PostsRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
@@ -61,7 +59,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         code: ResultCode.Forbidden,
       };
     }
-    const result: true | null = await this.postsRepo.updatePost(
+    const result: boolean = await this.postsRepo.updatePost(
       updatePostModel,
       userId,
       postId,
