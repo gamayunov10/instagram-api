@@ -63,6 +63,7 @@ describe('PostController: /post/:id, update post', (): void => {
           images: [photoId.body.imageId],
         })
         .expect(201);
+
       post = result.body;
     });
 
@@ -142,7 +143,7 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`update post, status 204 `, async (): Promise<void> => {
       await agent
-        .put(`${post_with_photo_url}${123}`)
+        .put(`${post_with_photo_url}${post.id}`)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
           description: 'update post, status 204',
