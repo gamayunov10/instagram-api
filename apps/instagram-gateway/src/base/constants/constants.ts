@@ -7,12 +7,15 @@ export const emailField = 'email';
 export const usernameField = 'username';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
+export const postIdField = 'postId';
+
 export const deviceIDField = 'deviceId';
 export const imagesField = 'images';
 export const emailOrPasswordField = 'email or password';
 
 // Validation
 export const userNotFound = 'User not found';
+export const postNotFound = 'Post not found';
 export const postNotSaved = 'Post has not been saved';
 export const deviceNotFound = 'Device not found';
 export const userNotFoundOrConfirmed =

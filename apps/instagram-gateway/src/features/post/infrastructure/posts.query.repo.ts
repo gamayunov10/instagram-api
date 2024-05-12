@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
+import { PostViewModel } from '../models/output/post.view.model';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -13,7 +14,7 @@ export class PostsQueryRepository {
     private readonly configService: ConfigService,
   ) {}
 
-  async findPostById(id: string) {
+  async findPostById(id: string): Promise<PostViewModel | null> {
     try {
       const post = await this.prismaClient.post.findUnique({
         where: { id },
@@ -30,7 +31,7 @@ export class PostsQueryRepository {
     }
   }
 
-  private async postMapper(data) {
+  private async postMapper(data): Promise<PostViewModel> {
     return {
       id: data.id,
       description: data.description,
