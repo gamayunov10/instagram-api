@@ -27,7 +27,7 @@ export function AgePolicy(validationOptions?: ValidationOptions) {
         },
 
         defaultMessage: (): string =>
-          `A user under 13 cannot create a profile.`,
+          `A user under 13 cannot create a profile. Privacy Policy`,
       },
     });
   };
