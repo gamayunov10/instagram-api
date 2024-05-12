@@ -16,8 +16,6 @@ export const post_photo_url = '/api/v1/post/photo/';
 
 export const post_with_photo_url = '/api/v1/post/';
 
-export const post_update_photo_url = '/api/v1/post/';
-
 describe('PostController: /post/:id, update post', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
@@ -70,7 +68,7 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`should not update post if bearer token is incorrect`, async (): Promise<void> => {
       await agent
-        .put(`${post_update_photo_url}${post.id}`)
+        .put(`${post_with_photo_url}${post.id}`)
         .auth('incorrect-accessToken', { type: 'bearer' }) //accessToken incorrect
         .send({
           description: 'a',
@@ -80,7 +78,7 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`should not update post if postId is incorrect`, async (): Promise<void> => {
       await agent
-        .put(`${post_update_photo_url}${123}`) //postId incorrect
+        .put(`${post_with_photo_url}${123}`) //postId incorrect
         .auth(user.accessToken, { type: 'bearer' })
         .send({
           description: 'a',
@@ -90,10 +88,10 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`should not update post if inputModel is incorrect`, async (): Promise<void> => {
       await agent
-        .put(`${post_update_photo_url}${post.id}`)
+        .put(`${post_with_photo_url}${post.id}`)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: 1, //incorrect
+          description: 1, // incorrect
         })
         .expect(400);
     });
@@ -101,8 +99,8 @@ describe('PostController: /post/:id, update post', (): void => {
     it(`should not update, the user is trying to change a post that belongs to another user
  `, async (): Promise<void> => {
       await agent
-        .put(`${post_update_photo_url}${post.id}`)
-        .auth(user2.accessToken, { type: 'bearer' }) //incorrect another user
+        .put(`${post_with_photo_url}${post.id}`)
+        .auth(user2.accessToken, { type: 'bearer' }) // incorrect another user
         .send({
           description: 'should not update',
         })
@@ -141,9 +139,10 @@ describe('PostController: /post/:id, update post', (): void => {
         .expect(201);
       post = result.body;
     });
+
     it(`update post, status 204 `, async (): Promise<void> => {
       await agent
-        .put(`${post_update_photo_url}${post.id}`)
+        .put(`${post_with_photo_url}${123}`)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
           description: 'update post, status 204',
