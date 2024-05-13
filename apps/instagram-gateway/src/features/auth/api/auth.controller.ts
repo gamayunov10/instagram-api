@@ -68,6 +68,7 @@ import { RegistrationEmailResendCommand } from './application/use-cases/registra
 import { PasswordUpdateCommand } from './application/use-cases/password/password-update.usecase';
 import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
+import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -164,11 +165,18 @@ export class AuthController {
   async googleRedirect(
     @Req() req: Request,
     @Res() res: Response,
+    @Headers() headers: IncomingMessage,
   ): Promise<void> {
     const user: Partial<User> = req.user;
 
     const result = await this.commandBus.execute(
       new CreateOAuthTokensCommand(user),
+    );
+
+    const userAgent = headers['user-agent'] || 'unknown';
+
+    await this.commandBus.execute(
+      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
     );
 
     (res as Response)
@@ -210,11 +218,18 @@ export class AuthController {
   async githubRedirect(
     @Req() req: Request,
     @Res() res: Response,
+    @Headers() headers: IncomingMessage,
   ): Promise<void> {
     const user: Partial<User> = req.user;
 
     const result = await this.commandBus.execute(
       new CreateOAuthTokensCommand(user),
+    );
+
+    const userAgent = headers['user-agent'] || 'unknown';
+
+    await this.commandBus.execute(
+      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
     );
 
     (res as Response)
