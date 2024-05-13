@@ -3,12 +3,14 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   HttpCode,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -28,11 +30,13 @@ import { PostImageInputModel } from '../models/input/post.image.input.model';
 import { PostViewModel } from '../models/output/post.view.model';
 import { PostImageViewModel } from '../models/output/post-images.view.model';
 import { UpdatePostModel } from '../models/input/update-post.model';
+import { PostQueryModel } from '../models/query/post.query.model';
 
 import { UploadPostPhotoCommand } from './application/use-cases/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/create-post.use-case';
 import { PostViewCommand } from './application/use-cases/public-post-view.use-case';
 import { UpdatePostCommand } from './application/use-cases/update-post.use-case';
+import { PostsGetCommand } from './application/use-cases/posts-get-use.case';
 
 @Controller('post')
 @ApiTags('Post')
@@ -41,6 +45,33 @@ export class PostController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
+
+  @Get(':id')
+  @SwaggerOptions(
+    'View yours posts',
+    true,
+    false,
+    201,
+    '',
+    PostViewModel,
+    ``,
+    ApiErrorMessages,
+    true,
+    false,
+    false,
+    false,
+  )
+  @HttpCode(201)
+  async getPosts(
+    @Param('id') userId: string,
+    @Query() query: PostQueryModel,
+  ): Promise<PostViewModel | void> {
+    const post = await this.queryBus.execute(
+      new PostsGetCommand(userId, query),
+    );
+
+    return post.response;
+  }
 
   @Post('photo')
   @ApiConsumes('multipart/form-data')

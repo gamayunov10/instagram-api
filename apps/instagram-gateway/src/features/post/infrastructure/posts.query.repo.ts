@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { PostViewModel } from '../models/output/post.view.model';
+import { PostQueryModel } from '../models/query/post.query.model';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -22,6 +23,39 @@ export class PostsQueryRepository {
       });
 
       return await this.postMapper(post);
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async findPostsByQuery(userId: string, query: PostQueryModel) {
+    try {
+      return await this.prismaClient.post.findMany({
+        where: { authorId: userId },
+        orderBy: { [query.sortField]: query.sortDirection },
+        skip: Number(query.skip),
+        take: Number(query.take) || undefined,
+        include: { images: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async findPostByPostIdAndUserId(postId: string, userId: string) {
+    try {
+      return this.prismaClient.post.findUnique({
+        where: { id: postId, authorId: userId },
+        include: { images: true },
+      });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
