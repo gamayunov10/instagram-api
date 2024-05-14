@@ -5,7 +5,11 @@ import { PostSortFields } from '../../../../base/enums/sort/post/post.sort.field
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
 
 export class PostQueryModel {
-  @ApiProperty({ description: 'Sort direction', default: SortDirection.ASC })
+  @ApiProperty({
+    description: 'Sort direction',
+    default: SortDirection.ASC,
+    required: false,
+  })
   @IsIn([SortDirection.ASC, SortDirection.DESC])
   @IsOptional()
   sortDirection?: string = SortDirection.ASC;
@@ -13,6 +17,7 @@ export class PostQueryModel {
   @ApiProperty({
     description: 'Sort fields',
     default: PostSortFields.CREATED_AT,
+    required: false,
   })
   @IsIn([
     PostSortFields.CREATED_AT,
@@ -22,11 +27,11 @@ export class PostQueryModel {
   @IsOptional()
   sortField?: string = PostSortFields.CREATED_AT;
 
-  @ApiProperty({ default: 0 })
+  @ApiProperty({ default: 0, required: false })
   @IsOptional()
   skip?: number = 0;
 
-  @ApiProperty({ default: null })
+  @ApiProperty({ default: null, required: false })
   @IsOptional()
   take?: number = null;
 }
