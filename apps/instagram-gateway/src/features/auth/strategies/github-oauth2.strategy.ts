@@ -31,20 +31,20 @@ export class GithubOAuth2Strategy extends PassportStrategy(
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const data = {
-      userProviderId: profile.id,
-      displayName: profile.displayName,
-      email: profile?.emails[0]?.value,
-      provider: profile.provider,
-    };
-
-    if (!data.email) {
+    if (!Array.isArray(profile?.emails)) {
       return exceptionHandler(
         ResultCode.BadRequest,
         githubEmailNotAvailable,
         emailField,
       );
     }
+
+    const data = {
+      userProviderId: profile.id,
+      displayName: profile.displayName,
+      email: profile?.emails[0]?.value,
+      provider: profile.provider,
+    };
 
     const user = await this.authService.validateUser(data);
 

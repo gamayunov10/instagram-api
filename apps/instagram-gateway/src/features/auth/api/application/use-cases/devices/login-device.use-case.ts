@@ -21,7 +21,7 @@ export class LoginDeviceUseCase implements ICommandHandler<LoginDeviceCommand> {
   async execute(command: LoginDeviceCommand): Promise<string> {
     const decodedToken = await this.jwtService.decode(command.token);
 
-    return this.userDevicesRepository.createDevice(
+    return await this.userDevicesRepository.createDevice(
       decodedToken,
       command.ip,
       command.userAgent,
