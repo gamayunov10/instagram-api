@@ -49,14 +49,14 @@ export class PostController {
   @Get(':id')
   @SwaggerOptions(
     'View yours posts',
-    true,
+    false,
     false,
     201,
     '',
     PostViewModel,
     ``,
     ApiErrorMessages,
-    true,
+    false,
     false,
     false,
     false,
