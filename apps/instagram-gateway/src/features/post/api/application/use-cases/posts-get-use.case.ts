@@ -55,9 +55,7 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
       };
     }
 
-    const imageIds = posts.flatMap((post) =>
-      post.images.map((image) => image.imageId),
-    );
+    const imageIds = posts.flatMap((p) => p.images.map((i) => i.imageId));
 
     const result = await this.fileServiceAdapter.getFilesMeta(imageIds);
 
@@ -72,11 +70,9 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
 
     const response =
       result.code !== ResultCode.Success
-        ? await Promise.all(
-            posts.map(async (post) => await this.postMapper(post)),
-          )
+        ? await Promise.all(posts.map(async (p) => await this.postMapper(p)))
         : await Promise.all(
-            posts.map(async (post) => await this.postMapper(post, result.res)),
+            posts.map(async (p) => await this.postMapper(p, result.res)),
           );
 
     return {
@@ -86,16 +82,18 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
     };
   }
 
-  private async postMapper(post, postImages?: FileMetaResponse[]) {
+  private async postMapper(p, postImages?: FileMetaResponse[]) {
     let url = [];
 
     if (postImages) {
       url = postImages.map((i) => i.url);
     }
     return {
-      id: post.id,
-      description: post.description,
-      authorId: post.authorId,
+      id: p.id,
+      description: p.description,
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt,
+      authorId: p.authorId,
       imagesUrl: url,
     };
   }

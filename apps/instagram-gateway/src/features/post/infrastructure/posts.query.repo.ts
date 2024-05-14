@@ -38,7 +38,7 @@ export class PostsQueryRepository {
         where: { authorId: userId },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
-        take: Number(query.take) || undefined,
+        take: Number(query.take),
         include: { images: true },
       });
     } catch (e) {

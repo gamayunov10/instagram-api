@@ -1,4 +1,4 @@
-import { IsIn, IsOptional } from 'class-validator';
+import { IsIn, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PostSortFields } from '../../../../base/enums/sort/post/post.sort.fields.enum';
@@ -28,10 +28,12 @@ export class PostQueryModel {
   sortField?: string = PostSortFields.CREATED_AT;
 
   @ApiProperty({ default: 0, required: false })
+  @IsNumber()
   @IsOptional()
   skip?: number = 0;
 
-  @ApiProperty({ default: null, required: false })
+  @ApiProperty({ default: 10, required: false })
+  @IsNumber()
   @IsOptional()
-  take?: number = null;
+  take?: number = 10;
 }
