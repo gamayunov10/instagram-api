@@ -70,6 +70,8 @@ export class PostsQueryRepository {
       id: data.id,
       description: data.description,
       authorId: data.authorId,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
       images: data.images.map((image) => ({
         imageId: image.imageId,
       })),
