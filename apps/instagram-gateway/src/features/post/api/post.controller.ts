@@ -46,7 +46,7 @@ export class PostController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Get(':id')
+  @Get(':userId')
   @SwaggerOptions(
     'View yours posts',
     false,
@@ -63,7 +63,7 @@ export class PostController {
   )
   @HttpCode(201)
   async getPosts(
-    @Param('id') userId: string,
+    @Param('userId') userId: string,
     @Query() query: PostQueryModel,
   ): Promise<PostViewModel | void> {
     const post = await this.queryBus.execute(

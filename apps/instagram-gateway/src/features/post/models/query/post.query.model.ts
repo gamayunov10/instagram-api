@@ -6,7 +6,7 @@ import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
 
 export class PostQueryModel {
   @ApiProperty({
-    description: 'Sort direction',
+    description: `Sort direction: ${SortDirection.ASC}, ${SortDirection.DESC}`,
     default: SortDirection.ASC,
     required: false,
   })
@@ -15,7 +15,7 @@ export class PostQueryModel {
   sortDirection?: string = SortDirection.ASC;
 
   @ApiProperty({
-    description: 'Sort fields',
+    description: `Sort fields: ${PostSortFields.CREATED_AT}, ${PostSortFields.AUTHOR_ID}, ${PostSortFields.UPDATED_AT}`,
     default: PostSortFields.CREATED_AT,
     required: false,
   })
