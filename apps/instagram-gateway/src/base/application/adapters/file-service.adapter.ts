@@ -6,11 +6,12 @@ import { ConfigService } from '@nestjs/config';
 import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
 import { UploadFileResponse } from '../../../../../../libs/common/base/user/upload-file-response';
 import { ResultCode } from '../../enums/result-code.enum';
-import { fileField } from '../../constants/constants';
+import { fileField, noneField } from '../../constants/constants';
 import { NodeEnv } from '../../enums/node-env.enum';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
+  GET_FILES_META,
   UPLOAD_FILE,
 } from '../../../../../../libs/common/base/constants/service.constants';
 
@@ -22,6 +23,30 @@ export class FileServiceAdapter {
     @Inject('FILE_SERVICE') private readonly fileServiceClient: ClientProxy,
     private readonly configService: ConfigService,
   ) {}
+
+  async getFilesMeta(ids: string[]) {
+    try {
+      const responseOfService = this.fileServiceClient
+        .send({ cmd: GET_FILES_META }, { ids })
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(responseOfService);
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      this.logger.error(e);
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: 2454',
+      };
+    }
+  }
 
   async upload(payload: UploadFileRequest) {
     try {

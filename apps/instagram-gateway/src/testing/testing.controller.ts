@@ -1,4 +1,4 @@
-import { Controller, Delete, HttpCode, Logger } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
@@ -12,6 +12,9 @@ import {
 } from '../base/constants/constants';
 import { NodeEnv } from '../base/enums/node-env.enum';
 import { FileServiceAdapter } from '../base/application/adapters/file-service.adapter';
+import { ApiErrorMessages } from '../base/schemas/api-error-messages.schema';
+
+import { DeleteUsersInputModel } from './models/input/delete-users.input.model';
 
 @Controller('testing')
 @ApiTags('Testing')
@@ -79,6 +82,38 @@ export class TestingController {
         productionDbGuard,
         environmentField,
       );
+    }
+  }
+
+  @Delete('delete-users')
+  @SwaggerOptions(
+    'Delete testing users by email',
+    false,
+    false,
+    204,
+    'All users has been deleted',
+    false,
+    true,
+    ApiErrorMessages,
+    false,
+    false,
+    false,
+    false,
+  )
+  @HttpCode(204)
+  async deleteUsersByEmail(
+    @Body() deleteUsersInputModel: DeleteUsersInputModel,
+  ): Promise<void> {
+    try {
+      await this.prismaClient.$transaction(
+        deleteUsersInputModel.emails.map((email: string) =>
+          this.prismaClient.user.deleteMany({ where: { email } }),
+        ),
+      );
+
+      this.logger.log('All users has been deleted.');
+    } catch (e) {
+      this.logger.error(`Error deleting users: ${e.message}`);
     }
   }
 }

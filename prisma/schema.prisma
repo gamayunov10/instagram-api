@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -33,8 +33,8 @@ model User {
   device               DeviceAuthSession[]
   providers            UserProviderInfo[]
 
-@@unique([username, email])
-@@map("user")
+  @@unique([username, email])
+  @@map("user")
 }
 
 model UserProviderInfo {
@@ -44,7 +44,7 @@ model UserProviderInfo {
   displayName    String? @map("display_name")
   email          String?
   city           String?
-  user           User?   @relation(fields: [userId], references: [id])
+  user           User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String?
 
   @@map("user_provider_info")
@@ -57,7 +57,7 @@ model DeviceAuthSession {
   title          String
   lastActiveDate DateTime @map("last_active_date")
   expirationDate DateTime @map("expiration_date")
-  User           User?    @relation(fields: [userId], references: [id])
+  User           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String?  @map("user_id")
 
   @@map("device_auth_session")
@@ -67,7 +67,7 @@ model ConfirmationCode {
   id               String   @id @default(uuid()) @map("confirmation_code_id")
   confirmationCode String   @unique @map("confirmation_code")
   expirationDate   DateTime @map("expiration_date")
-  user             User     @relation(fields: [userId], references: [id])
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String   @unique @map("user_id")
 
   @@map("confirmation_code")
@@ -78,20 +78,20 @@ model PasswordRecoveryCode {
   recoveryCode   String   @unique @map("recovery_code")
   createdAt      DateTime @default(now()) @map("created_at")
   expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '4 hours'")) @map("expiration_date")
-  user           User     @relation(fields: [userId], references: [id])
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String   @unique @map("user_id")
 
   @@map("password_recovery_code")
 }
 
 model Post {
-  id            String   @id @default(uuid())
-  description   String?
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  author        User?    @relation(fields: [authorId], references: [id])
-  authorId      String
-  images        PostImage[]
+  id          String      @id @default(uuid())
+  description String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  author      User?       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  images      PostImage[]
 
   @@map("post")
 }
@@ -99,7 +99,7 @@ model Post {
 model PostImage {
   id      String  @id @default(uuid())
   imageId String? @map("image_id")
-  post    Post    @relation(fields: [postId], references: [id])
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId  String  @map("post_id")
 
   @@map("post_image")
