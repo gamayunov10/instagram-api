@@ -17,6 +17,7 @@ import { PostViewUseCase } from './api/application/use-cases/public-post-view.us
 import { PostsQueryRepository } from './infrastructure/posts.query.repo';
 import { UpdatePostUseCase } from './api/application/use-cases/update-post.use-case';
 import { PostsGetUseCase } from './api/application/use-cases/posts-get-use.case';
+import { DeletePostUseCase } from './api/application/use-cases/delete-post.use-case';
 
 const useCases = [
   UploadPostPhotoUseCase,
@@ -24,6 +25,7 @@ const useCases = [
   PostViewUseCase,
   UpdatePostUseCase,
   PostsGetUseCase,
+  DeletePostUseCase,
 ];
 const services = [PrismaClient];
 const adapters = [FileServiceAdapter];

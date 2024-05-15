@@ -72,4 +72,25 @@ export class PostsRepository {
       return false;
     }
   }
+  async deletePost(userId: string, postId: string): Promise<boolean> {
+    try {
+      const result = await this.prismaClient.$transaction(async (prisma) => {
+        const deletePost = await prisma.post.update({
+          where: { id: postId, authorId: userId },
+          data: { deletedAt: new Date() },
+        });
+
+        return !!deletePost;
+      });
+      return result;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
 }
