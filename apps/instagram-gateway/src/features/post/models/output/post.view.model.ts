@@ -19,6 +19,16 @@ export class PostViewModel {
   authorId: string;
 
   @ApiProperty({
+    type: Date,
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    type: Date,
+  })
+  updatedAt: Date;
+
+  @ApiProperty({
     type: Array,
   })
   images: PostImageViewModel[];

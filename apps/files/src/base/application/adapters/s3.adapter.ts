@@ -29,6 +29,14 @@ export class S3Adapter {
     });
   }
 
+  getFileUrl(url: string) {
+    const base = this.configService.get<string>(
+      'S3_BUCKET_NAME_PLUS_S3_DOMAIN',
+    );
+
+    return `${base}${url}`;
+  }
+
   async saveUserPhoto({
     userId,
     buffer,
