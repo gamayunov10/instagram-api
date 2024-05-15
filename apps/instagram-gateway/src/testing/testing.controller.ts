@@ -12,6 +12,7 @@ import {
 } from '../base/constants/constants';
 import { NodeEnv } from '../base/enums/node-env.enum';
 import { FileServiceAdapter } from '../base/application/adapters/file-service.adapter';
+import { ApiErrorMessages } from '../base/schemas/api-error-messages.schema';
 
 import { DeleteUsersInputModel } from './models/input/delete-users.input.model';
 
@@ -92,8 +93,8 @@ export class TestingController {
     204,
     'All users has been deleted',
     false,
-    false,
-    false,
+    true,
+    ApiErrorMessages,
     false,
     false,
     false,
