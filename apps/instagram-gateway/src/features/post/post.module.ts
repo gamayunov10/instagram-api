@@ -16,12 +16,14 @@ import { PostsRepository } from './infrastructure/posts.repo';
 import { PostViewUseCase } from './api/application/use-cases/public-post-view.use-case';
 import { PostsQueryRepository } from './infrastructure/posts.query.repo';
 import { UpdatePostUseCase } from './api/application/use-cases/update-post.use-case';
+import { PostsGetUseCase } from './api/application/use-cases/posts-get-use.case';
 
 const useCases = [
   UploadPostPhotoUseCase,
   CreatePostUseCase,
   PostViewUseCase,
   UpdatePostUseCase,
+  PostsGetUseCase,
 ];
 const services = [PrismaClient];
 const adapters = [FileServiceAdapter];

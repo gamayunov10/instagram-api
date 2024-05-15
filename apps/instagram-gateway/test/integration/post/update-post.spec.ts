@@ -12,9 +12,10 @@ import {
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
 
-export const post_photo_url = '/api/v1/post/photo/';
-
-export const post_with_photo_url = '/api/v1/post/';
+import {
+  post_photo_url,
+  post_with_photo_url,
+} from './create-post-with-photo.spec';
 
 describe('PostController: /post/:id, update post', (): void => {
   let app: INestApplication;
@@ -38,6 +39,7 @@ describe('PostController: /post/:id, update post', (): void => {
     let user2: UserCredentialsType;
     let photoId;
     let post: PostViewModel;
+
     it(`should clear database`, async (): Promise<void> => {
       await agent.delete('/api/v1/testing/all-data');
     });
@@ -49,6 +51,7 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`should create post`, async (): Promise<void> => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
       photoId = await agent
         .post(post_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
@@ -118,12 +121,13 @@ describe('PostController: /post/:id, update post', (): void => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should create 2 users`, async (): Promise<void> => {
+    it(`should create 1 user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
     });
 
     it(`should create post`, async (): Promise<void> => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
       photoId = await agent
         .post(post_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
@@ -138,6 +142,7 @@ describe('PostController: /post/:id, update post', (): void => {
           images: [photoId.body.imageId],
         })
         .expect(201);
+
       post = result.body;
     });
 
