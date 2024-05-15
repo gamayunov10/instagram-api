@@ -32,8 +32,8 @@ export class PostQueryModel {
   @IsOptional()
   skip?: number = 0;
 
-  @ApiProperty({ default: 10, required: false })
+  @ApiProperty({ default: 8, required: false })
   @IsNumber()
   @IsOptional()
-  take?: number = 10;
+  take?: number = 8;
 }
