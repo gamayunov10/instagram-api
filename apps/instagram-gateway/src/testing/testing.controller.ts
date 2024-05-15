@@ -16,8 +16,6 @@ import { ApiErrorMessages } from '../base/schemas/api-error-messages.schema';
 
 import { DeleteUsersInputModel } from './models/input/delete-users.input.model';
 
-import { DeleteUsersInputModel } from './models/input/delete-users.input.model';
-
 @Controller('testing')
 @ApiTags('Testing')
 export class TestingController {
