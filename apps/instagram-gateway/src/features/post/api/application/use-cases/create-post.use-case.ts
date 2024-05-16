@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Logger } from '@nestjs/common';
 
 import { PostInputModel } from '../../../models/input/post.input.model';
 import { PostsRepository } from '../../../infrastructure/posts.repo';
@@ -21,8 +20,6 @@ export class CreatePostCommand {
 
 @CommandHandler(CreatePostCommand)
 export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
-  private readonly logger = new Logger(CreatePostUseCase.name);
-
   constructor(
     private readonly postsRepo: PostsRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
@@ -50,6 +47,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
         message: postNotSaved,
       };
     }
+
     return {
       data: true,
       code: ResultCode.Success,

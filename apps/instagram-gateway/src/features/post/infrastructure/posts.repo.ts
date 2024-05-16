@@ -17,7 +17,7 @@ export class PostsRepository {
 
   async createPost(postInputModel: PostInputModel, userId: string) {
     try {
-      const postId = await this.prismaClient.$transaction(async (prisma) => {
+      return await this.prismaClient.$transaction(async (prisma) => {
         const uniqueImages = Array.from(new Set(postInputModel.images));
 
         const images = uniqueImages.map((image) => ({
@@ -38,8 +38,6 @@ export class PostsRepository {
 
         return createdPost.id;
       });
-
-      return postId;
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
