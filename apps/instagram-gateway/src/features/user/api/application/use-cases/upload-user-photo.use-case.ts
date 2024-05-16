@@ -46,7 +46,7 @@ export class UploadUserPhotoUseCase
 
     const metadata = await sharp(data.buffer).metadata();
 
-    const resultValidate = this.validateImage(metadata);
+    const resultValidate = await this.validateImage(metadata);
 
     if (!resultValidate.data) {
       return {
@@ -57,7 +57,7 @@ export class UploadUserPhotoUseCase
       };
     }
 
-    const payload = this.getPayload(data, metadata);
+    const payload = await this.getPayload(data, metadata);
     const uploadResult = await this.fileServiceAdapter.upload(payload);
 
     if (!uploadResult.data) {
@@ -89,7 +89,7 @@ export class UploadUserPhotoUseCase
     };
   }
 
-  private validateImage(metadata: sharp.Metadata) {
+  private async validateImage(metadata: sharp.Metadata) {
     const availableFileTypes = ['png', 'jpeg'];
 
     if (!availableFileTypes.includes(metadata.format!)) {
@@ -107,13 +107,13 @@ export class UploadUserPhotoUseCase
     };
   }
 
-  private getPayload(
+  private async getPayload(
     data: UserImageInputModel,
     metadata: sharp.Metadata,
-  ): UploadFileRequest {
+  ): Promise<UploadFileRequest> {
     return {
       userId: data.userId,
-      originalName: data.originalName,
+      originalname: data.originalname,
       buffer: data.buffer,
       format: metadata.format,
       fileType: FileType.Avatar,

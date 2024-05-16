@@ -5,6 +5,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
+  GET_FILES_META,
   UPLOAD_FILE,
 } from '../../../../../../libs/common/base/constants/service.constants';
 import { UploadFileRequest } from '../../../../../../libs/common/base/user/upload-file-request';
@@ -14,13 +15,20 @@ import { FileRepository } from '../infrastructure/file.repo';
 
 import { UploadFileCommand } from './applications/use-cases/upload-file.use-case';
 import { DeleteUserPhotoCommand } from './applications/use-cases/delete-file.use-case';
+import { FilesService } from './files.service';
 
 @Controller('files')
 export class FilesController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly fileRepository: FileRepository,
+    private readonly filesService: FilesService,
   ) {}
+
+  @MessagePattern({ cmd: GET_FILES_META })
+  async getFilesInfo({ ids }) {
+    return this.filesService.getFilesMeta(ids);
+  }
 
   @MessagePattern({ cmd: UPLOAD_FILE })
   async uploadFile(payload: UploadFileRequest): Promise<UploadFileResponse> {

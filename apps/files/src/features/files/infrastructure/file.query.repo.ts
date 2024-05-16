@@ -13,4 +13,8 @@ export class FileQueryRepository {
   async findFileById(id: Types.ObjectId) {
     return this.fileModel.findById(id);
   }
+
+  async findFilesByIds(ids: string[]) {
+    return this.fileModel.find({ _id: { $in: ids } });
+  }
 }

@@ -33,8 +33,8 @@ import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-aut
 
 import { FillOutProfileCommand } from './application/use-cases/fill-out-profile.use-case';
 import { GetProfileInfoCommand } from './application/use-cases/get-profile-info-use.case';
-import { UploadUserPhotoCommand } from './application/use-cases/upload-user-photo.use-case';
 import { DeleteUserPhotoCommand } from './application/use-cases/delete-user-photo.use-case';
+import { UploadUserPhotoCommand } from './application/use-cases/upload-user-photo.use-case';
 
 @Controller('user')
 @ApiTags('User')
@@ -124,7 +124,7 @@ export class UserController {
   ): Promise<void> {
     const data: UserImageInputModel = {
       userId,
-      originalName: file.originalname,
+      originalname: file.originalname,
       buffer: file.buffer,
     };
 
@@ -184,7 +184,7 @@ export class UserController {
     204,
     'User photo has been deleted',
     false,
-    'If JWT access token is incorrect',
+    '',
     ApiErrorMessages,
     true,
     false,

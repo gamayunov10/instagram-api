@@ -1,5 +1,5 @@
 export class UserImageInputModel {
   userId: string;
-  originalName: string;
+  originalname: string;
   buffer: Buffer;
 }

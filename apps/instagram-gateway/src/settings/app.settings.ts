@@ -97,7 +97,6 @@ export class AppSettings {
       'http://localhost:3000',
       'http://localhost:5000',
       'https://inctagram.org',
-      'https://instagram-api-dw99.onrender.com',
     ];
 
     app.enableCors({

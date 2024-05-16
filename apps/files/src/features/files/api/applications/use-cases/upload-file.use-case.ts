@@ -24,7 +24,7 @@ export class UploadFileUseCase implements ICommandHandler<UploadFileCommand> {
     const fileModel: IFile = {
       userId: payload.userId,
       fileType: payload.fileType,
-      originalName: payload.originalName,
+      originalname: payload.originalname,
       format: payload.format,
       url: uploadFileResult.url,
       fileId: uploadFileResult.fileId,
