@@ -103,7 +103,7 @@ describe('PostController: /post/:id, delete post', (): void => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should create 2 users`, async (): Promise<void> => {
+    it(`should create user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
     });
 
@@ -128,7 +128,7 @@ describe('PostController: /post/:id, delete post', (): void => {
       post = result.body;
     });
 
-    it(`delete post, status 204 `, async (): Promise<void> => {
+    it(`deleting a post returns 204, and trying to update the deleted post returns 404`, async (): Promise<void> => {
       await agent
         .delete(`${post_with_photo_url}${post.id}`)
         .auth(user.accessToken, { type: 'bearer' })
