@@ -62,6 +62,18 @@ describe('AuthController: /login', () => {
       expectErrorMessages(response, 'email');
     });
 
+    it(`should return 400 when trying to Log in the system with incorrect email`, async () => {
+      const response = await agent
+        .post(login_url)
+        .send({
+          password: 'password123',
+          email: 'mail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'email');
+    });
+
     it(`should return 400 when trying to Log in the system with incorrect object key for body (email)`, async () => {
       const response = await agent
         .post(login_url)
