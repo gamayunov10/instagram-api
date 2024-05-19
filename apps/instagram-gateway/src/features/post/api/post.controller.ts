@@ -118,8 +118,10 @@ export class PostController {
           new FileTypeValidator({ fileType: 'image/jpeg|image/png' }),
         ],
         fileIsRequired: true,
-        exceptionFactory: (e) => {
-          throw new BadRequestException([{ message: e, field: 'file' }]);
+        exceptionFactory: () => {
+          throw new BadRequestException([
+            { message: invalidImageInput, field: 'file' },
+          ]);
         },
       }),
     )
