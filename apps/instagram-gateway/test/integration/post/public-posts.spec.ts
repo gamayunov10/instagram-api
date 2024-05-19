@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
-import * as path from 'path';
+import path from 'path';
 
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
@@ -11,16 +11,16 @@ import {
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
-import { expectPostsView } from '../../base/utils/post/expectPostsView';
+import { expectPublicPostsView } from '../../base/utils/post/expectPublicPostsView';
 
 import {
   post_photo_url,
   post_with_photo_url,
 } from './create-post-with-photo.spec';
 
-export const post_url = '/api/v1/post/';
+export const public_posts_url = '/api/v1/public-posts/';
 
-describe('PostController: /post/:id, update post', (): void => {
+describe('PublicPostController: /public-posts', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -73,84 +73,84 @@ describe('PostController: /post/:id, update post', (): void => {
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortDirection: 'ASC' }) // should be in lowercase
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortDirection: 'Asc' }) // should be in lowercase
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortDirection: 'DESC' }) // should be in lowercase
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortDirection: 'Desc' }) // should be in lowercase
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'createdat' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'someField' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'AUTHOR_ID' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'authorid' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'UPDATED_AT' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ sortField: 'updatedat' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ skip: '1s' }) // should not be NaN
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
-        .get(`${post_url}${user.id}`)
+        .get(public_posts_url)
         .query({ skip: true }) // should not be NaN
         .expect(400);
     });
@@ -212,13 +212,17 @@ describe('PostController: /post/:id, update post', (): void => {
     });
 
     it(`should return posts`, async (): Promise<void> => {
-      const response = await agent.get(`${post_url}${user.id}`).expect(201);
+      const response = await agent.get(public_posts_url).expect(201);
 
-      expectPostsView(response, 'description a', user.id, '.png');
-
-      const response2 = await agent.get(`${post_url}${user2.id}`).expect(201);
-
-      expectPostsView(response2, 'description b', user2.id, '.jpeg');
+      expectPublicPostsView(
+        response,
+        1,
+        8,
+        2,
+        'description a',
+        user.id,
+        '.png',
+      );
     });
   });
 });
