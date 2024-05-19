@@ -31,6 +31,7 @@ import { PostViewModel } from '../models/output/post.view.model';
 import { PostImageViewModel } from '../models/output/post-images.view.model';
 import { UpdatePostModel } from '../models/input/update-post.model';
 import { PostQueryModel } from '../models/query/post.query.model';
+import { invalidImageInput } from '../../../base/constants/constants';
 
 import { UploadPostPhotoCommand } from './application/use-cases/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/create-post.use-case';
@@ -114,8 +115,10 @@ export class PostController {
           new FileTypeValidator({ fileType: 'image/jpeg|image/png' }),
         ],
         fileIsRequired: true,
-        exceptionFactory: (e) => {
-          throw new BadRequestException([{ message: e, field: 'file' }]);
+        exceptionFactory: () => {
+          throw new BadRequestException([
+            { message: invalidImageInput, field: 'file' },
+          ]);
         },
       }),
     )
