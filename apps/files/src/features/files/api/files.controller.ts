@@ -5,6 +5,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
+  GET_FILE_URL,
   GET_FILES_META,
   UPLOAD_FILE,
 } from '../../../../../../libs/common/base/constants/service.constants';
@@ -26,8 +27,13 @@ export class FilesController {
   ) {}
 
   @MessagePattern({ cmd: GET_FILES_META })
-  async getFilesInfo({ ids }) {
+  async getFilesMeta({ ids }) {
     return this.filesService.getFilesMeta(ids);
+  }
+
+  @MessagePattern({ cmd: GET_FILE_URL })
+  async getFileUrl({ fileId }) {
+    return this.filesService.getFileUrl(fileId);
   }
 
   @MessagePattern({ cmd: UPLOAD_FILE })

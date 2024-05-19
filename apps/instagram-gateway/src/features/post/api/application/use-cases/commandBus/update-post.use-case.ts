@@ -1,16 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { PostsRepository } from '../../../infrastructure/posts.repo';
-import { ResultCode } from '../../../../../base/enums/result-code.enum';
+import { PostsRepository } from '../../../../infrastructure/posts.repo';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   postIdField,
   postNotFound,
   userIdField,
   userNotFound,
-} from '../../../../../base/constants/constants';
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
-import { UpdatePostModel } from '../../../models/input/update-post.model';
-import { PostsQueryRepository } from '../../../infrastructure/posts.query.repo';
+} from '../../../../../../base/constants/constants';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { UpdatePostModel } from '../../../../models/input/update-post.model';
+import { PostsQueryRepository } from '../../../../infrastructure/posts.query.repo';
 
 export class UpdatePostCommand {
   constructor(
