@@ -34,11 +34,11 @@ import { UpdatePostModel } from '../models/input/update-post.model';
 import { PostQueryModel } from '../models/query/post.query.model';
 import { invalidImageInput } from '../../../base/constants/constants';
 
-import { UploadPostPhotoCommand } from './application/use-cases/upload-post-photo.use-case';
-import { CreatePostCommand } from './application/use-cases/create-post.use-case';
-import { PostViewCommand } from './application/use-cases/public-post-view.use-case';
-import { UpdatePostCommand } from './application/use-cases/update-post.use-case';
-import { PostsGetCommand } from './application/use-cases/posts-get-use.case';
+import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
+import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
+import { PostViewCommand } from './application/use-cases/queryBus/public-post-view.use-case';
+import { UpdatePostCommand } from './application/use-cases/commandBus/update-post.use-case';
+import { PostsGetCommand } from './application/use-cases/queryBus/posts-get-use.case';
 import { DeletePostCommand } from './application/use-cases/delete-post.use-case';
 
 @Controller('post')
@@ -206,36 +206,6 @@ export class PostController {
   ) {
     const result = await this.commandBus.execute(
       new UpdatePostCommand(updatePostModel, userId, postId),
-    );
-
-    if (result.code !== ResultCode.Success) {
-      return exceptionHandler(result.code, result.message, result.field);
-    }
-  }
-
-  @Delete(':id')
-  @SwaggerOptions(
-    'Delete post',
-    true,
-    false,
-    204,
-    'No Content',
-    false,
-    false,
-    false,
-    true,
-    true,
-    true,
-    false,
-  )
-  @UseGuards(JwtBearerGuard)
-  @HttpCode(204)
-  async deletePost(
-    @Param('id') postId: string,
-    @UserIdFromGuard() userId: string,
-  ) {
-    const result = await this.commandBus.execute(
-      new DeletePostCommand(userId, postId),
     );
 
     if (result.code !== ResultCode.Success) {

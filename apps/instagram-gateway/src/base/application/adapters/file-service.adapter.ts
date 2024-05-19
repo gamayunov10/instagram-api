@@ -11,6 +11,7 @@ import { NodeEnv } from '../../enums/node-env.enum';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
+  GET_FILE_URL,
   GET_FILES_META,
   UPLOAD_FILE,
 } from '../../../../../../libs/common/base/constants/service.constants';
@@ -44,6 +45,26 @@ export class FileServiceAdapter {
         code: ResultCode.InternalServerError,
         field: noneField,
         message: 'error: 2454',
+      };
+    }
+  }
+
+  async getFileUrlByFileId(fileId: string) {
+    try {
+      const responseOfService = this.fileServiceClient
+        .send({ cmd: GET_FILE_URL }, { fileId })
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(responseOfService);
+
+      return result.url;
+    } catch (e) {
+      this.logger.error(e);
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: 2455',
       };
     }
   }
