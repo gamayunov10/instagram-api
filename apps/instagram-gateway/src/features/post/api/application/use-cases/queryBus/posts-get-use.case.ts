@@ -1,18 +1,18 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
-import { ExceptionResultType } from '../../../../../base/types/exception.type';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { ExceptionResultType } from '../../../../../../base/types/exception.type';
 import {
   postIdField,
   postNotFound,
   userIdField,
   userNotFound,
-} from '../../../../../base/constants/constants';
-import { ResultCode } from '../../../../../base/enums/result-code.enum';
-import { PostsQueryRepository } from '../../../infrastructure/posts.query.repo';
-import { FileServiceAdapter } from '../../../../../base/application/adapters/file-service.adapter';
-import { FileMetaResponse } from '../../../../../../../../libs/common/base/post/file-meta-response';
-import { PostQueryModel } from '../../../models/query/post.query.model';
+} from '../../../../../../base/constants/constants';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
+import { PostsQueryRepository } from '../../../../infrastructure/posts.query.repo';
+import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
+import { FileMetaResponse } from '../../../../../../../../../libs/common/base/post/file-meta-response';
+import { PostQueryModel } from '../../../../models/query/post.query.model';
 
 export class PostsGetCommand {
   constructor(
@@ -41,7 +41,7 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
       };
     }
 
-    const posts = await this.postsQueryRepository.findPostsByQuery(
+    const posts = await this.postsQueryRepository.findPostsByQueryAndUserId(
       query.userId,
       query.queryQueryModel,
     );

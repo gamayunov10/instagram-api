@@ -1,8 +1,9 @@
-import { IsIn, IsNumber, IsOptional } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PostSortFields } from '../../../../base/enums/sort/post/post.sort.fields.enum';
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
+import { IsValidNumber } from '../../../../infrastructure/decorators/is-nan.decorator';
 
 export class PostQueryModel {
   @ApiProperty({
@@ -28,12 +29,14 @@ export class PostQueryModel {
   sortField?: string = PostSortFields.CREATED_AT;
 
   @ApiProperty({ default: 0, required: false })
-  @IsNumber()
+  @IsString()
+  @IsValidNumber()
   @IsOptional()
-  skip?: number = 0;
+  skip?: string = '0';
 
   @ApiProperty({ default: 8, required: false })
-  @IsNumber()
+  @IsString()
+  @IsValidNumber()
   @IsOptional()
-  take?: number = 8;
+  take?: string = '8';
 }

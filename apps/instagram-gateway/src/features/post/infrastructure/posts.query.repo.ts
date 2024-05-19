@@ -32,10 +32,27 @@ export class PostsQueryRepository {
     }
   }
 
-  async findPostsByQuery(userId: string, query: PostQueryModel) {
+  async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
         where: { authorId: userId },
+        orderBy: { [query.sortField]: query.sortDirection },
+        skip: Number(query.skip),
+        take: Number(query.take),
+        include: { images: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async findPostsByQuery(query: PostQueryModel) {
+    try {
+      return await this.prismaClient.post.findMany({
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
