@@ -20,6 +20,7 @@ import { PostsGetUseCase } from './api/application/use-cases/queryBus/posts-get-
 import { PublicPostsGetUseCase } from './api/application/use-cases/queryBus/public-posts-get-use.case';
 import { PublicPostsController } from './api/public.posts.controller';
 import { DeletePostUseCase } from './api/application/use-cases/delete-post.use-case';
+import { PublicPostGetUseCase } from './api/application/use-cases/queryBus/public-post-get-use.case';
 
 const useCases = [
   UploadPostPhotoUseCase,
@@ -29,6 +30,7 @@ const useCases = [
   PostsGetUseCase,
   DeletePostUseCase,
   PublicPostsGetUseCase,
+  PublicPostGetUseCase,
 ];
 const services = [PrismaClient];
 const adapters = [FileServiceAdapter];

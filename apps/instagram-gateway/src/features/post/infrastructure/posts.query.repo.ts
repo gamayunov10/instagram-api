@@ -32,6 +32,21 @@ export class PostsQueryRepository {
     }
   }
 
+  async findFirstPostById(id: string): Promise<PostViewModel | null> {
+    try {
+      return await this.prismaClient.post.findFirst({
+        where: { id },
+        include: { images: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
