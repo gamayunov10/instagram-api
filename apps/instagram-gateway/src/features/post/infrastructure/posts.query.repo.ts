@@ -97,6 +97,32 @@ export class PostsQueryRepository {
     }
   }
 
+  async findPostsToDelete() {
+    let deletionThreshold = new Date(Date.now()); // for tests
+
+    if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+      deletionThreshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // for development, we set a storage period in the database of 7 days, after which we delete the data
+    }
+
+    try {
+      return this.prismaClient.post.findMany({
+        where: {
+          deletedAt: {
+            not: null,
+            lt: deletionThreshold,
+          },
+        },
+        include: { images: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return null;
+    }
+  }
+
   private async postMapper(data): Promise<PostViewModel> {
     return {
       id: data.id,

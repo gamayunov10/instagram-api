@@ -212,4 +212,34 @@ export class PostController {
       return exceptionHandler(result.code, result.message, result.field);
     }
   }
+
+  @Delete(':id')
+  @SwaggerOptions(
+    'Delete post',
+    true,
+    false,
+    204,
+    'No Content',
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+  )
+  @UseGuards(JwtBearerGuard)
+  @HttpCode(204)
+  async deletePost(
+    @Param('id') postId: string,
+    @UserIdFromGuard() userId: string,
+  ) {
+    const result = await this.commandBus.execute(
+      new DeletePostCommand(userId, postId),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+  }
 }

@@ -11,6 +11,9 @@ import {
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
+import { CleanupService } from '../../../src/base/application/сleanup.service';
+import { expectPostsView } from '../../base/utils/post/expectPostsView';
+import { PostsQueryRepository } from '../../../src/features/post/infrastructure/posts.query.repo';
 
 import {
   post_photo_url,
@@ -97,7 +100,9 @@ describe('PostController: /post/:id, delete post', (): void => {
   describe('positive', () => {
     let user: UserCredentialsType;
     let photoId;
+    let photoId2;
     let post: PostViewModel;
+    let post2: PostViewModel;
 
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
@@ -109,7 +114,9 @@ describe('PostController: /post/:id, delete post', (): void => {
 
     it(`should create post`, async (): Promise<void> => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
+      const imagePath2 = path.join(__dirname, '../../base/assets/node.png');
 
+      // Upload first image and create first post
       photoId = await agent
         .post(post_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
@@ -120,15 +127,31 @@ describe('PostController: /post/:id, delete post', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: 'a',
+          description: 'Upload first post',
           images: [photoId.body.imageId],
         })
         .expect(201);
 
+      // Upload second  image and create first post
+      photoId2 = await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath2)
+        .expect(201);
+
+      const result2 = await agent
+        .post(post_with_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          description: 'Upload second post',
+          images: [photoId2.body.imageId],
+        })
+        .expect(201);
       post = result.body;
+      post2 = result2.body;
     });
 
-    it(`deleting a post returns 204, and trying to update the deleted post returns 404`, async (): Promise<void> => {
+    it(`should delete a post returns 204, and trying to update the deleted post returns 404`, async (): Promise<void> => {
       await agent
         .delete(`${post_with_photo_url}${post.id}`)
         .auth(user.accessToken, { type: 'bearer' })
@@ -136,12 +159,21 @@ describe('PostController: /post/:id, delete post', (): void => {
 
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
-      expect(response.body).toEqual({}); // getting a non-existent post
+      expectPostsView(response, 'Upload second post', user.id, '.png');
 
       await agent
         .delete(`${post_with_photo_url}${post.id}`)
         .auth(user.accessToken, { type: 'bearer' })
         .expect(404); //delete a non-existent post
+    });
+
+    it(`Should return [] after running the database cleanup method`, async (): Promise<void> => {
+      const cleanupService = app.get(CleanupService);
+      await cleanupService.cleanupDatabase(); // we simulate the launch of the Cron cleanupDatabase method
+      const postQueryRepo = app.get(PostsQueryRepository);
+
+      const result = await postQueryRepo.findPostsToDelete(); //we are looking for all posts that meet the conditions for complete deletion from the database
+      expect(result).toEqual([]); // if the cleanupDatabase method above worked correctly, then there are no such posts left in the database, returns []
     });
   });
 });

@@ -77,7 +77,23 @@ export class PostsRepository {
         data: { deletedAt: new Date() },
       });
 
-      return result.count !== 0;
+      return result.count === 1;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    }
+  }
+
+  async finalDeletionPostById(postId: string): Promise<boolean> {
+    try {
+      const result = await this.prismaClient.post.deleteMany({
+        where: { id: postId },
+      });
+
+      return result.count === 1;
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);

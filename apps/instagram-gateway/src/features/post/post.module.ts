@@ -40,6 +40,7 @@ const queryRepositories = [UsersQueryRepository, PostsQueryRepository];
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
   controllers: [PostController, PublicPostsController],
+  exports: [PostsRepository, PostsQueryRepository],
   providers: [
     PostService,
     ...useCases,
