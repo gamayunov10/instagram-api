@@ -6,11 +6,13 @@ import { registration_url } from '../../integration/auth/registration.spec';
 import { registration_confirmation_url } from '../../integration/auth/registration-confirmation.spec';
 import { login_url } from '../../integration/auth/login.spec';
 import { UserCredentialsType, UserInputModelType } from '../types/testing.type';
+import { PostsRepository } from '../../../src/features/post/infrastructure/posts.repo';
 
 export class TestManager {
   constructor(
     protected readonly app: INestApplication,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly postsRepository: PostsRepository,
   ) {}
 
   async getEmailConfirmationCode(email: string): Promise<string> {
@@ -71,5 +73,9 @@ export class TestManager {
 
   async getUserProfile(email: string) {
     return await this.usersQueryRepository.getUserWithRelations(email);
+  }
+
+  async updateDeletedAtForTests(postId: string): Promise<boolean> {
+    return await this.postsRepository.updateDeletedAtForTests(postId);
   }
 }
