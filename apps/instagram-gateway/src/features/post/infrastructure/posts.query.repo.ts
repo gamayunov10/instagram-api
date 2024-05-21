@@ -98,11 +98,7 @@ export class PostsQueryRepository {
   }
 
   async findPostsToDelete() {
-    let deletionThreshold = new Date(Date.now()); // for tests
-
-    if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-      deletionThreshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // for development, we set a storage period in the database of 7 days, after which we delete the data
-    }
+    const deletionThreshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     try {
       return this.prismaClient.post.findMany({

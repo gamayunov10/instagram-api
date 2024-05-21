@@ -102,4 +102,19 @@ export class PostsRepository {
       return false;
     }
   }
+
+  async updateDeletedAtForTests(postId: string): Promise<boolean> {
+    try {
+      const deletionThreshold = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000); // for tests
+
+      const result = await this.prismaClient.post.updateMany({
+        where: { id: postId },
+        data: { deletedAt: deletionThreshold },
+      });
+
+      return result.count === 1;
+    } catch (e) {
+      return false;
+    }
+  }
 }

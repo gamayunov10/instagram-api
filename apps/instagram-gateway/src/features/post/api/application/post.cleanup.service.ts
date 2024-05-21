@@ -2,15 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ConfigService } from '@nestjs/config';
 
-import { PostsRepository } from '../../features/post/infrastructure/posts.repo';
-import { PostsQueryRepository } from '../../features/post/infrastructure/posts.query.repo';
-import { NodeEnv } from '../enums/node-env.enum';
-
-import { FileServiceAdapter } from './adapters/file-service.adapter';
+import { PostsRepository } from '../../infrastructure/posts.repo';
+import { PostsQueryRepository } from '../../infrastructure/posts.query.repo';
+import { NodeEnv } from '../../../../base/enums/node-env.enum';
+import { FileServiceAdapter } from '../../../../base/application/adapters/file-service.adapter';
 
 @Injectable()
-export class CleanupService {
-  private readonly logger = new Logger(CleanupService.name);
+export class PostCleanupService {
+  private readonly logger = new Logger(PostCleanupService.name);
   constructor(
     private readonly postsRepo: PostsRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
@@ -19,7 +18,7 @@ export class CleanupService {
   ) {}
 
   @Cron('0 1 * * 0') // every Sunday at 1 a.m.
-  async cleanupDatabase() {
+  async clearDeletedPostsFromDB() {
     try {
       const postsToDelete = await this.postsQueryRepo.findPostsToDelete();
 
@@ -35,10 +34,14 @@ export class CleanupService {
       this.logger.log(
         `The cleanup was completed successfully. Cleaning time - ${new Date()}`,
       );
+
+      return true;
     } catch (error) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-        this.logger.error(error);
+        this.logger.error('Error cleaning the database', error);
       }
+
+      return false;
     }
   }
 
@@ -52,7 +55,7 @@ export class CleanupService {
       }
     } catch (error) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-        this.logger.error(error);
+        this.logger.error('Error when deleting images', error);
       }
     }
   }
@@ -68,7 +71,7 @@ export class CleanupService {
       }
     } catch (error) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-        this.logger.error(error);
+        this.logger.error('Error when deleting posts', error);
       }
     }
   }

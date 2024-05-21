@@ -21,6 +21,7 @@ import { PublicPostsGetUseCase } from './api/application/use-cases/queryBus/publ
 import { PublicPostsController } from './api/public.posts.controller';
 import { DeletePostUseCase } from './api/application/use-cases/delete-post.use-case';
 import { PublicPostGetUseCase } from './api/application/use-cases/queryBus/public-post-get-use.case';
+import { PostCleanupService } from './api/application/post.cleanup.service';
 
 const useCases = [
   UploadPostPhotoUseCase,
@@ -32,7 +33,7 @@ const useCases = [
   PublicPostsGetUseCase,
   PublicPostGetUseCase,
 ];
-const services = [PrismaClient];
+const services = [PrismaClient, PostCleanupService];
 const adapters = [FileServiceAdapter];
 const repositories = [PostsRepository, UsersRepository];
 const queryRepositories = [UsersQueryRepository, PostsQueryRepository];
