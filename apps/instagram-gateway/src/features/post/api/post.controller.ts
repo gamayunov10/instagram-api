@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   HttpCode,
@@ -38,6 +39,7 @@ import { CreatePostCommand } from './application/use-cases/commandBus/create-pos
 import { PostViewCommand } from './application/use-cases/queryBus/public-post-view.use-case';
 import { UpdatePostCommand } from './application/use-cases/commandBus/update-post.use-case';
 import { PostsGetCommand } from './application/use-cases/queryBus/posts-get-use.case';
+import { DeletePostCommand } from './application/use-cases/delete-post.use-case';
 
 @Controller('post')
 @ApiTags('Post')
@@ -204,6 +206,36 @@ export class PostController {
   ) {
     const result = await this.commandBus.execute(
       new UpdatePostCommand(updatePostModel, userId, postId),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+  }
+
+  @Delete(':id')
+  @SwaggerOptions(
+    'Delete post',
+    true,
+    false,
+    204,
+    'No Content',
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+  )
+  @UseGuards(JwtBearerGuard)
+  @HttpCode(204)
+  async deletePost(
+    @Param('id') postId: string,
+    @UserIdFromGuard() userId: string,
+  ) {
+    const result = await this.commandBus.execute(
+      new DeletePostCommand(userId, postId),
     );
 
     if (result.code !== ResultCode.Success) {

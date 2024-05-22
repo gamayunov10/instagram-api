@@ -18,7 +18,7 @@ export class PostsQueryRepository {
   async findPostById(id: string): Promise<PostViewModel | null> {
     try {
       const post = await this.prismaClient.post.findUnique({
-        where: { id },
+        where: { id, deletedAt: null },
         include: { images: true },
       });
 
@@ -50,7 +50,7 @@ export class PostsQueryRepository {
   async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
-        where: { authorId: userId },
+        where: { authorId: userId, deletedAt: null },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
@@ -85,7 +85,7 @@ export class PostsQueryRepository {
   async findPostByPostIdAndUserId(postId: string, userId: string) {
     try {
       return this.prismaClient.post.findUnique({
-        where: { id: postId, authorId: userId },
+        where: { id: postId, authorId: userId, deletedAt: null },
         include: { images: true },
       });
     } catch (e) {
@@ -94,6 +94,28 @@ export class PostsQueryRepository {
       }
     } finally {
       await this.prismaClient.$disconnect();
+    }
+  }
+
+  async findPostsToDelete() {
+    const deletionThreshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    try {
+      return this.prismaClient.post.findMany({
+        where: {
+          deletedAt: {
+            not: null,
+            lt: deletionThreshold,
+          },
+        },
+        include: { images: true },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return null;
     }
   }
 

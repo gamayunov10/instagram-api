@@ -19,7 +19,9 @@ import { UpdatePostUseCase } from './api/application/use-cases/commandBus/update
 import { PostsGetUseCase } from './api/application/use-cases/queryBus/posts-get-use.case';
 import { PublicPostsGetUseCase } from './api/application/use-cases/queryBus/public-posts-get-use.case';
 import { PublicPostsController } from './api/public.posts.controller';
+import { DeletePostUseCase } from './api/application/use-cases/delete-post.use-case';
 import { PublicPostGetUseCase } from './api/application/use-cases/queryBus/public-post-get-use.case';
+import { PostCleanupService } from './api/application/post.cleanup.service';
 
 const useCases = [
   UploadPostPhotoUseCase,
@@ -27,10 +29,11 @@ const useCases = [
   PostViewUseCase,
   UpdatePostUseCase,
   PostsGetUseCase,
+  DeletePostUseCase,
   PublicPostsGetUseCase,
   PublicPostGetUseCase,
 ];
-const services = [PrismaClient];
+const services = [PrismaClient, PostCleanupService];
 const adapters = [FileServiceAdapter];
 const repositories = [PostsRepository, UsersRepository];
 const queryRepositories = [UsersQueryRepository, PostsQueryRepository];
@@ -38,6 +41,7 @@ const queryRepositories = [UsersQueryRepository, PostsQueryRepository];
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
   controllers: [PostController, PublicPostsController],
+  exports: [PostsRepository, PostsQueryRepository],
   providers: [
     PostService,
     ...useCases,

@@ -121,7 +121,7 @@ describe('PostController: /post/:id, update post', (): void => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should create 1 user`, async (): Promise<void> => {
+    it(`should create user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
     });
 

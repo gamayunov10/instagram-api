@@ -89,6 +89,7 @@ model Post {
   description String?
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
+  deletedAt   DateTime?
   author      User?       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   images      PostImage[]

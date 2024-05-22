@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { ClientsModule } from '@nestjs/microservices';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
 import { PostModule } from './features/post/post.module';
@@ -25,6 +26,7 @@ const controllers = [AppController, TestingController];
     }),
     ClientsModule.registerAsync([fileServiceConfig()]),
     ...modules,
+    ScheduleModule.forRoot(),
   ],
   controllers: [...controllers],
   providers: [...services],
