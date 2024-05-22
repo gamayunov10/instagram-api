@@ -31,6 +31,7 @@ export const username7 = 'username7';
 
 // password
 export const userPassword = 'userPassword1#%*';
+export const userNewPassword = 'userNewPassword1#%*';
 
 //refreshToken
 export const invalidRefreshToken = 'invalidRefreshToken';
