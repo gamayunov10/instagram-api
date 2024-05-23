@@ -1,9 +1,7 @@
-import { Types } from 'mongoose';
-
 import { FileType } from '../../../../../../libs/common/base/ts/enums/file-type.enum';
 
 export interface IFile {
-  _id?: Types.ObjectId;
+  _id?: string;
   userId: string;
   fileType: FileType;
   originalname: string;
