@@ -50,7 +50,7 @@ export class PostCleanupService {
       const imageIds = post.flatMap((p) => p.images.map((i) => i.imageId));
 
       for (const imageId of imageIds) {
-        await this.fileServiceAdapter.deleteUserPhoto(imageId);
+        await this.fileServiceAdapter.deleteFile(imageId);
       }
     } catch (error) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {

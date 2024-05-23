@@ -93,7 +93,7 @@ export class FileServiceAdapter {
     }
   }
 
-  async deleteUserPhoto(fileId: string) {
+  async deleteFile(fileId: string) {
     try {
       const response = this.fileServiceClient
         .send({ cmd: DELETE_FILE }, { fileId })

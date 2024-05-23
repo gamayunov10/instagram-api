@@ -30,13 +30,13 @@ export class DeleteUserPhotoUseCases
     const objectId = new Types.ObjectId(fileId);
     const file = await this.fileQueryRepository.findFileById(objectId);
 
-    if (!file) {
-      return {
-        data: false,
-      };
-    }
-
     try {
+      if (!file) {
+        return {
+          data: false,
+        };
+      }
+
       const s3Result = await this.s3Adapter.deleteUserPhoto(file.url);
       const fileRepoResult = await this.fileRepository.deleteFile(file._id);
 
