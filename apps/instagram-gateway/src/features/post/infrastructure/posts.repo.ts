@@ -55,7 +55,7 @@ export class PostsRepository {
   ): Promise<boolean> {
     try {
       const result = await this.prismaClient.post.update({
-        where: { id: postId, authorId: userId },
+        where: { id: postId, authorId: userId, isDeleted: false },
         data: {
           description: updatePostModel.description,
         },
@@ -68,13 +68,15 @@ export class PostsRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
   async deletePost(userId: string, postId: string): Promise<boolean> {
     try {
       const result = await this.prismaClient.post.updateMany({
         where: { id: postId, authorId: userId },
-        data: { deletedAt: new Date() },
+        data: { deletedAt: new Date(), isDeleted: true },
       });
 
       return result.count === 1;
@@ -84,13 +86,15 @@ export class PostsRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
   async finalDeletionPostById(postId: string): Promise<boolean> {
     try {
       const result = await this.prismaClient.post.deleteMany({
-        where: { id: postId },
+        where: { id: postId, isDeleted: true },
       });
 
       return result.count === 1;
@@ -100,6 +104,8 @@ export class PostsRepository {
       }
 
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
@@ -109,12 +115,14 @@ export class PostsRepository {
 
       const result = await this.prismaClient.post.updateMany({
         where: { id: postId },
-        data: { deletedAt: deletionThreshold },
+        data: { deletedAt: deletionThreshold, isDeleted: true },
       });
 
       return result.count === 1;
     } catch (e) {
       return false;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 }

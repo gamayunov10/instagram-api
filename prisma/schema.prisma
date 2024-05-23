@@ -7,6 +7,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  connection_limit = 100000
 }
 
 datasource db {
@@ -18,8 +19,8 @@ model User {
   id                   String                @id @default(uuid())
   email                String                @unique
   username             String                @unique
-  firstName            String?
-  lastName             String?
+  firstName            String?               @map("first_name")
+  lastName             String?               @map("last_name")
   birthDate            String?               @map("birth_date")
   city                 String?
   aboutMe              String?               @map("about_me")
@@ -45,7 +46,7 @@ model UserProviderInfo {
   email          String?
   city           String?
   user           User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String?
+  userId         String? @map("user_id")
 
   @@map("user_provider_info")
 }
@@ -89,9 +90,10 @@ model Post {
   description String?
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
-  deletedAt   DateTime?
+  isDeleted   Boolean     @default(false) @map("is_deleted")
+  deletedAt   DateTime?   @map("deleted_at")
   author      User?       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    String
+  authorId    String      @map("author_id")
   images      PostImage[]
 
   @@map("post")

@@ -93,13 +93,13 @@ export class FileServiceAdapter {
     }
   }
 
-  async deleteUserPhoto(fileId: string) {
+  async deleteFile(fileId: string) {
     try {
-      const responseOfService = this.fileServiceClient
+      const response = this.fileServiceClient
         .send({ cmd: DELETE_FILE }, { fileId })
         .pipe(timeout(10000));
 
-      const result = await firstValueFrom(responseOfService);
+      const result = await firstValueFrom(response);
 
       return {
         data: true,
@@ -114,8 +114,8 @@ export class FileServiceAdapter {
       return {
         data: false,
         code: ResultCode.InternalServerError,
-        field: fileField,
-        message: 'Upload error',
+        field: noneField,
+        message: 'Delete error',
       };
     }
   }
@@ -137,8 +137,8 @@ export class FileServiceAdapter {
       return {
         data: false,
         code: ResultCode.InternalServerError,
-        field: fileField,
-        message: 'File not loaded',
+        field: noneField,
+        message: 'Delete error',
       };
     }
   }

@@ -233,7 +233,6 @@ export class UsersRepository {
           },
         });
 
-        // If updateResult exists, it means the record was updated successfully
         return !!updateResult;
       });
     } catch (e) {

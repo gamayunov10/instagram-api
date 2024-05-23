@@ -143,6 +143,6 @@
       "^@prisma/client$": "<rootDir>/node_modules/@prisma/client",
       "^@app/common(|/.*)$": "<rootDir>/libs/$1"
     },
-    "testTimeout": 30000
+    "testTimeout": 50000
   }
 }

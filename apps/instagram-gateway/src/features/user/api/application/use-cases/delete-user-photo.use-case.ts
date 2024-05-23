@@ -39,9 +39,7 @@ export class DeleteUserPhotoUseCase
       };
     }
 
-    const result = await this.fileServiceAdapter.deleteUserPhoto(
-      user?.avatarId,
-    );
+    const result = await this.fileServiceAdapter.deleteFile(user?.avatarId);
 
     if (!result.data) {
       return {

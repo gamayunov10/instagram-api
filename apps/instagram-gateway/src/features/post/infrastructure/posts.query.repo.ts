@@ -18,7 +18,7 @@ export class PostsQueryRepository {
   async findPostById(id: string): Promise<PostViewModel | null> {
     try {
       const post = await this.prismaClient.post.findUnique({
-        where: { id, deletedAt: null },
+        where: { id, isDeleted: false },
         include: { images: true },
       });
 
@@ -35,7 +35,7 @@ export class PostsQueryRepository {
   async findFirstPostById(id: string): Promise<PostViewModel | null> {
     try {
       return await this.prismaClient.post.findFirst({
-        where: { id },
+        where: { id, isDeleted: false },
         include: { images: true },
       });
     } catch (e) {
@@ -50,7 +50,7 @@ export class PostsQueryRepository {
   async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
-        where: { authorId: userId, deletedAt: null },
+        where: { authorId: userId, isDeleted: false },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
@@ -68,6 +68,7 @@ export class PostsQueryRepository {
   async findPostsByQuery(query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
+        where: { isDeleted: false },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
@@ -85,7 +86,7 @@ export class PostsQueryRepository {
   async findPostByPostIdAndUserId(postId: string, userId: string) {
     try {
       return this.prismaClient.post.findUnique({
-        where: { id: postId, authorId: userId, deletedAt: null },
+        where: { id: postId, authorId: userId, isDeleted: false },
         include: { images: true },
       });
     } catch (e) {
@@ -103,6 +104,7 @@ export class PostsQueryRepository {
     try {
       return this.prismaClient.post.findMany({
         where: {
+          isDeleted: false,
           deletedAt: {
             not: null,
             lt: deletionThreshold,
@@ -116,6 +118,8 @@ export class PostsQueryRepository {
       }
 
       return null;
+    } finally {
+      await this.prismaClient.$disconnect();
     }
   }
 
