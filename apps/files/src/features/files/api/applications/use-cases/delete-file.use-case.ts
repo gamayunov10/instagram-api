@@ -31,14 +31,14 @@ export class DeleteUserPhotoUseCases
     const file = await this.fileQueryRepository.findFileById(objectId);
 
     try {
-      if (!file || file?._id) {
+      if (!file) {
         return {
           data: false,
         };
       }
 
       const s3Result = await this.s3Adapter.deleteUserPhoto(file.url);
-      const fileRepoResult = await this.fileRepository.deleteFile(file._id);
+      const fileRepoResult = await this.fileRepository.deleteFile(objectId);
 
       if (fileRepoResult.deletedCount !== 1) {
         const retry = await this.fileRepository.deleteFile(file._id);
