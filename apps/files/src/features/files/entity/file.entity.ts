@@ -1,8 +1,10 @@
+import { ObjectId } from 'mongoose';
+
 import { FileType } from '../../../../../../libs/common/base/ts/enums/file-type.enum';
 import { IFile } from '../../../base/ts/interfaces/file.interface';
 
 export class FileEntity implements IFile {
-  _id?: string;
+  _id?: ObjectId;
   userId: string;
   fileType: FileType;
   originalname: string;

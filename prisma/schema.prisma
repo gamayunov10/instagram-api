@@ -7,7 +7,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-  connection_limit = 100
+  connection_limit = 100000
 }
 
 datasource db {
