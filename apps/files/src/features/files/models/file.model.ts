@@ -2,10 +2,9 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { FileType } from '../../../../../../libs/common/base/ts/enums/file-type.enum';
-import { IFile } from '../../../base/ts/interfaces/file.interface';
 
 @Schema()
-export class File extends Document implements IFile {
+export class File extends Document {
   @Prop({ required: true })
   userId: string;
 
