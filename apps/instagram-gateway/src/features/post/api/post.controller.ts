@@ -32,7 +32,7 @@ import { PostViewModel } from '../models/output/post.view.model';
 import { PostImageViewModel } from '../models/output/post-images.view.model';
 import { UpdatePostModel } from '../models/input/update-post.model';
 import { PostQueryModel } from '../models/query/post.query.model';
-import { invalidImageInput } from '../../../base/constants/constants';
+import { invalidPostPhoto } from '../../../base/constants/constants';
 
 import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
@@ -115,14 +115,14 @@ export class PostController {
         validators: [
           new MaxFileSizeValidator({
             maxSize: 20000000,
-            message: invalidImageInput,
+            message: invalidPostPhoto,
           }),
           new FileTypeValidator({ fileType: 'image/jpeg|image/png' }),
         ],
         fileIsRequired: true,
         exceptionFactory: () => {
           throw new BadRequestException([
-            { message: invalidImageInput, field: 'file' },
+            { message: invalidPostPhoto, field: 'file' },
           ]);
         },
       }),
@@ -203,7 +203,7 @@ export class PostController {
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
     @Body() updatePostModel: UpdatePostModel,
-  ) {
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new UpdatePostCommand(updatePostModel, userId, postId),
     );
@@ -233,7 +233,7 @@ export class PostController {
   async deletePost(
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
-  ) {
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new DeletePostCommand(userId, postId),
     );
