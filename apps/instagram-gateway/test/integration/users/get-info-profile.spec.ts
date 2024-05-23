@@ -28,7 +28,7 @@ describe('UserController: /profile-information', () => {
 
   afterAll(async () => {
     await app.close();
-    await prismaClientSingleton.getPrisma().$disconnect();
+    await prismaClientSingleton.disconnect();
   });
 
   describe('negative', () => {

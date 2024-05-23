@@ -34,7 +34,7 @@ describe('PublicPostController: /public-posts', (): void => {
 
   afterAll(async () => {
     await app.close();
-    await prismaClientSingleton.getPrisma().$disconnect();
+    await prismaClientSingleton.disconnect();
   });
 
   describe('negative', () => {

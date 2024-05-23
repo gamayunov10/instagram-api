@@ -19,6 +19,10 @@ class PrismaClientSingleton {
   public getPrisma(): PrismaClient {
     return this.prisma;
   }
+
+  public async disconnect(): Promise<void> {
+    await this.prisma.$disconnect();
+  }
 }
 
 export const prismaClientSingleton = PrismaClientSingleton.getInstance();

@@ -30,7 +30,11 @@ describe('AuthController: /login', () => {
 
   afterAll(async () => {
     await app.close();
-    await prismaClientSingleton.getPrisma().$disconnect();
+    await prismaClientSingleton.disconnect();
+  });
+
+  it(`should clear database`, async () => {
+    await agent.delete('/api/v1/testing/all-data');
   });
 
   describe('negative', () => {

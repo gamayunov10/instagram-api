@@ -32,7 +32,7 @@ describe('UserController: /fill-out-profile', () => {
 
   afterAll(async () => {
     await app.close();
-    await prismaClientSingleton.getPrisma().$disconnect();
+    await prismaClientSingleton.disconnect();
   });
 
   describe('negative', () => {
