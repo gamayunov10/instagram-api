@@ -35,7 +35,7 @@ export class PostsQueryRepository {
   async findFirstPostById(id: string): Promise<PostViewModel | null> {
     try {
       return await this.prismaClient.post.findFirst({
-        where: { id },
+        where: { id, deletedAt: null },
         include: { images: true },
       });
     } catch (e) {
@@ -68,6 +68,7 @@ export class PostsQueryRepository {
   async findPostsByQuery(query: PostQueryModel) {
     try {
       return await this.prismaClient.post.findMany({
+        where: { deletedAt: null },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),

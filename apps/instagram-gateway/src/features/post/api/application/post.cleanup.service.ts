@@ -45,8 +45,7 @@ export class PostCleanupService {
     }
   }
 
-  private async deleteImages(post) {
-    // The logic of deleting images
+  private async deleteImages(post): Promise<void> {
     try {
       const imageIds = post.flatMap((p) => p.images.map((i) => i.imageId));
 
@@ -60,18 +59,23 @@ export class PostCleanupService {
     }
   }
 
-  private async deletePosts(postsToDelete) {
-    // The logic of permanently deleting posts
-
+  private async deletePosts(postsToDelete): Promise<void> {
     try {
       const postsId = postsToDelete.map((p) => p.id);
 
       for (const postId of postsId) {
-        await this.postsRepo.finalDeletionPostById(postId);
+        const result: boolean =
+          await this.postsRepo.finalDeletionPostById(postId);
+
+        if (!result) {
+          if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+            this.logger.error('Post not deleted: finalDeletionPostById');
+          }
+        }
       }
-    } catch (error) {
+    } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-        this.logger.error('Error when deleting posts', error);
+        this.logger.error('Error when deleting posts', e);
       }
     }
   }

@@ -203,7 +203,7 @@ export class PostController {
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
     @Body() updatePostModel: UpdatePostModel,
-  ) {
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new UpdatePostCommand(updatePostModel, userId, postId),
     );
@@ -233,7 +233,7 @@ export class PostController {
   async deletePost(
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
-  ) {
+  ): Promise<void> {
     const result = await this.commandBus.execute(
       new DeletePostCommand(userId, postId),
     );
