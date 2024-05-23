@@ -37,7 +37,7 @@ describe('PostController: /post/photo; /post;', (): void => {
 
     let user: UserCredentialsType;
 
-    it(`should clear database`, async (): Promise<void> => {
+    it(`should create user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
     });
 
@@ -136,7 +136,7 @@ describe('PostController: /post/photo; /post;', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: 7,
+          description: 7, // incorrect
           images: ['663bcaddfe047e8b75000db4'],
         })
         .expect(400);
@@ -147,7 +147,7 @@ describe('PostController: /post/photo; /post;', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: true,
+          description: true, // incorrect
           images: ['663bcaddfe047e8b75000db4'],
         })
         .expect(400);
@@ -158,7 +158,7 @@ describe('PostController: /post/photo; /post;', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: { key: 'value' },
+          description: { key: 'value' }, // incorrect
           images: ['663bcaddfe047e8b75000db4'],
         })
         .expect(400);
@@ -169,7 +169,7 @@ describe('PostController: /post/photo; /post;', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: { key: 'cd ..' },
+          description: { key: 'cd ..' }, // incorrect
           images: ['663bcaddfe047e8b75000db4'],
         })
         .expect(400);
@@ -236,7 +236,7 @@ describe('PostController: /post/photo; /post;', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          images: [],
+          images: [], // incorrect
         })
         .expect(400);
     });
@@ -250,7 +250,7 @@ describe('PostController: /post/photo; /post;', (): void => {
     let user: UserCredentialsType;
     let photoId;
 
-    it(`should clear database`, async (): Promise<void> => {
+    it(`should create user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
     });
 

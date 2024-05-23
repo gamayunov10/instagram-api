@@ -2,19 +2,19 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import sharp from 'sharp';
 
-import { UserImageInputModel } from '../../../../user/models/input/user.image.input.model';
-import { PostImageInputModel } from '../../../models/input/post.image.input.model';
-import { FileServiceAdapter } from '../../../../../base/application/adapters/file-service.adapter';
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
-import { ResultCode } from '../../../../../base/enums/result-code.enum';
+import { UserImageInputModel } from '../../../../../user/models/input/user.image.input.model';
+import { PostImageInputModel } from '../../../../models/input/post.image.input.model';
+import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   fileField,
   invalidUserPhoto,
   userIdField,
   userNotFound,
-} from '../../../../../base/constants/constants';
-import { UploadFileRequest } from '../../../../../../../../libs/common/base/user/upload-file-request';
-import { FileType } from '../../../../../../../../libs/common/base/ts/enums/file-type.enum';
+} from '../../../../../../base/constants/constants';
+import { UploadFileRequest } from '../../../../../../../../../libs/common/base/user/upload-file-request';
+import { FileType } from '../../../../../../../../../libs/common/base/ts/enums/file-type.enum';
 
 export class UploadPostPhotoCommand {
   constructor(public data: PostImageInputModel) {}

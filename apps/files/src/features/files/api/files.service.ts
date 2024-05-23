@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
 
 import { FileQueryRepository } from '../infrastructure/file.query.repo';
 import { S3Adapter } from '../../../base/application/adapters/s3.adapter';
@@ -26,5 +27,18 @@ export class FilesService {
         url: this.s3Adapter.getFileUrl(file.url),
       };
     });
+  }
+
+  async getFileUrl(fileId: Types.ObjectId) {
+    const file = await this.fileQueryRepository.findFileById(fileId);
+
+    if (!file) {
+      throw new Error('File not found');
+    }
+
+    return {
+      authorId: file.userId,
+      url: this.s3Adapter.getFileUrl(file.url),
+    };
   }
 }

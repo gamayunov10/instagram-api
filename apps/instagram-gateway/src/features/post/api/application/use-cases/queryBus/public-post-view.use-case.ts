@@ -1,13 +1,13 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
-import { ExceptionResultType } from '../../../../../base/types/exception.type';
+import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { ExceptionResultType } from '../../../../../../base/types/exception.type';
 import {
   userIdField,
   userNotFound,
-} from '../../../../../base/constants/constants';
-import { ResultCode } from '../../../../../base/enums/result-code.enum';
-import { PostsQueryRepository } from '../../../infrastructure/posts.query.repo';
+} from '../../../../../../base/constants/constants';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
+import { PostsQueryRepository } from '../../../../infrastructure/posts.query.repo';
 
 export class PostViewCommand {
   constructor(

@@ -70,4 +70,51 @@ export class PostsRepository {
       return false;
     }
   }
+  async deletePost(userId: string, postId: string): Promise<boolean> {
+    try {
+      const result = await this.prismaClient.post.updateMany({
+        where: { id: postId, authorId: userId },
+        data: { deletedAt: new Date() },
+      });
+
+      return result.count === 1;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    }
+  }
+
+  async finalDeletionPostById(postId: string): Promise<boolean> {
+    try {
+      const result = await this.prismaClient.post.deleteMany({
+        where: { id: postId },
+      });
+
+      return result.count === 1;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    }
+  }
+
+  async updateDeletedAtForTests(postId: string): Promise<boolean> {
+    try {
+      const deletionThreshold = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000); // for tests
+
+      const result = await this.prismaClient.post.updateMany({
+        where: { id: postId },
+        data: { deletedAt: deletionThreshold },
+      });
+
+      return result.count === 1;
+    } catch (e) {
+      return false;
+    }
+  }
 }
