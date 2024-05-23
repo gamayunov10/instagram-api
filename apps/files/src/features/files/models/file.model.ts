@@ -25,10 +25,10 @@ export class File extends Document implements IFile {
   fileId: string;
 
   @Prop({ required: false })
-  ownerId: string;
+  ownerId?: string;
 
   @Prop({ required: false })
-  expirationDate: Date;
+  expirationDate?: Date;
 }
 
 export const FileSchema = SchemaFactory.createForClass(File);
