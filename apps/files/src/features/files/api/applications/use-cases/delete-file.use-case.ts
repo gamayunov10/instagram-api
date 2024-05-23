@@ -41,7 +41,7 @@ export class DeleteUserPhotoUseCases
       const fileRepoResult = await this.fileRepository.deleteFile(objectId);
 
       if (fileRepoResult.deletedCount !== 1) {
-        const retry = await this.fileRepository.deleteFile(file._id);
+        const retry = await this.fileRepository.deleteFile(objectId);
 
         if (retry.deletedCount !== 1) {
           if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
