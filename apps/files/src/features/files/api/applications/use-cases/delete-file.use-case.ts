@@ -31,7 +31,7 @@ export class DeleteUserPhotoUseCases
     const file = await this.fileQueryRepository.findFileById(objectId);
 
     try {
-      if (!file) {
+      if (!file || file?._id) {
         return {
           data: false,
         };
