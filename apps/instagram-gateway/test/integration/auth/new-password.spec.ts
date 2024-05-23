@@ -6,6 +6,7 @@ import { TestManager } from '../../base/managers/test.manager';
 import {
   userEmail1,
   username1,
+  userNewPassword,
   userPassword,
 } from '../../base/constants/tests-strings';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
@@ -42,18 +43,47 @@ describe('AuthController: /new-password', () => {
       await agent
         .post(new_password_url)
         .send({
-          newPassword: 'new271543523',
-          recoveryCode: '',
+          newPassword: userNewPassword,
+          recoveryCode: '', // incorrect value
         })
         .expect(400);
     });
 
     it(`should return 400 If the inputModel has incorrect value`, async () => {
       await agent
+        .post(registration_url)
+        .send({
+          username: username1,
+          password: userPassword,
+          email: userEmail1,
+        })
+        .expect(204);
+
+      const confirmationCode =
+        await testManager.getEmailConfirmationCode(userEmail1);
+
+      await agent
+        .post('/api/v1/auth/registration-confirmation/')
+        .send({
+          code: confirmationCode,
+        })
+        .expect(204);
+
+      await agent
+        .post(passwd_recovery_url)
+        .send({
+          email: userEmail1,
+          reCaptcha: 'sfadsfg',
+        })
+        .expect(204);
+
+      const recoveryCode = await testManager.getRecoveryCode(userEmail1);
+
+      await agent
         .post(new_password_url)
         .send({
-          newPassword: 'new271543523',
-          recoveryCode: randomUUID(),
+          newPassword: 'new271543523', // incorrect value
+          recoveryCode: recoveryCode,
         })
         .expect(400);
     });
@@ -63,7 +93,7 @@ describe('AuthController: /new-password', () => {
       await agent
         .post(new_password_url)
         .send({
-          NewPassword: 'new271543523', //key incorrect
+          NewPassword: 'new271543523', // key incorrect
           recoveryCode: randomUUID(),
         })
         .expect(400);
@@ -72,7 +102,7 @@ describe('AuthController: /new-password', () => {
         .post(new_password_url)
         .send({
           newPassword: 'new271543523',
-          RecoveryCode: randomUUID(), //key incorrect
+          RecoveryCode: randomUUID(), // key incorrect
         })
         .expect(400);
     });
@@ -116,7 +146,7 @@ describe('AuthController: /new-password', () => {
       await agent
         .post(new_password_url)
         .send({
-          newPassword: 'new271543523',
+          newPassword: userNewPassword,
           recoveryCode: recoveryCode,
         })
         .expect(204);
