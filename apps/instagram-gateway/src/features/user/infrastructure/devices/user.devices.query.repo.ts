@@ -15,7 +15,7 @@ export class UserDevicesQueryRepository {
 
   async findUserByDeviceId(userId: string, deviceId: string) {
     try {
-      return this.prismaClient.deviceAuthSession.findFirst({
+      return await this.prismaClient.deviceAuthSession.findFirst({
         where: { userId, deviceId },
       });
     } catch (e) {
@@ -29,8 +29,8 @@ export class UserDevicesQueryRepository {
 
   async findDeviceByDeviceId(deviceId: string) {
     try {
-      return this.prismaClient.deviceAuthSession.findFirst({
-        where: { deviceId },
+      return await this.prismaClient.deviceAuthSession.findFirst({
+        where: { deviceId: deviceId },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -43,7 +43,7 @@ export class UserDevicesQueryRepository {
 
   async findDeviceByUserId(userId: string) {
     try {
-      return this.prismaClient.deviceAuthSession.findFirst({
+      return await this.prismaClient.deviceAuthSession.findFirst({
         where: { userId },
       });
     } catch (e) {
@@ -57,7 +57,7 @@ export class UserDevicesQueryRepository {
 
   async findActiveDevices(userId: string) {
     try {
-      return this.prismaClient.deviceAuthSession.findMany({
+      return await this.prismaClient.deviceAuthSession.findMany({
         where: { userId },
         select: { deviceId: true, title: true, lastActiveDate: true },
       });
