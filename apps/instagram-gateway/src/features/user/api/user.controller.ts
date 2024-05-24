@@ -109,11 +109,14 @@ export class UserController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 10485760 }),
+          new MaxFileSizeValidator({
+            maxSize: 10485760,
+            message: invalidUserPhoto,
+          }),
           new FileTypeValidator({ fileType: 'image/jpeg|image/png' }),
         ],
         fileIsRequired: true,
-        exceptionFactory: (): void => {
+        exceptionFactory: () => {
           throw new BadRequestException([
             { message: invalidUserPhoto, field: 'file' },
           ]);
