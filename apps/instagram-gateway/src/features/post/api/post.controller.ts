@@ -33,6 +33,7 @@ import { PostImageViewModel } from '../models/output/post-images.view.model';
 import { UpdatePostModel } from '../models/input/update-post.model';
 import { PostQueryModel } from '../models/query/post.query.model';
 import { invalidImageInput } from '../../../base/constants/constants';
+import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
 
 import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
@@ -106,6 +107,7 @@ export class PostController {
     false,
   )
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(201)
   async uploadImagePost(
@@ -161,6 +163,7 @@ export class PostController {
     false,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(201)
   async createPost(
@@ -197,6 +200,7 @@ export class PostController {
     true,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updatePost(
@@ -228,6 +232,7 @@ export class PostController {
     true,
     false,
   )
+  @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async deletePost(
