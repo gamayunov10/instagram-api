@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ClientsModule } from '@nestjs/microservices';
 import { PrismaClient } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
 import { UsersRepository } from '../user/infrastructure/users.repo';
 import { UsersQueryRepository } from '../user/infrastructure/users.query.repo';
 import { fileServiceConfig } from '../../base/application/config/file-service.congig';
+import { UserDevicesQueryRepository } from '../user/infrastructure/devices/user.devices.query.repo';
 
 import { PostService } from './api/application/post.service';
 import { PostController } from './api/post.controller';
@@ -33,10 +35,14 @@ const useCases = [
   PublicPostsGetUseCase,
   PublicPostGetUseCase,
 ];
-const services = [PrismaClient, PostCleanupService];
+const services = [PrismaClient, PostCleanupService, JwtService];
 const adapters = [FileServiceAdapter];
 const repositories = [PostsRepository, UsersRepository];
-const queryRepositories = [UsersQueryRepository, PostsQueryRepository];
+const queryRepositories = [
+  UsersQueryRepository,
+  PostsQueryRepository,
+  UserDevicesQueryRepository,
+];
 
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
