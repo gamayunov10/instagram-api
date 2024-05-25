@@ -14,9 +14,16 @@ import { TestingController } from './testing/testing.controller';
 import { AppService } from './app.service';
 import { FileServiceAdapter } from './base/application/adapters/file-service.adapter';
 import { fileServiceConfig } from './base/application/config/file-service.congig';
+import { SubscriptionsModule } from './features/subscriptions/subscriptions.module';
 
 const services = [AppService, PrismaClient, PrismaService, FileServiceAdapter];
-const modules = [PostModule, UserModule, AuthModule, MailModule];
+const modules = [
+  PostModule,
+  UserModule,
+  AuthModule,
+  MailModule,
+  SubscriptionsModule,
+];
 const controllers = [AppController, TestingController];
 
 @Module({
