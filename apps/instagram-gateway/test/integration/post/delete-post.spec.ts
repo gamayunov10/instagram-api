@@ -181,7 +181,7 @@ describe('PostController: /post/:id, delete post', (): void => {
 
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
-      expectPostsView(response, 'Upload second post', user.id, '.png');
+      expectPostsView(response, 'Upload third post', user.id, '.png');
 
       await agent
         .delete(`${post_with_photo_url}${post.id}`)
