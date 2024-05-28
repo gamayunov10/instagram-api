@@ -7,17 +7,17 @@ import { IsValidNumber } from '../../../../infrastructure/decorators/is-nan.deco
 
 export class PostQueryModel {
   @ApiProperty({
-    description: `Sort direction: ${SortDirection.ASC}, ${SortDirection.DESC}`,
-    default: SortDirection.ASC,
+    default: SortDirection.DESC,
+    enum: SortDirection,
     required: false,
   })
   @IsIn([SortDirection.ASC, SortDirection.DESC])
   @IsOptional()
-  sortDirection?: string = SortDirection.ASC;
+  sortDirection?: string = SortDirection.DESC;
 
   @ApiProperty({
-    description: `Sort fields: ${PostSortFields.CREATED_AT}, ${PostSortFields.AUTHOR_ID}, ${PostSortFields.UPDATED_AT}`,
     default: PostSortFields.CREATED_AT,
+    enum: PostSortFields,
     required: false,
   })
   @IsIn([
