@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
+import path from 'path';
 
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
@@ -11,6 +12,7 @@ import {
 } from '../../base/constants/tests-strings';
 
 import { fill_out_profile_url } from './fill-out-profile.spec';
+import { upload_user_photo_url } from './upload-user-photo.spec';
 
 export const get_profile_info_url = '/api/v1/user/profile-information';
 
@@ -63,6 +65,14 @@ describe('UserController: /profile-information', () => {
         .auth(user.accessToken, { type: 'bearer' })
         .send(userProfileInputModel)
         .expect(204);
+
+      const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
+      await agent
+        .post(upload_user_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath)
+        .expect(204);
     });
 
     it(`should return 200 and get profile info`, async () => {
@@ -78,6 +88,7 @@ describe('UserController: /profile-information', () => {
         dateOfBirth: userProfileInputModel.dateOfBirth,
         city: userProfileInputModel.city,
         aboutMe: userProfileInputModel.aboutMe,
+        avatar: { url: expect.any(String) },
       });
     });
   });
