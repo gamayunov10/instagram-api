@@ -219,9 +219,9 @@ describe('PublicPostController: /public-posts', (): void => {
         1,
         8,
         2,
-        'description a',
-        user.id,
-        '.png',
+        'description b',
+        user2.id,
+        'jpeg',
       );
     });
   });
