@@ -4,6 +4,8 @@ import { IsOptional, Matches } from 'class-validator';
 import { IsNotEmptyString } from '../../../../infrastructure/decorators/is-not-empty-string.decorator';
 import { AgePolicy } from '../../../../infrastructure/decorators/age-policy.decorator';
 
+import { AvatarViewModel } from './avatar.view.model';
+
 export class UserProfileOutputModel {
   @ApiProperty({
     type: String,
@@ -46,4 +48,9 @@ export class UserProfileOutputModel {
   })
   @IsOptional()
   aboutMe?: string;
+
+  @ApiProperty({
+    type: Object(AvatarViewModel || null),
+  })
+  avatar: AvatarViewModel | null;
 }
