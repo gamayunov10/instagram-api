@@ -13,10 +13,18 @@ import { MailModule } from './features/mail/mail.module';
 import { TestingController } from './testing/testing.controller';
 import { AppService } from './app.service';
 import { FileServiceAdapter } from './base/application/adapters/file-service.adapter';
-import { fileServiceConfig } from './base/application/config/file-service.congig';
+import { fileServiceConfig } from './base/application/config/file-service.config';
 import { SubscriptionsModule } from './features/subscriptions/subscriptions.module';
+import { paymentsServiceConfig } from './base/application/config/payments-service.config';
+import { PaymentsServiceAdapter } from './base/application/adapters/payments-service.adapter';
 
-const services = [AppService, PrismaClient, PrismaService, FileServiceAdapter];
+const services = [
+  AppService,
+  PrismaClient,
+  PrismaService,
+  FileServiceAdapter,
+  PaymentsServiceAdapter,
+];
 const modules = [
   PostModule,
   UserModule,
@@ -31,7 +39,7 @@ const controllers = [AppController, TestingController];
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ClientsModule.registerAsync([fileServiceConfig()]),
+    ClientsModule.registerAsync([fileServiceConfig(), paymentsServiceConfig()]),
     ...modules,
     ScheduleModule.forRoot(),
   ],

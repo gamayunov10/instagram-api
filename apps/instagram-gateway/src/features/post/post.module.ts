@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
 import { UsersRepository } from '../user/infrastructure/users.repo';
 import { UsersQueryRepository } from '../user/infrastructure/users.query.repo';
-import { fileServiceConfig } from '../../base/application/config/file-service.congig';
+import { fileServiceConfig } from '../../base/application/config/file-service.config';
 import { UserDevicesQueryRepository } from '../user/infrastructure/devices/user.devices.query.repo';
 
 import { PostService } from './api/application/post.service';

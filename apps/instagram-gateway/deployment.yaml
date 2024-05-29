@@ -152,6 +152,16 @@ spec:
                  secretKeyRef:
                    name: instagram-gateway-production-config-secret
                    key: CRYPTO_SALT
+             - name: PAY_SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAY_SERVICE_HOST
+             - name: PAY_SERVICE_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAY_SERVICE_PORT
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

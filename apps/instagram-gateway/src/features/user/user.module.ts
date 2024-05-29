@@ -5,7 +5,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
-import { fileServiceConfig } from '../../base/application/config/file-service.congig';
+import { fileServiceConfig } from '../../base/application/config/file-service.config';
 import { PostsQueryRepository } from '../post/infrastructure/posts.query.repo';
 
 import { UserController } from './api/user.controller';
