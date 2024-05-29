@@ -7,6 +7,7 @@ import {
   userNotFound,
 } from '../../../../../base/constants/constants';
 import { UserProfileOutputModel } from '../../../models/output/user.profile.output.model';
+import { FileServiceAdapter } from '../../../../../base/application/adapters/file-service.adapter';
 
 export class GetProfileInfoCommand {
   constructor(public userId: string) {}
@@ -16,7 +17,10 @@ export class GetProfileInfoCommand {
 export class GetProfileInfoUseCase
   implements ICommandHandler<GetProfileInfoCommand>
 {
-  constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
+  constructor(
+    private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly fileServiceAdapter: FileServiceAdapter,
+  ) {}
 
   async execute(command: GetProfileInfoCommand) {
     const user = await this.usersQueryRepository.findUserById(command.userId);
@@ -30,6 +34,15 @@ export class GetProfileInfoUseCase
       };
     }
 
+    let avatarUrl = null;
+
+    if (user.avatarId) {
+      const avatar = await this.fileServiceAdapter.getFileUrlByFileId(
+        user.avatarId,
+      );
+      avatarUrl = { url: avatar };
+    }
+
     const result: UserProfileOutputModel = {
       username: user.username,
       firstName: user.firstName,
@@ -37,6 +50,7 @@ export class GetProfileInfoUseCase
       dateOfBirth: user.birthDate,
       city: user.city,
       aboutMe: user.aboutMe,
+      avatar: avatarUrl,
     };
 
     return result;
