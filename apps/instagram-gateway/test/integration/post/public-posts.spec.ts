@@ -221,7 +221,7 @@ describe('PublicPostController: /public-posts', (): void => {
         2,
         'description b',
         user2.id,
-        '.jpeg',
+        'jpeg',
       );
     });
   });
