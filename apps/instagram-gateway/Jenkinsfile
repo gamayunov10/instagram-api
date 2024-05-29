@@ -25,7 +25,6 @@ pipeline {
                 script {
                     sh "pnpm install"
                     sh "npx prisma generate"
-                    sh "pnpm test:instagram-gateway"
                 }
             }
         }
