@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
 import { fileServiceConfig } from '../../base/application/config/file-service.congig';
+import { PostsQueryRepository } from '../post/infrastructure/posts.query.repo';
 
 import { UserController } from './api/user.controller';
 import { UsersRepository } from './infrastructure/users.repo';
@@ -15,6 +16,8 @@ import { GetProfileInfoUseCase } from './api/application/use-cases/get-profile-i
 import { DeleteUserPhotoUseCase } from './api/application/use-cases/delete-user-photo.use-case';
 import { UploadUserPhotoUseCase } from './api/application/use-cases/upload-user-photo.use-case';
 import { UserDevicesQueryRepository } from './infrastructure/devices/user.devices.query.repo';
+import { ViewUserPublicInfoUseCase } from './api/application/use-cases/view-user-public-info.use-case';
+import { PublicUsersController } from './api/public.users.controller';
 
 const services = [PrismaClient, FileServiceAdapter, JwtService];
 const useCases = [
@@ -22,13 +25,26 @@ const useCases = [
   GetProfileInfoUseCase,
   DeleteUserPhotoUseCase,
   UploadUserPhotoUseCase,
+  ViewUserPublicInfoUseCase,
 ];
 const repositories = [UsersRepository];
-const queryRepositories = [UsersQueryRepository, UserDevicesQueryRepository];
+const adapters = [FileServiceAdapter];
+
+const queryRepositories = [
+  UsersQueryRepository,
+  UserDevicesQueryRepository,
+  PostsQueryRepository,
+];
 
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
-  controllers: [UserController],
-  providers: [...repositories, ...queryRepositories, ...services, ...useCases],
+  controllers: [UserController, PublicUsersController],
+  providers: [
+    ...repositories,
+    ...queryRepositories,
+    ...services,
+    ...useCases,
+    ...adapters,
+  ],
 })
 export class UserModule {}

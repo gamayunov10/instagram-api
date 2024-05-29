@@ -10,13 +10,16 @@ import {
   createUserInput,
   userProfileInputModel,
 } from '../../base/constants/tests-strings';
+import {
+  post_photo_url,
+  post_with_photo_url,
+} from '../post/create-post-with-photo.spec';
 
-import { fill_out_profile_url } from './fill-out-profile.spec';
 import { upload_user_photo_url } from './upload-user-photo.spec';
+import { fill_out_profile_url } from './fill-out-profile.spec';
+export const view_user_public_url = '/api/v1/public-user/';
 
-export const get_profile_info_url = '/api/v1/user/profile-information';
-
-describe('UserController: /profile-information', () => {
+describe('PublicUsersController: /public-user', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -38,21 +41,14 @@ describe('UserController: /profile-information', () => {
       await agent.delete('/api/v1/testing/all-data');
     });
 
-    it(`should return 401 access token is missing`, async () => {
-      await agent.get(get_profile_info_url).expect(401);
-    });
-
-    it(`should return 401 access token is invalid`, async () => {
-      await agent
-        .get(get_profile_info_url)
-        .auth('my-super-unexpected-token', { type: 'bearer' })
-        .expect(401);
+    it(`should return 404, there is no such username`, async () => {
+      await agent.get(view_user_public_url + 'incorrect').expect(404);
     });
   });
 
   describe('positive', () => {
     let user: UserCredentialsType;
-
+    let photoId;
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
     });
@@ -65,7 +61,25 @@ describe('UserController: /profile-information', () => {
         .auth(user.accessToken, { type: 'bearer' })
         .send(userProfileInputModel)
         .expect(204);
+    });
 
+    it(`getting data from a user's public page`, async () => {
+      const result = await agent
+        .get(view_user_public_url + `${userProfileInputModel.username}`)
+        .expect(200);
+
+      expect(result.body).toEqual({
+        username: userProfileInputModel.username,
+        aboutMe: userProfileInputModel.aboutMe,
+        following: 0,
+        followers: 0,
+        publicationsCount: 0,
+        publications: [],
+        avatar: null,
+      });
+    });
+
+    it(`uploading an avatar and creating posts`, async () => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       await agent
@@ -73,21 +87,45 @@ describe('UserController: /profile-information', () => {
         .auth(user.accessToken, { type: 'bearer' })
         .attach('file', imagePath)
         .expect(204);
+
+      photoId = await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath)
+        .expect(201);
+
+      await agent
+        .post(post_with_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          description: 'a',
+          images: [photoId.body.imageId],
+        })
+        .expect(201);
     });
 
-    it(`should return 200 and get profile info`, async () => {
+    it(`getting data from a user's public page after 
+    uploading an avatar and creating a post`, async () => {
       const result = await agent
-        .get(get_profile_info_url)
-        .auth(user.accessToken, { type: 'bearer' })
+        .get(view_user_public_url + `${userProfileInputModel.username}`)
         .expect(200);
 
       expect(result.body).toEqual({
         username: userProfileInputModel.username,
-        firstName: userProfileInputModel.firstName,
-        lastName: userProfileInputModel.lastName,
-        dateOfBirth: userProfileInputModel.dateOfBirth,
-        city: userProfileInputModel.city,
         aboutMe: userProfileInputModel.aboutMe,
+        following: 0,
+        followers: 0,
+        publicationsCount: 1, // we created one post
+        publications: [
+          {
+            id: expect.any(String),
+            authorId: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            description: 'a',
+            imagesUrl: expect.any(Array),
+          },
+        ],
         avatar: { url: expect.any(String) },
       });
     });
