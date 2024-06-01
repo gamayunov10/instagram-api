@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { ClientsModule } from '@nestjs/microservices';
@@ -17,6 +22,8 @@ import { fileServiceConfig } from './base/application/config/file-service.config
 import { SubscriptionsModule } from './features/subscriptions/subscriptions.module';
 import { paymentsServiceConfig } from './base/application/config/payments-service.config';
 import { PaymentsServiceAdapter } from './base/application/adapters/payments-service.adapter';
+import { RawBodyMiddleware } from './infrastructure/middlewares/raw-body.middleware';
+import { JsonBodyMiddleware } from './infrastructure/middlewares/json-body.middleware';
 
 const services = [
   AppService,
@@ -46,4 +53,15 @@ const controllers = [AppController, TestingController];
   controllers: [...controllers],
   providers: [...services],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  public configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(RawBodyMiddleware)
+      .forRoutes({
+        path: 'subscriptions/stripe-hook',
+        method: RequestMethod.POST,
+      })
+      .apply(JsonBodyMiddleware)
+      .forRoutes('*');
+  }
+}

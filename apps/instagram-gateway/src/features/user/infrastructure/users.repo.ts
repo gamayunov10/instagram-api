@@ -6,6 +6,7 @@ import { UserAuthInputModel } from '../../auth/models/input/user-auth.input.mode
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UserOauthCredInputModel } from '../../auth/models/input/user-oauth-cred.input.model';
 import { UserProfileInputModel } from '../models/input/user.profile.input.model';
+import { AccountType } from '../../../../../../libs/common/base/ts/enums/account-type.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -294,6 +295,31 @@ export class UsersRepository {
             birthDate: userProfileInputModel?.dateOfBirth?.toString() || null,
             city: userProfileInputModel?.city || null,
             aboutMe: userProfileInputModel?.aboutMe || null,
+          },
+        });
+
+        return !!updateResult;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async updateAccountType(userId: string, accountType: AccountType) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const updateResult = await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            accountType,
           },
         });
 

@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  provider         = "prisma-client-js"
+  binaryTargets    = ["native", "linux-musl-openssl-3.0.x"]
   connection_limit = 100000
 }
 
@@ -17,6 +17,7 @@ datasource db {
 
 model User {
   id                   String                @id @default(uuid())
+  accountType          String                @default("Personal") @map("account_type")
   email                String                @unique
   username             String                @unique
   firstName            String?               @map("first_name")
@@ -106,4 +107,39 @@ model PostImage {
   postId  String  @map("post_id")
 
   @@map("post_image")
+}
+
+model Subscriptions {
+  id                   String  @id @default(uuid())
+  subscriptionTimeType String  @map("subscription_time_type")
+  price                Int
+  availability         Boolean
+
+  @@map("subscriptions")
+}
+
+model SubscriptionOrder {
+  id         String   @id @default(uuid())
+  userId     String
+  productId  String   @map("product_id")
+  price      Int
+  paymentId  String   @map("payment_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("subscription_order")
+}
+
+model SubscriptionPaymentTransaction {
+  id                   String   @id @default(uuid())
+  price                Int
+  paymentSystem        String   @map("payment_system")
+  status               String
+  url                  String
+  openedPaymentData    Json     @map("opened_payment_data")
+  confirmedPaymentData Json     @map("confirmed_payment_data")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@map("subscription_payment_transaction")
 }

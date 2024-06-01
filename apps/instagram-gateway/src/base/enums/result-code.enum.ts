@@ -5,4 +5,5 @@ export enum ResultCode {
   Forbidden,
   Unauthorized,
   InternalServerError,
+  OutOfStock,
 }

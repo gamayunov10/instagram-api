@@ -1,36 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsNumber } from 'class-validator';
 
-import { SubscriptionTimeType } from '../../../../base/enums/subscription-time-type.enum';
-import { PaymentType } from '../../../../base/enums/payment-type.enum';
+import { SubscriptionTime } from '../../../../../../../libs/common/base/ts/enums/subscription-time.enum';
+import { PaymentType } from '../../../../../../../libs/common/base/ts/enums/payment-type.enum';
 
 export class CreateSubscriptionInputModel {
   @ApiProperty({
     type: String,
-    enum: SubscriptionTimeType,
+    enum: SubscriptionTime,
   })
   @IsIn([
-    SubscriptionTimeType.DAY,
-    SubscriptionTimeType.WEEKLY,
-    SubscriptionTimeType.MONTHLY,
+    SubscriptionTime.DAY,
+    SubscriptionTime.WEEKLY,
+    SubscriptionTime.MONTHLY,
   ])
-  typeSubscription: string;
+  subscriptionTimeType: SubscriptionTime;
 
   @ApiProperty({
     type: String,
     enum: PaymentType,
   })
-  @IsIn([PaymentType.STRIPE, PaymentType.PAYPAL, PaymentType.CREDIT_CARD])
-  paymentType: string;
+  @IsIn([PaymentType.STRIPE, PaymentType.PAYPAL])
+  paymentType: PaymentType;
 
   @ApiProperty({
     type: Number,
   })
   @IsNumber()
   amount: number;
-
-  @ApiProperty({
-    type: String,
-  })
-  baseUrl: string;
 }
