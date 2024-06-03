@@ -5,6 +5,7 @@ import { firstValueFrom, timeout } from 'rxjs';
 
 import {
   CREATE_PAYMENT,
+  PAYPAL_CAPTURE,
   STRIPE_SIGNATURE,
 } from '../../../../../../libs/common/base/constants/service.constants';
 import { ResultCode } from '../../enums/result-code.enum';
@@ -73,6 +74,33 @@ export class PaymentsServiceAdapter {
         code: ResultCode.InternalServerError,
         field: noneField,
         message: 'error: 3042',
+      };
+    }
+  }
+
+  async paypalCapture(payload: string) {
+    try {
+      const response = this.paymentsServiceClient
+        .send({ cmd: PAYPAL_CAPTURE }, payload)
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(response);
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: 3043',
       };
     }
   }

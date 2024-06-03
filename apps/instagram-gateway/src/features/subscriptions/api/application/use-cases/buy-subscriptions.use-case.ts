@@ -11,7 +11,7 @@ import {
   userIdField,
   userNotFound,
 } from '../../../../../base/constants/constants';
-import { UsersQueryRepository } from '../../../../user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 import { MakePaymentRequest } from '../../../../../../../../libs/common/base/subscriptions/make-payment-request';
 import { PaymentIds } from '../../../../../../../../libs/common/base/ts/enums/payment-ids.enum';
@@ -79,19 +79,16 @@ export class BuySubscriptionsUseCase
 
     const payload: MakePaymentRequest = {
       paymentType: command.createSubscriptionInputModel.paymentType,
-      success_url: this.configService.get<string>('STRIPE_SUCCESS_URL'),
-      cancel_url: this.configService.get<string>('STRIPE_CANCEL_URL'),
+      success_url: this.configService.get<string>('PAYMENT_SUCCESS_URL'),
+      cancel_url: this.configService.get<string>('PAYMENT_CANCEL_URL'),
       product_data: {
         name: command.createSubscriptionInputModel.subscriptionTimeType,
         description: `${command.createSubscriptionInputModel.subscriptionTimeType} subscription`,
       },
-      unit_amount:
-        availableSubscription.price *
-        command.createSubscriptionInputModel.amount,
+      unit_amount: availableSubscription.price,
       quantity: Number(command.createSubscriptionInputModel.amount),
       client_reference_id: createdPaymentTr,
     };
-
     const result = await this.paymentsServiceAdapter.makePayment(payload);
 
     if (!result.data) {
@@ -106,9 +103,9 @@ export class BuySubscriptionsUseCase
         availableSubscription.price *
         command.createSubscriptionInputModel.amount,
       paymentSystem: command.createSubscriptionInputModel.paymentType,
-      status: result.res.status,
-      url: result.res.url,
-      openedPaymentData: result.res,
+      status: result.res.response.status,
+      url: result.res.response.url,
+      openedPaymentData: result.res.response.openedPaymentData,
       confirmedPaymentData: null,
     };
 
@@ -150,7 +147,7 @@ export class BuySubscriptionsUseCase
     return {
       data: true,
       code: ResultCode.Success,
-      response: { url: result.res.url },
+      response: { url: result.res.response.url },
     };
   }
 }

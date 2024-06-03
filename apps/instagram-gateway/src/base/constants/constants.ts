@@ -58,6 +58,7 @@ export const invalidUserPhoto = `The photo must be less than 10 Mb and have JPEG
 export const invalidImagesIds = 'images should be valid array of image ids';
 export const invalidPostPhoto =
   'The photo must be less than 20 Mb and have JPEG or PNG format';
+export const paymentTransactionFailed = 'transaction failed, please try again';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;

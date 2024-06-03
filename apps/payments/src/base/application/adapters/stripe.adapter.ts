@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
 
 import { MakePaymentRequest } from '../../../../../../libs/common/base/subscriptions/make-payment-request';
+import { ResultCode } from '../../../../../instagram-gateway/src/base/enums/result-code.enum';
 
 export class StripeAdapter {
   configService = new ConfigService();
@@ -9,7 +10,7 @@ export class StripeAdapter {
   constructor() {}
 
   public async makePayment(payload: MakePaymentRequest) {
-    return await this.stripe.checkout.sessions.create({
+    const result = await this.stripe.checkout.sessions.create({
       success_url: payload.success_url,
       cancel_url: payload.cancel_url,
       line_items: [
@@ -28,5 +29,17 @@ export class StripeAdapter {
       mode: 'payment',
       client_reference_id: payload.client_reference_id,
     });
+
+    const res = {
+      status: result.status,
+      url: result.url,
+      openedPaymentData: result,
+    };
+
+    return {
+      data: true,
+      code: ResultCode.Success,
+      response: res,
+    };
   }
 }

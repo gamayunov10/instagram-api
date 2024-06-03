@@ -1,12 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import * as Buffer from 'node:buffer';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
 import { SubscriptionsQueryRepository } from '../../../infrastructure/subscriptions.query.repo';
 import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 import { StripeSignatureRequest } from '../../../../../../../../libs/common/base/subscriptions/stripe-signature-request';
-import { UsersRepository } from '../../../../user/infrastructure/users.repo';
+import { UsersRepository } from '../../../../users/infrastructure/users.repo';
 import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
 
 export class StripeHookCommand {
