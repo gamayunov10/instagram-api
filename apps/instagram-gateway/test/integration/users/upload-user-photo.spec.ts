@@ -10,7 +10,7 @@ import { createUserInput } from '../../base/constants/tests-strings';
 
 export const upload_user_photo_url = '/api/v1/user/upload-user-photo';
 
-describe('UserController: /upload-user-photo', () => {
+describe('UsersController: /upload-user-photo', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;

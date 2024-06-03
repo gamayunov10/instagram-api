@@ -6,9 +6,9 @@ import { JwtService } from '@nestjs/jwt';
 
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
 import { fileServiceConfig } from '../../base/application/config/file-service.config';
-import { PostsQueryRepository } from '../post/infrastructure/posts.query.repo';
+import { PostsQueryRepository } from '../posts/infrastructure/posts.query.repo';
 
-import { UserController } from './api/user.controller';
+import { UsersController } from './api/users.controller';
 import { UsersRepository } from './infrastructure/users.repo';
 import { FillOutProfileUseCase } from './api/application/use-cases/fill-out-profile.use-case';
 import { UsersQueryRepository } from './infrastructure/users.query.repo';
@@ -38,7 +38,7 @@ const queryRepositories = [
 
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
-  controllers: [UserController, PublicUsersController],
+  controllers: [UsersController, PublicUsersController],
   providers: [
     ...repositories,
     ...queryRepositories,
@@ -47,4 +47,4 @@ const queryRepositories = [
     ...adapters,
   ],
 })
-export class UserModule {}
+export class UsersModule {}

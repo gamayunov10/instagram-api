@@ -27,4 +27,4 @@ import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-r
   ],
   providers: [SendRegistrationMailUseCase, SendPasswordRecoveryUseCase],
 })
-export class MailModule {}
+export class NotificationsModule {}

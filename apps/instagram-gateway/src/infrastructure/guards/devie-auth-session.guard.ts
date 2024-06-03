@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserDevicesQueryRepository } from '../../features/user/infrastructure/devices/user.devices.query.repo';
-import { UsersQueryRepository } from '../../features/user/infrastructure/users.query.repo';
+import { UserDevicesQueryRepository } from '../../features/users/infrastructure/devices/user.devices.query.repo';
+import { UsersQueryRepository } from '../../features/users/infrastructure/users.query.repo';
 import { exceptionHandler } from '../exception-filters/exception-handler';
 import { ResultCode } from '../../base/enums/result-code.enum';
 

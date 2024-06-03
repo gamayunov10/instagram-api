@@ -13,7 +13,7 @@ import { expectCreatedPostWithPhoto } from '../../base/utils/post/expectCreatedP
 export const post_photo_url = '/api/v1/post/photo/';
 export const post_with_photo_url = '/api/v1/post/';
 
-describe('PostController: /post/photo; /post;', (): void => {
+describe('PostsController: /post/photo; /post;', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;

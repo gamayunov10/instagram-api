@@ -38,7 +38,7 @@ import { UploadUserPhotoCommand } from './application/use-cases/upload-user-phot
 
 @Controller('user')
 @ApiTags('User')
-export class UserController {
+export class UsersController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Get('profile-information')

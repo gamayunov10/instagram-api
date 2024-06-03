@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 import { ExceptionResultType } from '../../../../../../base/types/exception.type';
 import {
   postIdField,

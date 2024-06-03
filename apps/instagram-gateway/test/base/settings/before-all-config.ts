@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
 import { TestManager } from '../managers/test.manager';
-import { UsersQueryRepository } from '../../../src/features/user/infrastructure/users.query.repo';
-import { PostsRepository } from '../../../src/features/post/infrastructure/posts.repo';
+import { UsersQueryRepository } from '../../../src/features/users/infrastructure/users.query.repo';
+import { PostsRepository } from '../../../src/features/posts/infrastructure/posts.repo';
 
 import { initializeApp } from './initialize-app';
 

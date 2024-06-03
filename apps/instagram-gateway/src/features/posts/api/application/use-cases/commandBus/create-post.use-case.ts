@@ -9,7 +9,7 @@ import {
   userIdField,
   userNotFound,
 } from '../../../../../../base/constants/constants';
-import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 
 export class CreatePostCommand {
   constructor(

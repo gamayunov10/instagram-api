@@ -5,12 +5,12 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 
-import { UsersRepository } from '../user/infrastructure/users.repo';
-import { UsersQueryRepository } from '../user/infrastructure/users.query.repo';
+import { UsersRepository } from '../users/infrastructure/users.repo';
+import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
 import { IsEmailAlreadyExistConstraint } from '../../infrastructure/decorators/unique-email.decorator';
 import { IsUsernameAlreadyExistConstraint } from '../../infrastructure/decorators/unique-username.decorator';
-import { UserDevicesRepository } from '../user/infrastructure/devices/user.devices.repo';
-import { UserDevicesQueryRepository } from '../user/infrastructure/devices/user.devices.query.repo';
+import { UserDevicesRepository } from '../users/infrastructure/devices/user.devices.repo';
+import { UserDevicesQueryRepository } from '../users/infrastructure/devices/user.devices.query.repo';
 
 import { AuthService } from './api/application/auth.service';
 import { AuthController } from './api/auth.controller';

@@ -5,13 +5,13 @@ import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
 import { FileServiceAdapter } from '../../base/application/adapters/file-service.adapter';
-import { UsersRepository } from '../user/infrastructure/users.repo';
-import { UsersQueryRepository } from '../user/infrastructure/users.query.repo';
+import { UsersRepository } from '../users/infrastructure/users.repo';
+import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
 import { fileServiceConfig } from '../../base/application/config/file-service.config';
-import { UserDevicesQueryRepository } from '../user/infrastructure/devices/user.devices.query.repo';
+import { UserDevicesQueryRepository } from '../users/infrastructure/devices/user.devices.query.repo';
 
-import { PostService } from './api/application/post.service';
-import { PostController } from './api/post.controller';
+import { PostsService } from './api/application/posts.service';
+import { PostsController } from './api/posts.controller';
 import { UploadPostPhotoUseCase } from './api/application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostUseCase } from './api/application/use-cases/commandBus/create-post.use-case';
 import { PostsRepository } from './infrastructure/posts.repo';
@@ -23,7 +23,7 @@ import { PublicPostsGetUseCase } from './api/application/use-cases/queryBus/publ
 import { PublicPostsController } from './api/public.posts.controller';
 import { DeletePostUseCase } from './api/application/use-cases/delete-post.use-case';
 import { PublicPostGetUseCase } from './api/application/use-cases/queryBus/public-post-get-use.case';
-import { PostCleanupService } from './api/application/post.cleanup.service';
+import { PostsCleanupService } from './api/application/posts.cleanup.service';
 
 const useCases = [
   UploadPostPhotoUseCase,
@@ -35,7 +35,7 @@ const useCases = [
   PublicPostsGetUseCase,
   PublicPostGetUseCase,
 ];
-const services = [PrismaClient, PostCleanupService, JwtService];
+const services = [PrismaClient, PostsCleanupService, JwtService];
 const adapters = [FileServiceAdapter];
 const repositories = [PostsRepository, UsersRepository];
 const queryRepositories = [
@@ -46,10 +46,10 @@ const queryRepositories = [
 
 @Module({
   imports: [CqrsModule, ClientsModule.registerAsync([fileServiceConfig()])],
-  controllers: [PostController, PublicPostsController],
+  controllers: [PostsController, PublicPostsController],
   exports: [PostsRepository, PostsQueryRepository],
   providers: [
-    PostService,
+    PostsService,
     ...useCases,
     ...services,
     ...adapters,
@@ -57,4 +57,4 @@ const queryRepositories = [
     ...queryRepositories,
   ],
 })
-export class PostModule {}
+export class PostsModule {}

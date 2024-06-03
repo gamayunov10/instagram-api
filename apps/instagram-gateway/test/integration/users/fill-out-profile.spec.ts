@@ -18,7 +18,7 @@ import { expectUserProfile } from '../../base/utils/user/expectUserProfile';
 
 export const fill_out_profile_url = '/api/v1/user/fill-out-profile';
 
-describe('UserController: /fill-out-profile', () => {
+describe('UsersController: /fill-out-profile', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;

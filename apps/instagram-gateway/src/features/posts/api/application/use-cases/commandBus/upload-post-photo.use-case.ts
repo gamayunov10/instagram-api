@@ -2,10 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import sharp from 'sharp';
 
-import { UserImageInputModel } from '../../../../../user/models/input/user.image.input.model';
+import { UserImageInputModel } from '../../../../../users/models/input/user.image.input.model';
 import { PostImageInputModel } from '../../../../models/input/post.image.input.model';
 import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
-import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   fileField,

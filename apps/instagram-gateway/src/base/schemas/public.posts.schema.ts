@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { PostViewModel } from '../../features/post/models/output/post.view.model';
+import { PostViewModel } from '../../features/posts/models/output/post.view.model';
 
 import { PaginatorSchema } from './paginator.schema';
 

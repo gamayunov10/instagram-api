@@ -10,11 +10,10 @@ import { ClientsModule } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
-import { PostModule } from './features/post/post.module';
-import { UserModule } from './features/user/user.module';
+import { PostsModule } from './features/posts/posts.module';
 import { PrismaService } from './database/prisma/prisma.service';
 import { AuthModule } from './features/auth/auth.module';
-import { MailModule } from './features/mail/mail.module';
+import { NotificationsModule } from './features/notifications/notifications.module';
 import { TestingController } from './testing/testing.controller';
 import { AppService } from './app.service';
 import { FileServiceAdapter } from './base/application/adapters/file-service.adapter';
@@ -24,6 +23,7 @@ import { paymentsServiceConfig } from './base/application/config/payments-servic
 import { PaymentsServiceAdapter } from './base/application/adapters/payments-service.adapter';
 import { RawBodyMiddleware } from './infrastructure/middlewares/raw-body.middleware';
 import { JsonBodyMiddleware } from './infrastructure/middlewares/json-body.middleware';
+import { UsersModule } from './features/users/users.module';
 
 const services = [
   AppService,
@@ -33,10 +33,10 @@ const services = [
   PaymentsServiceAdapter,
 ];
 const modules = [
-  PostModule,
-  UserModule,
+  PostsModule,
+  UsersModule,
   AuthModule,
-  MailModule,
+  NotificationsModule,
   SubscriptionsModule,
 ];
 const controllers = [AppController, TestingController];

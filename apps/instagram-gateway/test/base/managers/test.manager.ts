@@ -1,12 +1,12 @@
 import { INestApplication } from '@nestjs/common';
 import supertest from 'supertest';
 
-import { UsersQueryRepository } from '../../../src/features/user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../../src/features/users/infrastructure/users.query.repo';
 import { registration_url } from '../../integration/auth/registration.spec';
 import { registration_confirmation_url } from '../../integration/auth/registration-confirmation.spec';
 import { login_url } from '../../integration/auth/login.spec';
 import { UserCredentialsType, UserInputModelType } from '../types/testing.type';
-import { PostsRepository } from '../../../src/features/post/infrastructure/posts.repo';
+import { PostsRepository } from '../../../src/features/posts/infrastructure/posts.repo';
 
 export class TestManager {
   constructor(

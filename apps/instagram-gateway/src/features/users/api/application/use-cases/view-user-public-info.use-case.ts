@@ -7,9 +7,9 @@ import {
   userNotFound,
 } from '../../../../../base/constants/constants';
 import { UserPublicProfileOutputModel } from '../../../models/output/user.public.profile.output.model';
-import { PostsQueryRepository } from '../../../../post/infrastructure/posts.query.repo';
-import { PostsGetCommand } from '../../../../post/api/application/use-cases/queryBus/posts-get-use.case';
-import { PostQueryModel } from '../../../../post/models/query/post.query.model';
+import { PostsQueryRepository } from '../../../../posts/infrastructure/posts.query.repo';
+import { PostsGetCommand } from '../../../../posts/api/application/use-cases/queryBus/posts-get-use.case';
+import { PostQueryModel } from '../../../../posts/models/query/post.query.model';
 import { SortDirection } from '../../../../../base/enums/sort/sort.direction.enum';
 import { PostSortFields } from '../../../../../base/enums/sort/post/post.sort.fields.enum';
 import { ExceptionResultType } from '../../../../../base/types/exception.type';

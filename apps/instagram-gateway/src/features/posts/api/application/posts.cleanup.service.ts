@@ -8,8 +8,8 @@ import { NodeEnv } from '../../../../base/enums/node-env.enum';
 import { FileServiceAdapter } from '../../../../base/application/adapters/file-service.adapter';
 
 @Injectable()
-export class PostCleanupService {
-  private readonly logger = new Logger(PostCleanupService.name);
+export class PostsCleanupService {
+  private readonly logger = new Logger(PostsCleanupService.name);
   constructor(
     private readonly postsRepo: PostsRepository,
     private readonly postsQueryRepo: PostsQueryRepository,

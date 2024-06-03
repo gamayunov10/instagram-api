@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
-import { PostViewModel } from '../../../post/models/output/post.view.model';
+import { PostViewModel } from '../../../posts/models/output/post.view.model';
 
 import { AvatarViewModel } from './avatar.view.model';
 

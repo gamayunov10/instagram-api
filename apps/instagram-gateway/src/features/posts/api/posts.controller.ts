@@ -44,7 +44,7 @@ import { DeletePostCommand } from './application/use-cases/delete-post.use-case'
 
 @Controller('post')
 @ApiTags('Post')
-export class PostController {
+export class PostsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

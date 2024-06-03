@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '../../infrastructure/users.repo';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
