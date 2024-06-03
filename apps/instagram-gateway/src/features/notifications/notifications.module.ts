@@ -4,7 +4,13 @@ import { ConfigService } from '@nestjs/config';
 
 import { SendRegistrationMailUseCase } from './application/use-cases/send-registration-mail.use-case';
 import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-recovery-mail.use-case';
+import { SendSuccessSubscriptionUseCase } from './application/use-cases/send-success-subscription-message.use-case';
 
+const useCases = [
+  SendRegistrationMailUseCase,
+  SendPasswordRecoveryUseCase,
+  SendSuccessSubscriptionUseCase,
+];
 @Module({
   imports: [
     MailerModule.forRootAsync({
@@ -19,12 +25,12 @@ import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-r
           secure: true,
         },
         defaults: {
-          from: `"Sir Alex" <${configService.get<string>('EMAIL')}>`,
+          from: `"Warriors" <${configService.get<string>('EMAIL')}>`,
         },
       }),
       inject: [ConfigService],
     }),
   ],
-  providers: [SendRegistrationMailUseCase, SendPasswordRecoveryUseCase],
+  providers: [...useCases],
 })
 export class NotificationsModule {}

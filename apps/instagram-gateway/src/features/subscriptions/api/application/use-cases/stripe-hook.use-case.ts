@@ -1,4 +1,6 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
@@ -7,6 +9,9 @@ import { PaymentsServiceAdapter } from '../../../../../base/application/adapters
 import { StripeSignatureRequest } from '../../../../../../../../libs/common/base/subscriptions/stripe-signature-request';
 import { UsersRepository } from '../../../../users/infrastructure/users.repo';
 import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
+import { SendSuccessSubscriptionCommand } from '../../../../notifications/application/use-cases/send-success-subscription-message.use-case';
+import { NodeEnv } from '../../../../../base/enums/node-env.enum';
+import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 
 export class StripeHookCommand {
   constructor(
@@ -17,10 +22,15 @@ export class StripeHookCommand {
 
 @CommandHandler(StripeHookCommand)
 export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
+  private readonly logger = new Logger(StripeHookUseCase.name);
+
   constructor(
+    private readonly commandBus: CommandBus,
+    private readonly configService: ConfigService,
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly usersQueryRepository: UsersQueryRepository,
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
   ) {}
 
@@ -59,6 +69,22 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
         order.userId,
         AccountType.BUSINESS,
       );
+
+      const user = await this.usersQueryRepository.findUserById(order.userId);
+
+      try {
+        await this.commandBus.execute(
+          new SendSuccessSubscriptionCommand(user.username, user.email),
+        );
+      } catch (e) {
+        if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+          this.logger.error(e);
+        }
+
+        await this.commandBus.execute(
+          new SendSuccessSubscriptionCommand(user.username, user.email),
+        );
+      }
     }
 
     return {
