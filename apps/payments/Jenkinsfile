@@ -20,6 +20,13 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Unit tests') {
+            steps {
+                script {
+                    sh "pnpm install"
+                }
+            }
+        }
         stage('Build docker image') {
             steps {
                 echo "Build image started..."
