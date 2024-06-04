@@ -354,7 +354,7 @@ export class AuthController {
     false,
     false,
     204,
-    'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+    'Input data is accepted. Email with confirmation code will be send to passed email address. Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=yourcodehere',
     false,
     true,
     ApiErrorMessages,
@@ -364,7 +364,7 @@ export class AuthController {
     false,
   )
   @HttpCode(204)
-  async resendEmail(@Body() emailInputModel: EmailInputModel) {
+  async resendEmail(@Body() emailInputModel: EmailInputModel): Promise<void> {
     const result = await this.commandBus.execute(
       new RegistrationEmailResendCommand(emailInputModel),
     );
