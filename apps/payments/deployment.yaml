@@ -92,26 +92,11 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: S3_BUCKET_NAME_PLUS_S3_DOMAIN
-             - name: MONGO_URL_FILES
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: MONGO_URL_FILES
              - name: SERVICE_HOST
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: SERVICE_HOST
-             - name: FILE_SERVICE_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: FILE_SERVICE_PORT
-             - name: ACCESS_TOKEN_SECRET
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: ACCESS_TOKEN_SECRET
              - name: ACCESS_TOKEN_EXP
                valueFrom:
                  secretKeyRef:
@@ -142,11 +127,6 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: RECAPTCHA_SECRET_KEY
-             - name: APP_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: APP_PORT
              - name: CRYPTO_SALT
                valueFrom:
                  secretKeyRef:
@@ -162,11 +142,6 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: PAY_SERVICE_PORT
-             - name: FILE_SERVICE_HOST
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: FILE_SERVICE_HOST
              - name: STRIPE_SECRET
                valueFrom:
                  secretKeyRef:
