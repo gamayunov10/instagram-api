@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { UserDevicesRepository } from '../../../../../user/infrastructure/devices/user.devices.repo';
+import { UserDevicesRepository } from '../../../../../users/infrastructure/devices/user.devices.repo';
 
 export class TerminateOtherSessionsCommand {
   constructor(

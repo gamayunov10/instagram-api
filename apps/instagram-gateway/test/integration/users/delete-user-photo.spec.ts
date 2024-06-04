@@ -12,7 +12,7 @@ import { upload_user_photo_url } from './upload-user-photo.spec';
 
 export const delete_user_photo_url = '/api/v1/user/delete-user-photo';
 
-describe('UserController: /delete-user-photo', () => {
+describe('UsersController: /delete-user-photo', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -50,7 +50,7 @@ describe('UserController: /delete-user-photo', () => {
     it(`should not Delete user photo if bearer token is incorrect`, async (): Promise<void> => {
       await agent
         .delete(delete_user_photo_url)
-        .auth('user.accessToken', { type: 'bearer' }) // incorrect
+        .auth('users.accessToken', { type: 'bearer' }) // incorrect
         .expect(401);
     });
 

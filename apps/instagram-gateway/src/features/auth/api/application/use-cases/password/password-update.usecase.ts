@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { NewPasswordModel } from '../../../../models/input/new-password.model';
-import { UsersRepository } from '../../../../../user/infrastructure/users.repo';
-import { UsersQueryRepository } from '../../../../../user/infrastructure/users.query.repo';
+import { UsersRepository } from '../../../../../users/infrastructure/users.repo';
+import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 import { exceptionHandler } from '../../../../../../infrastructure/exception-filters/exception-handler';
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {

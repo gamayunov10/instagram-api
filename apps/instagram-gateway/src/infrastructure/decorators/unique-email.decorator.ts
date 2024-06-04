@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 
-import { UsersQueryRepository } from '../../features/user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../features/users/infrastructure/users.query.repo';
 
 @ValidatorConstraint({ name: 'IsEmailAlreadyExist', async: true })
 @Injectable()

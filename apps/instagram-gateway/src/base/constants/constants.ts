@@ -7,6 +7,8 @@ export const emailField = 'email';
 export const usernameField = 'username';
 export const environmentField = 'environment';
 export const userIdField = 'userId';
+export const subscriptionField = 'subscription';
+export const subscriptionTimeTypeField = 'subscriptionTimeType';
 export const postIdField = 'postId';
 
 export const deviceIDField = 'deviceId';
@@ -15,6 +17,7 @@ export const emailOrPasswordField = 'email or password';
 
 // Validation
 export const userNotFound = 'User not found';
+export const subscriptionNotAvailable = 'Subscription not available';
 export const postNotFound = 'Post not found';
 export const postNotSaved = 'Post has not been saved';
 export const deviceNotFound = 'Device not found';
@@ -55,6 +58,7 @@ export const invalidUserPhoto = `The photo must be less than 10 Mb and have JPEG
 export const invalidImagesIds = 'images should be valid array of image ids';
 export const invalidPostPhoto =
   'The photo must be less than 20 Mb and have JPEG or PNG format';
+export const paymentTransactionFailed = 'transaction failed, please try again';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;

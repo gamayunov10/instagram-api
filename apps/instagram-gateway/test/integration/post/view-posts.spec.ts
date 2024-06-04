@@ -10,7 +10,7 @@ import {
   createUserInput2,
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
-import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
+import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
 import { expectPostsView } from '../../base/utils/post/expectPostsView';
 
 import {
@@ -20,7 +20,7 @@ import {
 
 export const post_url = '/api/v1/post/';
 
-describe('PostController: /post/:id, update post', (): void => {
+describe('PostsController: /post/:id, update post', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;

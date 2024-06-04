@@ -10,8 +10,8 @@ import {
   createUserInput2,
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
-import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
-import { PostCleanupService } from '../../../src/features/post/api/application/post.cleanup.service';
+import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
+import { PostsCleanupService } from '../../../src/features/posts/api/application/posts.cleanup.service';
 import { expectPostsView } from '../../base/utils/post/expectPostsView';
 import { expectPostById } from '../../base/utils/post/expectPostById';
 
@@ -22,7 +22,7 @@ import {
 import { post_url } from './view-posts.spec';
 import { public_posts_url } from './public-posts.spec';
 
-describe('PostController: /post/:id, delete post', (): void => {
+describe('PostsController: /post/:id, delete post', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -192,7 +192,7 @@ describe('PostController: /post/:id, delete post', (): void => {
     it(`Should return [] after running the database cleanup method`, async (): Promise<void> => {
       await testManager.updateDeletedAtForTests(post2.id);
 
-      const cleanupService = app.get(PostCleanupService);
+      const cleanupService = app.get(PostsCleanupService);
 
       await cleanupService.clearDeletedPostsFromDB();
 

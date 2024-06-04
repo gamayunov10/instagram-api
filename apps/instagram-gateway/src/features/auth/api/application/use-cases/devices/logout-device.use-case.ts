@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserDevicesRepository } from '../../../../../user/infrastructure/devices/user.devices.repo';
+import { UserDevicesRepository } from '../../../../../users/infrastructure/devices/user.devices.repo';
 import { ExceptionResultType } from '../../../../../../base/types/exception.type';
-import { UserDevicesQueryRepository } from '../../../../../user/infrastructure/devices/user.devices.query.repo';
+import { UserDevicesQueryRepository } from '../../../../../users/infrastructure/devices/user.devices.query.repo';
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   deviceIDField,

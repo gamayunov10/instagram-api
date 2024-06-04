@@ -43,7 +43,7 @@ import { UserLoginInputModel } from '../models/input/user-login.input.model';
 import { AccessTokenView } from '../models/output/access-token-view.model';
 import { GoogleOAuth2Guard } from '../../../infrastructure/guards/google-oauth2.guard';
 import { GitHubOAuth2Guard } from '../../../infrastructure/guards/github-oauth2.guard';
-import { UsersQueryRepository } from '../../user/infrastructure/users.query.repo';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repo';
 import { JwtBearerGuard } from '../guards/jwt-bearer.guard';
 import { UserIdFromGuard } from '../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
@@ -52,7 +52,7 @@ import { MeView } from '../models/output/me-view.model';
 import { EmailInputModel } from '../models/input/email-input.model';
 import { NewPasswordModel } from '../models/input/new-password.model';
 import { DeviceViewModel } from '../models/output/device-view.model';
-import { UserDevicesQueryRepository } from '../../user/infrastructure/devices/user.devices.query.repo';
+import { UserDevicesQueryRepository } from '../../users/infrastructure/devices/user.devices.query.repo';
 import { RecaptchaV2Guard } from '../../../infrastructure/guards/recaptcha-v2.guard';
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
 

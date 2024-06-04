@@ -37,5 +37,8 @@ export const exceptionHandler = (
     case ResultCode.InternalServerError: {
       throw new InternalServerErrorException(exceptionObject);
     }
+    case ResultCode.OutOfStock: {
+      throw new NotFoundException(exceptionObject);
+    }
   }
 };

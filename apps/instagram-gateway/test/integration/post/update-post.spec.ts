@@ -10,14 +10,14 @@ import {
   createUserInput2,
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
-import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
+import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
 
 import {
   post_photo_url,
   post_with_photo_url,
 } from './create-post-with-photo.spec';
 
-describe('PostController: /post/:id, update post', (): void => {
+describe('PostsController: /post/:id, update post', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;

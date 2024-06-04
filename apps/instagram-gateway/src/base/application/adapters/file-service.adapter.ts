@@ -39,7 +39,10 @@ export class FileServiceAdapter {
         res: result,
       };
     } catch (e) {
-      this.logger.error(e);
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
       return {
         data: false,
         code: ResultCode.InternalServerError,
@@ -59,7 +62,10 @@ export class FileServiceAdapter {
 
       return result.url;
     } catch (e) {
-      this.logger.error(e);
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
       return {
         data: false,
         code: ResultCode.InternalServerError,
@@ -83,7 +89,10 @@ export class FileServiceAdapter {
         res: result.fileId,
       };
     } catch (e) {
-      this.logger.error(e);
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
       return {
         data: false,
         code: ResultCode.InternalServerError,

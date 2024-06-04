@@ -1,0 +1,5 @@
+export enum PaymentIds {
+  DAY = 'DAY_PAYMENT_ID',
+  WEEKLY = 'WEEKLY_PAYMENT_ID',
+  MONTHLY = 'MONTHLY_PAYMENT_ID',
+}

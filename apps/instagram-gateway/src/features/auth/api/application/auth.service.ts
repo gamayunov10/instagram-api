@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 
-import { UsersQueryRepository } from '../../../user/infrastructure/users.query.repo';
-import { UsersRepository } from '../../../user/infrastructure/users.repo';
+import { UsersQueryRepository } from '../../../users/infrastructure/users.query.repo';
+import { UsersRepository } from '../../../users/infrastructure/users.repo';
 import { UserOauthCredInputModel } from '../../models/input/user-oauth-cred.input.model';
 
 @Injectable()

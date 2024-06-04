@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from 'supertest/lib/agent';
 
-import { SendRegistrationMailUseCase } from '../../../src/features/mail/application/use-cases/send-registration-mail.use-case';
+import { SendRegistrationMailUseCase } from '../../../src/features/notifications/application/use-cases/send-registration-mail.use-case';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
 import {
   lorem10,

@@ -10,7 +10,7 @@ import {
   createUserInput2,
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
-import { PostViewModel } from '../../../src/features/post/models/output/post.view.model';
+import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
 import { expectPublicPostsView } from '../../base/utils/post/expectPublicPostsView';
 
 import {

@@ -6,7 +6,10 @@ import { appSettings } from './settings/app.settings';
 
 async function bootstrap() {
   const logger = new Logger();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true,
+    bodyParser: false,
+  });
 
   appSettings.applySettings(app);
 

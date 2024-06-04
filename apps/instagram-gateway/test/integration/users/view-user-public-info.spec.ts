@@ -17,6 +17,7 @@ import {
 
 import { upload_user_photo_url } from './upload-user-photo.spec';
 import { fill_out_profile_url } from './fill-out-profile.spec';
+
 export const view_user_public_url = '/api/v1/public-user/';
 
 describe('PublicUsersController: /public-user', () => {

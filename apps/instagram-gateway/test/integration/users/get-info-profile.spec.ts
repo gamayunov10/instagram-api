@@ -16,7 +16,7 @@ import { upload_user_photo_url } from './upload-user-photo.spec';
 
 export const get_profile_info_url = '/api/v1/user/profile-information';
 
-describe('UserController: /profile-information', () => {
+describe('UsersController: /profile-information', () => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
