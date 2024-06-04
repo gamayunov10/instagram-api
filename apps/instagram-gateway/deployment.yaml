@@ -167,6 +167,51 @@ spec:
                  secretKeyRef:
                    name: instagram-gateway-production-config-secret
                    key: FILE_SERVICE_HOST
+             - name: STRIPE_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: STRIPE_SECRET
+             - name: STRIPE_SIGNING_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: STRIPE_SIGNING_SECRET
+             - name: PAYMENT_SUCCESS_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYMENT_SUCCESS_URL
+             - name: PAYMENT_CANCEL_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYMENT_CANCEL_URL
+             - name: PAYPAL_HOOK_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYPAL_HOOK_URL
+             - name: PAYPAL_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYPAL_CLIENT_ID
+             - name: PAYPAL_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYPAL_SECRET
+             - name: PAYPAL_BASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYPAL_BASE_URL
+             - name: PAYPAL_ACCESS_TOKEN
+               valueFrom:
+                 secretKeyRef:
+                   name: instagram-gateway-production-config-secret
+                   key: PAYPAL_ACCESS_TOKEN
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
