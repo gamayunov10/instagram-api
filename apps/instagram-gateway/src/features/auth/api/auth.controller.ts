@@ -185,7 +185,9 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .redirect(`https://inctagram.org/?access-token=${result.accessToken}`);
+      .redirect(
+        `https://inctagram.org/google-auth/?access-token=${result.accessToken}`,
+      );
   }
 
   @Get('github/login')
