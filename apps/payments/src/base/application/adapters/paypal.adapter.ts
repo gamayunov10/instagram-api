@@ -54,23 +54,7 @@ export class PaypalAdapter {
               amount: {
                 currency_code: 'USD',
                 value: (payload.unit_amount / 100) * payload.quantity,
-                breakdown: {
-                  item_total: {
-                    currency_code: 'USD',
-                    value: payload.quantity,
-                  },
-                },
               },
-              items: [
-                {
-                  name: payload.product_data.name,
-                  unit_amount: {
-                    currency_code: 'USD',
-                    value: payload.unit_amount / 100,
-                  },
-                  quantity: payload.quantity,
-                },
-              ],
             },
           ],
           application_context: {

@@ -16,24 +16,25 @@ datasource db {
 }
 
 model User {
-  id                   String                @id @default(uuid())
-  accountType          String                @default("Personal") @map("account_type")
-  email                String                @unique
-  username             String                @unique
-  firstName            String?               @map("first_name")
-  lastName             String?               @map("last_name")
-  birthDate            String?               @map("birth_date")
-  city                 String?
-  aboutMe              String?               @map("about_me")
-  passwordHash         String?               @map("password_hash")
-  createdAt            DateTime              @default(now()) @map("created_at")
-  isConfirmed          Boolean               @default(false) @map("is_confirmed")
-  avatarId             String?               @map("avatar_id")
-  confirmationCode     ConfirmationCode?
-  passwordRecoveryCode PasswordRecoveryCode?
-  posts                Post[]
-  device               DeviceAuthSession[]
-  providers            UserProviderInfo[]
+  id                    String                @id @default(uuid())
+  accountType           String                @default("Personal") @map("account_type")
+  endDateOfSubscription DateTime?             @map("end_date_of_subscription")
+  email                 String                @unique
+  username              String                @unique
+  firstName             String?               @map("first_name")
+  lastName              String?               @map("last_name")
+  birthDate             String?               @map("birth_date")
+  city                  String?
+  aboutMe               String?               @map("about_me")
+  passwordHash          String?               @map("password_hash")
+  createdAt             DateTime              @default(now()) @map("created_at")
+  isConfirmed           Boolean               @default(false) @map("is_confirmed")
+  avatarId              String?               @map("avatar_id")
+  confirmationCode      ConfirmationCode?
+  passwordRecoveryCode  PasswordRecoveryCode?
+  posts                 Post[]
+  device                DeviceAuthSession[]
+  providers             UserProviderInfo[]
 
   @@unique([username, email])
   @@map("user")
@@ -119,13 +120,14 @@ model Subscriptions {
 }
 
 model SubscriptionOrder {
-  id         String   @id @default(uuid())
-  userId     String
-  productId  String   @map("product_id")
-  price      Int
-  paymentId  String   @map("payment_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  id               String   @id @default(uuid())
+  userId           String
+  productId        String   @map("product_id")
+  price            Int
+  paymentId        String   @map("payment_id")
+  subscriptionTime String?  @map("subscription_time")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   @@map("subscription_order")
 }

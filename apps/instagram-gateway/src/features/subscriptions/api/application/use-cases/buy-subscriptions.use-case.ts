@@ -89,6 +89,7 @@ export class BuySubscriptionsUseCase
       quantity: Number(command.createSubscriptionInputModel.amount),
       client_reference_id: createdPaymentTr,
     };
+
     const result = await this.paymentsServiceAdapter.makePayment(payload);
 
     if (!result.data) {
@@ -130,6 +131,8 @@ export class BuySubscriptionsUseCase
         availableSubscription.price *
         command.createSubscriptionInputModel.amount,
       paymentId: paymentTransactionId.toString(),
+      subscriptionTime:
+        command.createSubscriptionInputModel.subscriptionTimeType,
     };
 
     const order = await this.subscriptionsRepo.createOrder(

@@ -26,6 +26,7 @@ export class SubscriptionsRepository {
           productId: data.productId,
           price: data.price,
           paymentId: data.paymentId,
+          subscriptionTime: data.subscriptionTime,
         },
       });
 
