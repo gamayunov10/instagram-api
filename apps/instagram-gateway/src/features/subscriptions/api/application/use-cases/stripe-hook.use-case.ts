@@ -9,9 +9,8 @@ import { PaymentsServiceAdapter } from '../../../../../base/application/adapters
 import { StripeSignatureRequest } from '../../../../../../../../libs/common/base/subscriptions/stripe-signature-request';
 import { UsersRepository } from '../../../../users/infrastructure/users.repo';
 import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
-import { SendSuccessSubscriptionCommand } from '../../../../notifications/application/use-cases/send-success-subscription-message.use-case';
-import { NodeEnv } from '../../../../../base/enums/node-env.enum';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
+import { SubscriptionsService } from '../../subscriptions.service';
 
 export class StripeHookCommand {
   constructor(
@@ -32,6 +31,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     private readonly usersRepository: UsersRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async execute(command: StripeHookCommand) {
@@ -51,6 +51,10 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     }
 
     if (event.res.response !== 'pending') {
+      const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
+        event.res.response.client_reference_id,
+      );
+
       const payload = {
         status: event.res.response.status,
         confirmedPaymentData: event.res.response,
@@ -61,30 +65,16 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
         payload,
       );
 
-      const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
-        event.res.response.client_reference_id,
-      );
-
-      await this.usersRepository.updateAccountType(
+      await this.subscriptionsService.updateAccountType(
         order.userId,
         AccountType.BUSINESS,
+        order.price,
+        order.subscriptionTime,
       );
 
-      const user = await this.usersQueryRepository.findUserById(order.userId);
-
-      try {
-        await this.commandBus.execute(
-          new SendSuccessSubscriptionCommand(user.username, user.email),
-        );
-      } catch (e) {
-        if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-          this.logger.error(e);
-        }
-
-        await this.commandBus.execute(
-          new SendSuccessSubscriptionCommand(user.username, user.email),
-        );
-      }
+      await this.subscriptionsService.sendSubscriptionNotification(
+        order.userId,
+      );
     }
 
     return {

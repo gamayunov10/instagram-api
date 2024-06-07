@@ -311,7 +311,11 @@ export class UsersRepository {
     }
   }
 
-  async updateAccountType(userId: string, accountType: AccountType) {
+  async updateAccountType(
+    userId: string,
+    accountType: AccountType,
+    endDateOfSubscription: Date,
+  ): Promise<boolean> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
         const updateResult = await prisma.user.update({
@@ -320,6 +324,7 @@ export class UsersRepository {
           },
           data: {
             accountType,
+            endDateOfSubscription,
           },
         });
 
