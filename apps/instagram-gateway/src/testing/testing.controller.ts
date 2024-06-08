@@ -66,7 +66,7 @@ export class TestingController {
           this.logger.log('Data has not been deleted');
         }
 
-        this.logger.log('All data has been deleted.');
+        this.logger.log('All data has been deleted');
       } else {
         this.logger.error(productionDbGuard);
 
