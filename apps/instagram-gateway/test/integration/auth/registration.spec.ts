@@ -251,6 +251,45 @@ describe('AuthController: /registration', () => {
       expectErrorMessages(response, 'password');
     });
 
+    it(`should return 400 when trying to Register in the system with incorrect password - '- 9Az*=)ИП'`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: '- 9Az*=)ИП',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect password - '- 9Az*=)سيء'`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: '- 9Az*=)سيء',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
+    it(`should return 400 when trying to Register in the system with incorrect field password - '- 9Az* = )'`, async () => {
+      const response = await agent
+        .post(registration_url)
+        .send({
+          username: lorem10,
+          password: '- 9Az* = )',
+          email: 'some@gmail.com',
+        })
+        .expect(400);
+
+      expectErrorMessages(response, 'password');
+    });
+
     it(`should return 400 when trying to Register in the system with incorrect field (password)`, async () => {
       const response = await agent
         .post(registration_url)

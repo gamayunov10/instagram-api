@@ -86,6 +86,30 @@ describe('AuthController: /new-password', () => {
           recoveryCode: recoveryCode,
         })
         .expect(400);
+
+      await agent
+        .post(new_password_url)
+        .send({
+          newPassword: '- 9Az*=)ИП', // incorrect value
+          recoveryCode: recoveryCode,
+        })
+        .expect(400);
+
+      await agent
+        .post(new_password_url)
+        .send({
+          newPassword: '- 9Az*=)سيء', // incorrect value
+          recoveryCode: recoveryCode,
+        })
+        .expect(400);
+
+      await agent
+        .post(new_password_url)
+        .send({
+          newPassword: '- 9Az* = )', // incorrect value
+          recoveryCode: recoveryCode,
+        })
+        .expect(400);
     });
 
     it(`should return 400 when trying to new-password with 
