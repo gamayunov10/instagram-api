@@ -40,7 +40,7 @@ export class UserAuthInputModel {
   @MinLength(6, { message: minChar6 })
   @MaxLength(20, { message: maxChar20 })
   @Matches(
-    /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!\"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/,
+    /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!\"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])[0-9A-Za-z!\"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~]+$/g,
     {
       message: passwordIsIncorrect,
     },
