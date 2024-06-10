@@ -1,4 +1,11 @@
-import { Body, Controller, Delete, HttpCode, Logger } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
@@ -13,6 +20,8 @@ import {
 import { NodeEnv } from '../base/enums/node-env.enum';
 import { FileServiceAdapter } from '../base/application/adapters/file-service.adapter';
 import { ApiErrorMessages } from '../base/schemas/api-error-messages.schema';
+import { SubscriptionTime } from '../../../../libs/common/base/ts/enums/subscription-time.enum';
+import { PaymentIds } from '../../../../libs/common/base/ts/enums/payment-ids.enum';
 
 import { DeleteUsersInputModel } from './models/input/delete-users.input.model';
 
@@ -25,6 +34,55 @@ export class TestingController {
     private readonly prismaClient: PrismaClient,
     private readonly fileServiceAdapter: FileServiceAdapter,
   ) {}
+
+  @Post('insert-products')
+  @SwaggerOptions(
+    'Insert products',
+    false,
+    false,
+    204,
+    'Success',
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  )
+  @HttpCode(204)
+  async insertProducts(): Promise<void> {
+    try {
+      await this.prismaClient.$transaction([
+        this.prismaClient.subscriptions.create({
+          data: {
+            id: PaymentIds.DAY,
+            availability: true,
+            subscriptionTimeType: SubscriptionTime.DAY,
+            price: 100,
+          },
+        }),
+        this.prismaClient.subscriptions.create({
+          data: {
+            id: PaymentIds.WEEKLY,
+            availability: true,
+            subscriptionTimeType: SubscriptionTime.WEEKLY,
+            price: 1000,
+          },
+        }),
+        this.prismaClient.subscriptions.create({
+          data: {
+            id: PaymentIds.MONTHLY,
+            availability: true,
+            subscriptionTimeType: SubscriptionTime.MONTHLY,
+            price: 3000,
+          },
+        }),
+      ]);
+    } catch (e) {
+      this.logger.error(`${e.message}`);
+    }
+  }
 
   @Delete('all-data')
   @SwaggerOptions(
