@@ -86,7 +86,9 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
     let url = [];
 
     if (postImages) {
-      url = postImages.map((i) => i.url);
+      url = postImages
+        .filter((i) => p.images.some((img) => img.imageId === i.imageId))
+        .map((i) => i.url);
     }
     return {
       id: p.id,
