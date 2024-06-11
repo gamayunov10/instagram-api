@@ -173,6 +173,7 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should create a post by userid and add two images`, async (): Promise<void> => {
+
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
       const imagePath2 = path.join(__dirname, '../../base/assets/node.jpg');
 
@@ -202,7 +203,9 @@ describe('PostsController: /post/:id, update post', (): void => {
         .expect(201);
     });
 
+
     it(`should create a post2 by userId and add one image`, async (): Promise<void> => {
+
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       const response = await agent
@@ -224,6 +227,7 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should create a post by userId2 and add one image`, async (): Promise<void> => {
+
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       const response = await agent
@@ -245,6 +249,7 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should return posts by userId`, async (): Promise<void> => {
+
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
       expect(response.body).toEqual([
