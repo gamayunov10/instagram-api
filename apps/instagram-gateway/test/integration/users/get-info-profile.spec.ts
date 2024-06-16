@@ -87,6 +87,7 @@ describe('UsersController: /profile-information', () => {
         lastName: userProfileInputModel.lastName,
         dateOfBirth: userProfileInputModel.dateOfBirth,
         city: userProfileInputModel.city,
+        country: userProfileInputModel.country,
         aboutMe: userProfileInputModel.aboutMe,
         avatar: { url: expect.any(String) },
       });

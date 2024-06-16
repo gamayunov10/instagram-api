@@ -5,7 +5,7 @@ export class MeView {
   email: string;
 
   @ApiProperty({ type: String })
-  login: string;
+  username: string;
 
   @ApiProperty({ type: String })
   userId: string;

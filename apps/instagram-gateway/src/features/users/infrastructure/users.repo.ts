@@ -294,6 +294,7 @@ export class UsersRepository {
             lastName: userProfileInputModel.lastName,
             birthDate: userProfileInputModel?.dateOfBirth?.toString() || null,
             city: userProfileInputModel?.city || null,
+            country: userProfileInputModel?.country || null,
             aboutMe: userProfileInputModel?.aboutMe || null,
           },
         });
