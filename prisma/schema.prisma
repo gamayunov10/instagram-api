@@ -19,12 +19,14 @@ model User {
   id                    String                @id @default(uuid())
   accountType           String                @default("Personal") @map("account_type")
   endDateOfSubscription DateTime?             @map("end_date_of_subscription")
+  autoRenewal           Boolean               @default(false) @map("auto_renewal")
   email                 String                @unique
   username              String                @unique
   firstName             String?               @map("first_name")
   lastName              String?               @map("last_name")
   birthDate             String?               @map("birth_date")
   city                  String?
+  country               String?
   aboutMe               String?               @map("about_me")
   passwordHash          String?               @map("password_hash")
   createdAt             DateTime              @default(now()) @map("created_at")

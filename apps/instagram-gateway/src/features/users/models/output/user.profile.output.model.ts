@@ -46,6 +46,14 @@ export class UserProfileOutputModel {
     type: String,
     required: false,
   })
+  @IsNotEmptyString()
+  @IsOptional()
+  country?: string;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
   @IsOptional()
   aboutMe?: string;
 

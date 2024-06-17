@@ -49,6 +49,7 @@ export class GetProfileInfoUseCase
       lastName: user.lastName,
       dateOfBirth: user.birthDate,
       city: user.city,
+      country: user.country,
       aboutMe: user.aboutMe,
       avatar: avatarUrl,
     };
