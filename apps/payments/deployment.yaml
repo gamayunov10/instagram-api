@@ -112,11 +112,11 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: MONGO_URL_FILES
-             - name: SERVICE_HOST
+             - name: FILE_SERVICE_HOST
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
-                   key: SERVICE_HOST
+                   key: FILE_SERVICE_HOST
              - name: FILE_SERVICE_PORT
                valueFrom:
                  secretKeyRef:
@@ -207,6 +207,11 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: CRYPTO_SALT
+             - name: SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: SERVICE_HOST
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
