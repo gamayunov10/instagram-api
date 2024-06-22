@@ -42,18 +42,22 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
 
     const event =
       await this.paymentsServiceAdapter.stripeSignature(eventPayload);
-
     if (!event.data) {
       return {
         data: false,
         code: ResultCode.InternalServerError,
       };
     }
+    let autoRenewal: boolean = false;
 
     if (event.res.response !== 'pending') {
       const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
         event.res.response.client_reference_id,
       );
+
+      if (event.res.response.mode === 'subscription') {
+        autoRenewal = true;
+      }
 
       const payload = {
         status: event.res.response.status,
@@ -70,6 +74,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
         AccountType.BUSINESS,
         order.price,
         order.subscriptionTime,
+        autoRenewal,
       );
 
       await this.subscriptionsService.sendSubscriptionNotification(

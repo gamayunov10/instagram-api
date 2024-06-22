@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout } from 'rxjs';
 
 import {
+  CREATE_AUTO_SUBSCRIPTION,
   CREATE_PAYMENT,
   PAYPAL_CAPTURE,
   STRIPE_SIGNATURE,
@@ -101,6 +102,42 @@ export class PaymentsServiceAdapter {
         code: ResultCode.InternalServerError,
         field: noneField,
         message: 'error: 3043',
+      };
+    }
+  }
+
+  async createAutoSubscription(payload: MakePaymentRequest) {
+    try {
+      const response = this.paymentsServiceClient
+        .send({ cmd: CREATE_AUTO_SUBSCRIPTION }, payload)
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(response);
+
+      if (!result.data) {
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+          field: noneField,
+          message: 'error: createAutoSubscription',
+        };
+      }
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: 3044',
       };
     }
   }

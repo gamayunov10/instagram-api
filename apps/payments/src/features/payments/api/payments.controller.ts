@@ -3,6 +3,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { MessagePattern } from '@nestjs/microservices';
 
 import {
+  CREATE_AUTO_SUBSCRIPTION,
   CREATE_PAYMENT,
   PAYPAL_CAPTURE,
   STRIPE_SIGNATURE,
@@ -24,6 +25,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: CREATE_PAYMENT })
   async createPayment(payload: MakePaymentRequest) {
     return this.paymentsService.makePayment(payload);
+  }
+
+  @MessagePattern({ cmd: CREATE_AUTO_SUBSCRIPTION })
+  async createAutoPayment(payload: MakePaymentRequest) {
+    return this.paymentsService.createAutoPayment(payload);
   }
 
   @MessagePattern({ cmd: STRIPE_SIGNATURE })

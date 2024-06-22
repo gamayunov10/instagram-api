@@ -13,11 +13,13 @@ export class PaypalAdapter {
   private readonly hookUrl: string;
   private readonly clientId: string;
   private readonly secret: string;
+  private readonly publicFrontURL: string;
   constructor() {
     this.baseUrl = this.configService.get<string>('PAYPAL_BASE_URL');
     this.hookUrl = this.configService.get<string>('PAYPAL_HOOK_URL');
     this.clientId = this.configService.get<string>('PAYPAL_CLIENT_ID');
     this.secret = this.configService.get<string>('PAYPAL_SECRET');
+    this.publicFrontURL = this.configService.get<string>('PUBLIC_FRONT_URL');
   }
 
   private async generateAccessToken(): Promise<string> {
@@ -74,6 +76,7 @@ export class PaypalAdapter {
         status: data.status,
         url: link.href,
         openedPaymentData: data,
+        productId: payload.interval,
       };
 
       return {
@@ -118,6 +121,149 @@ export class PaypalAdapter {
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+      };
+    }
+  }
+
+  async createSubscription(payload: MakePaymentRequest) {
+    const token = await this.generateAccessToken();
+
+    try {
+      const productId = await this.createProduct(payload);
+
+      // Создание плана подписки
+      const planResponse = await fetch(`${this.baseUrl}v1/billing/plans`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          name: 'Subscription Plan',
+          description: 'Monthly Subscription Plan',
+          billing_cycles: [
+            {
+              frequency: {
+                interval_unit: payload.interval,
+                interval_count: payload.quantity,
+              },
+              tenure_type: 'REGULAR',
+              sequence: 1,
+              total_cycles: 0,
+              pricing_scheme: {
+                fixed_price: {
+                  value: (payload.unit_amount / 100).toFixed(2),
+                  currency_code: 'USD',
+                },
+              },
+            },
+          ],
+          payment_preferences: {
+            auto_bill_outstanding: true,
+            setup_fee: {
+              value: '0',
+              currency_code: 'USD',
+            },
+            setup_fee_failure_action: 'CONTINUE',
+            payment_failure_threshold: 3,
+          },
+        }),
+      });
+
+      const planData = await planResponse.json();
+
+      // Активация плана подписки
+      await fetch(`${this.baseUrl}v1/billing/plans/${planData.id}/activate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Создание подписки для пользователя
+      const subscriptionResponse = await fetch(
+        `${this.baseUrl}v1/billing/subscriptions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            plan_id: planData.id,
+            application_context: {
+              brand_name: 'Your Brand Name',
+              locale: 'en-US',
+              shipping_preference: 'NO_SHIPPING',
+              user_action: 'SUBSCRIBE_NOW',
+              return_url: `${this.hookUrl}api/v1/subscriptions/paypal-hook`,
+              cancel_url: `${this.hookUrl}api/v1/subscriptions/paypal-hook`,
+            },
+          }),
+        },
+      );
+
+      const subscriptionData = await subscriptionResponse.json();
+
+      const link = subscriptionData.links.find(
+        (link) => link.rel === 'approve',
+      );
+
+      const res = {
+        status: subscriptionData.status,
+        url: link.href,
+        openedPaymentData: subscriptionData,
+        productId: productId,
+      };
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        response: res,
+      };
+    } catch (error) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(error);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+      };
+    }
+  }
+
+  private async createProduct(payload: MakePaymentRequest) {
+    const token = await this.generateAccessToken();
+    try {
+      const response = await fetch(`${this.baseUrl}v1/catalogs/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: payload.product_data.name,
+          description: payload.product_data.description,
+          type: 'SERVICE', // или 'PHYSICAL'
+          category: 'SOFTWARE', // или другой подходящий категорий
+          home_url: this.publicFrontURL,
+        }),
+      });
+
+      const data = await response.json();
+
+      return data.id;
+    } catch (error) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(error);
       }
 
       return {

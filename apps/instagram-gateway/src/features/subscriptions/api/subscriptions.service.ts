@@ -71,6 +71,7 @@ export class SubscriptionsService {
     accountType: AccountType,
     price: number,
     subscriptionTime: string,
+    autoRenewal: boolean,
   ): Promise<void> {
     const user = await this.usersQueryRepository.findUserById(userId);
 
@@ -86,6 +87,7 @@ export class SubscriptionsService {
       userId,
       accountType,
       endDateOfSubscription,
+      autoRenewal,
     );
   }
 

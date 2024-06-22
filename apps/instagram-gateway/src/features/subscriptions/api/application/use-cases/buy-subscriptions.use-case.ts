@@ -14,9 +14,10 @@ import {
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 import { MakePaymentRequest } from '../../../../../../../../libs/common/base/subscriptions/make-payment-request';
-import { PaymentIds } from '../../../../../../../../libs/common/base/ts/enums/payment-ids.enum';
 import { PaymentTransactionPayloadType } from '../../../models/types/payment-transaction-payload.type';
 import { OrderPayloadType } from '../../../models/types/order-payload.type';
+import { UsersRepository } from '../../../../users/infrastructure/users.repo';
+import { PaymentIds } from '../../../../../../../../libs/common/base/ts/enums/payment-ids.enum';
 
 export class BuySubscriptionsCommand {
   constructor(
@@ -33,6 +34,7 @@ export class BuySubscriptionsUseCase
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
   ) {}
@@ -88,9 +90,18 @@ export class BuySubscriptionsUseCase
       unit_amount: availableSubscription.price,
       quantity: Number(command.createSubscriptionInputModel.amount),
       client_reference_id: createdPaymentTr,
+      interval: command.createSubscriptionInputModel.subscriptionTimeType,
+      user: user,
     };
 
-    const result = await this.paymentsServiceAdapter.makePayment(payload);
+    let result;
+
+    if (!command.createSubscriptionInputModel.autoRenewal) {
+      result = await this.paymentsServiceAdapter.makePayment(payload);
+    } else {
+      result =
+        await this.paymentsServiceAdapter.createAutoSubscription(payload);
+    }
 
     if (!result.data) {
       return {

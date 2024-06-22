@@ -62,6 +62,7 @@ export class PaypalHookUseCase implements ICommandHandler<PaypalHookCommand> {
       AccountType.BUSINESS,
       order.price,
       order.subscriptionTime,
+      false,
     );
 
     await this.subscriptionsService.sendSubscriptionNotification(order.userId);

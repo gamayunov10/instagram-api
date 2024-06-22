@@ -316,6 +316,7 @@ export class UsersRepository {
     userId: string,
     accountType: AccountType,
     endDateOfSubscription: Date,
+    autoRenewal: boolean,
   ): Promise<boolean> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
@@ -326,6 +327,7 @@ export class UsersRepository {
           data: {
             accountType,
             endDateOfSubscription,
+            autoRenewal,
           },
         });
 
