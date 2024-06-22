@@ -58,6 +58,11 @@ export class StripeAdapter {
       case 'DAY':
         interval = 'day';
         break;
+      default:
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+        };
     }
     try {
       // Checking the existence of a client or creating a new one
@@ -84,6 +89,10 @@ export class StripeAdapter {
               product_data: {
                 name: payload.product_data.name,
                 description: payload.product_data.description,
+              },
+              recurring: {
+                interval: interval,
+                interval_count: payload.quantity,
               },
               unit_amount: payload.unit_amount,
               currency: 'USD',

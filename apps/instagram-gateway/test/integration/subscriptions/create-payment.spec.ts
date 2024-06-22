@@ -117,35 +117,35 @@ describe('Subscriptions: /create-payment;', (): void => {
       user = await testManager.createUser(createUserInput);
       user2 = await testManager.createUser(createUserInput2);
     });
-    //
-    // it(`should create-payment by STRIPE`, async (): Promise<void> => {
-    //   const result = await agent
-    //     .post(create_payment_url)
-    //     .auth(user.accessToken, { type: 'bearer' })
-    //     .send({
-    //       subscriptionTimeType: 'DAY',
-    //       paymentType: 'STRIPE',
-    //       amount: 1,
-    //     })
-    //     .expect(202);
-    //   console.log(result.body);
-    //
-    //   expectCreatePaymentResponse(result);
-    // });
-    //
-    // it(`should create-payment by PAYPAL`, async (): Promise<void> => {
-    //   const result = await agent
-    //     .post(create_payment_url)
-    //     .auth(user2.accessToken, { type: 'bearer' })
-    //     .send({
-    //       subscriptionTimeType: 'DAY',
-    //       paymentType: 'PAYPAL',
-    //       amount: 1,
-    //       autoRenewal: false,
-    //     })
-    //     .expect(202);
-    //   expectCreatePaymentResponse(result);
-    // });
+
+    it(`should create-payment by STRIPE`, async (): Promise<void> => {
+      const result = await agent
+        .post(create_payment_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'STRIPE',
+          amount: 1,
+        })
+        .expect(202);
+      console.log(result.body);
+
+      expectCreatePaymentResponse(result);
+    });
+
+    it(`should create-payment by PAYPAL`, async (): Promise<void> => {
+      const result = await agent
+        .post(create_payment_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'PAYPAL',
+          amount: 1,
+          autoRenewal: false,
+        })
+        .expect(202);
+      expectCreatePaymentResponse(result);
+    });
 
     it(`should create auto subscription by STRIPE`, async (): Promise<void> => {
       const result = await agent
