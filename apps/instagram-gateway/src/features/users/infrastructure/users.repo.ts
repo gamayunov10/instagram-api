@@ -191,11 +191,15 @@ export class UsersRepository {
 
   async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
+      const expirationDate = new Date();
+      expirationDate.setMinutes(expirationDate.getMinutes() + 10);
+
       return await this.prismaClient.$transaction(async (prisma) => {
         const createdRecord = await prisma.passwordRecoveryCode.create({
           data: {
             userId: id,
             recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
           },
           select: {
             id: true,
