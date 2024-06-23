@@ -142,13 +142,25 @@ describe('PublicPostController: /public-posts/:postId', (): void => {
         .get(`${public_posts_url}${postId}`)
         .expect(200);
 
-      expectPostById(response, 'description a', user.id, '.png');
+      expectPostById(
+        response,
+        'description a',
+        user.id,
+        createUserInput.username,
+        '.png',
+      );
 
       const response2 = await agent
         .get(`${public_posts_url}${postId2}`)
         .expect(200);
 
-      expectPostById(response2, 'description b', user2.id, '.jpeg');
+      expectPostById(
+        response2,
+        'description b',
+        user2.id,
+        createUserInput2.username,
+        '.jpeg',
+      );
     });
   });
 });

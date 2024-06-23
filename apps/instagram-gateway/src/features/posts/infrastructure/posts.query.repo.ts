@@ -19,7 +19,7 @@ export class PostsQueryRepository {
     try {
       const post = await this.prismaClient.post.findUnique({
         where: { id, isDeleted: false },
-        include: { images: true },
+        include: { images: true, author: true },
       });
 
       return await this.postMapper(post);
@@ -34,14 +34,16 @@ export class PostsQueryRepository {
 
   async findFirstPostById(id: string): Promise<PostViewModel | null> {
     try {
-      return await this.prismaClient.post.findFirst({
+      const post = await this.prismaClient.post.findFirst({
         where: { id, isDeleted: false },
-        include: { images: true },
+        include: { images: true, author: true },
       });
+      return await this.postMapper(post);
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      return null;
     } finally {
       await this.prismaClient.$disconnect();
     }
@@ -54,7 +56,7 @@ export class PostsQueryRepository {
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
-        include: { images: true },
+        include: { images: true, author: true },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -72,7 +74,7 @@ export class PostsQueryRepository {
         orderBy: { [query.sortField]: query.sortDirection },
         skip: Number(query.skip),
         take: Number(query.take),
-        include: { images: true },
+        include: { images: true, author: true },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -128,6 +130,7 @@ export class PostsQueryRepository {
       id: data.id,
       description: data.description,
       authorId: data.authorId,
+      username: data.author.username,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
       images: data.images.map((image) => ({

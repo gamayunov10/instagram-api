@@ -2,6 +2,7 @@ export const expectPostById = (
   response,
   description: string,
   authorId: string,
+  username: string,
   url: string,
 ) => {
   expect(response.body.id).toBeDefined();
@@ -9,6 +10,7 @@ export const expectPostById = (
   expect(response.body.createdAt).toBeDefined();
   expect(response.body.updatedAt).toBeDefined();
   expect(response.body.authorId).toBe(authorId);
+  expect(response.body.username).toBe(username);
   expect(response.body.imagesUrl).toBeInstanceOf(Array);
   expect(response.body.imagesUrl[0]).toContain(url);
 };

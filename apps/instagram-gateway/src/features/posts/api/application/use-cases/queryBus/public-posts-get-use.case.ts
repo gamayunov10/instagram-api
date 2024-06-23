@@ -75,6 +75,7 @@ export class PublicPostsGetUseCase
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
       authorId: p.authorId,
+      username: p.author.username,
       imagesUrl: urls,
     };
   }
