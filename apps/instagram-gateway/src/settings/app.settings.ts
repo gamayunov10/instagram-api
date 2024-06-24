@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { config } from 'dotenv';
 import session from 'express-session';
+import { json, urlencoded } from 'express';
 
 import { AppModule } from '../app.module';
 import { customExceptionFactory } from '../infrastructure/exception-filters/exception-factory';
@@ -124,6 +125,9 @@ export class AppSettings {
         cookie: { maxAge: 60000 },
       }),
     );
+
+    app.use(json({ limit: '50mb' }));
+    app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     app.use(passport.initialize());
     app.use(passport.session());
