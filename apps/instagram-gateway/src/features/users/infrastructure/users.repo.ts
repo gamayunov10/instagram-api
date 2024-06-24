@@ -24,9 +24,6 @@ export class UsersRepository {
   ): Promise<string> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
-        const expirationDate = new Date();
-        expirationDate.setHours(expirationDate.getHours() + 1);
-
         const user = await prisma.user.create({
           data: {
             username: userAuthInputModel.username,
@@ -41,7 +38,7 @@ export class UsersRepository {
         const userId = user.id;
 
         await prisma.confirmationCode.create({
-          data: { userId, confirmationCode, expirationDate },
+          data: { userId, confirmationCode },
         });
 
         return userId;
@@ -191,15 +188,11 @@ export class UsersRepository {
 
   async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
-      const expirationDate = new Date();
-      expirationDate.setMinutes(expirationDate.getMinutes() + 10);
-
       return await this.prismaClient.$transaction(async (prisma) => {
         const createdRecord = await prisma.passwordRecoveryCode.create({
           data: {
             userId: id,
             recoveryCode: recoveryCode,
-            expirationDate: expirationDate,
           },
           select: {
             id: true,
@@ -248,16 +241,12 @@ export class UsersRepository {
   async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
-        const expirationDate = new Date();
-        expirationDate.setHours(expirationDate.getHours() + 5);
-
         const updateResult = await prisma.confirmationCode.update({
           where: {
             userId: userId,
           },
           data: {
             confirmationCode: confirmationCode,
-            expirationDate: expirationDate,
           },
           select: {
             id: true,
