@@ -186,7 +186,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/google-auth/?access-token=${result.accessToken}`,
+        this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
       );
   }
 
@@ -238,7 +238,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/github-auth/?access-token=${result.accessToken}`,
+        this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
       );
   }
 
