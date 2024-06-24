@@ -215,6 +215,32 @@ export class UsersRepository {
     }
   }
 
+  async updatePasswordRecoveryRecord(id: string, recoveryCode: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const updatedRecord = await prisma.passwordRecoveryCode.update({
+          where: { userId: id },
+          data: {
+            recoveryCode: recoveryCode,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        return updatedRecord.id;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
