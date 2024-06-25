@@ -69,6 +69,7 @@ import { PasswordUpdateCommand } from './application/use-cases/password/password
 import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
+import { PasswordRecoveryResendingCommand } from './application/use-cases/password/password-recovery-resending.use-case';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -186,7 +187,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/google-auth/?access-token=${result.accessToken}`,
+        `https://inctagram.org/provider-auth/?access-token=${result.accessToken}`,
       );
   }
 
@@ -238,7 +239,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/github-auth/?access-token=${result.accessToken}`,
+        `https://inctagram.org/provider-auth/?access-token=${result.accessToken}`,
       );
   }
 
@@ -400,6 +401,37 @@ export class AuthController {
   ): Promise<void> {
     const result = await this.commandBus.execute(
       new PasswordRecoveryCommand(userPasswdRecoveryInputModel),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return result;
+  }
+
+  @Post('password-recovery-resending')
+  @SwaggerOptions(
+    'Resend password recovery via Email',
+    false,
+    false,
+    204,
+    'Success',
+    false,
+    true,
+    ApiErrorMessages,
+    false,
+    false,
+    `If User with this email doesn't exist`,
+    false,
+  )
+  @HttpCode(204)
+  async passwordRecoveryResending(
+    @Body()
+    emailInputModel: EmailInputModel,
+  ): Promise<void> {
+    const result = await this.commandBus.execute(
+      new PasswordRecoveryResendingCommand(emailInputModel),
     );
 
     if (result.code !== ResultCode.Success) {
