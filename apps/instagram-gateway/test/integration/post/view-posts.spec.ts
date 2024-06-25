@@ -143,14 +143,14 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: '1s' }) // should not be NaN
+        .query({ pageSize: '1s' }) // should not be NaN
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: true }) // should not be NaN
+        .query({ page: true }) // should not be NaN
         .expect(400);
     });
   });
