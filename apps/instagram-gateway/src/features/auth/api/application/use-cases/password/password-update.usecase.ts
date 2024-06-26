@@ -36,6 +36,8 @@ export class PasswordUpdateUseCase
     );
 
     if (!user || user?.expirationDate < new Date()) {
+      await this.usersRepository.deletePasswordRecoveryCode(user.userId);
+
       return exceptionHandler(
         ResultCode.BadRequest,
         recoveryCodeIsIncorrect,

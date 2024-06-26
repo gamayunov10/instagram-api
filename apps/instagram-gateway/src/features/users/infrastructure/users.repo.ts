@@ -238,6 +238,26 @@ export class UsersRepository {
     }
   }
 
+  async deletePasswordRecoveryCode(userId: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.passwordRecoveryCode.delete({
+          where: {
+            userId: userId,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
