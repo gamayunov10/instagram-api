@@ -19,6 +19,11 @@ export class PostViewModel {
   authorId: string;
 
   @ApiProperty({
+    type: String,
+  })
+  username: string;
+
+  @ApiProperty({
     type: Date,
   })
   createdAt: Date;

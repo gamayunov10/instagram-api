@@ -27,6 +27,19 @@ export class UsersQueryRepository {
     }
   }
 
+  async getTotalCountUsers() {
+    try {
+      return this.prismaClient.user.findMany();
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return null;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async findUserByEmail(email: string) {
     try {
       return this.prismaClient.user.findFirst({
