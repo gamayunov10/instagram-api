@@ -18,6 +18,7 @@ import { UploadUserPhotoUseCase } from './api/application/use-cases/upload-user-
 import { UserDevicesQueryRepository } from './infrastructure/devices/user.devices.query.repo';
 import { ViewUserPublicInfoUseCase } from './api/application/use-cases/view-user-public-info.use-case';
 import { PublicUsersController } from './api/public.users.controller';
+import { GetTotalCountRegisteredUsersUseCase } from './api/application/use-cases/get-total-count-registered-users';
 
 const services = [PrismaClient, FileServiceAdapter, JwtService];
 const useCases = [
@@ -26,6 +27,7 @@ const useCases = [
   DeleteUserPhotoUseCase,
   UploadUserPhotoUseCase,
   ViewUserPublicInfoUseCase,
+  GetTotalCountRegisteredUsersUseCase,
 ];
 const repositories = [UsersRepository];
 const adapters = [FileServiceAdapter];
