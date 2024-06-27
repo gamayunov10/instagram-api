@@ -6,6 +6,7 @@ import { PostsQueryRepository } from '../../../../infrastructure/posts.query.rep
 import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
 import { PostQueryModel } from '../../../../models/query/post.query.model';
 import { Paginator } from '../../../../../../base/pagination/paginator';
+import { countPostsPublicPage } from '../../../../../../base/constants/constants';
 
 export class PublicPostsGetCommand {
   constructor(public queryQueryModel: PostQueryModel) {}
@@ -23,17 +24,24 @@ export class PublicPostsGetUseCase
   async execute(
     query: PublicPostsGetCommand,
   ): Promise<ExceptionResultType<boolean>> {
-    const posts = await this.postsQueryRepository.findPostsByQuery(
+    query.queryQueryModel = {
+      sortField: query.queryQueryModel.sortField,
+      sortDirection: query.queryQueryModel.sortDirection,
+      pageSize: countPostsPublicPage,
+      page: query.queryQueryModel.page,
+    };
+
+    const result = await this.postsQueryRepository.findPostsByQuery(
       query.queryQueryModel,
     );
 
-    if (posts.length === 0) {
+    if (result.posts.length === 0) {
       return {
         data: true,
         code: ResultCode.Success,
         response: Paginator.paginate({
-          pageNumber: Number(query.queryQueryModel.skip),
-          pageSize: Number(query.queryQueryModel.take),
+          pageNumber: Number(query.queryQueryModel.page),
+          pageSize: Number(query.queryQueryModel.pageSize),
           totalCount: 0,
           items: [],
         }),
@@ -41,13 +49,13 @@ export class PublicPostsGetUseCase
     }
 
     const items = await Promise.all(
-      posts.map(async (p) => await this.postMapper(p)),
+      result.posts.map(async (p) => await this.postMapper(p)),
     );
 
     const resultResponse = Paginator.paginate({
-      pageNumber: Number(query.queryQueryModel.skip),
-      pageSize: Number(query.queryQueryModel.take),
-      totalCount: items.length,
+      pageNumber: Number(query.queryQueryModel.page),
+      pageSize: Number(query.queryQueryModel.pageSize),
+      totalCount: result.totalCount,
       items: items,
     });
 
@@ -75,6 +83,7 @@ export class PublicPostsGetUseCase
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
       authorId: p.authorId,
+      username: p.author.username,
       imagesUrl: urls,
     };
   }

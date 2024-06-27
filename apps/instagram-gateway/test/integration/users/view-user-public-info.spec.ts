@@ -121,6 +121,7 @@ describe('PublicUsersController: /public-user', () => {
           {
             id: expect.any(String),
             authorId: expect.any(String),
+            username: userProfileInputModel.username,
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
             description: 'a',

@@ -62,3 +62,7 @@ export const paymentTransactionFailed = 'transaction failed, please try again';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;
+//Pagination
+export const countPostsPublicPage = '4';
+export const pageNumberDefault = '1';
+export const pageSizeDefault = '8';

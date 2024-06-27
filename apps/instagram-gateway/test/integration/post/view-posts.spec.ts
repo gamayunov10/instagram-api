@@ -19,7 +19,7 @@ import {
 
 export const post_url = '/api/v1/post/';
 
-describe('PostsController: /post/:id, update post', (): void => {
+describe('PostsController: /post/:userId, View posts by userId', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -143,14 +143,14 @@ describe('PostsController: /post/:id, update post', (): void => {
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: '1s' }) // should not be NaN
+        .query({ pageSize: '1s' }) // should not be NaN
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: true }) // should not be NaN
+        .query({ page: true }) // should not be NaN
         .expect(400);
     });
   });
@@ -173,7 +173,6 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should create a post by userid and add two images`, async (): Promise<void> => {
-
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
       const imagePath2 = path.join(__dirname, '../../base/assets/node.jpg');
 
@@ -203,9 +202,7 @@ describe('PostsController: /post/:id, update post', (): void => {
         .expect(201);
     });
 
-
     it(`should create a post2 by userId and add one image`, async (): Promise<void> => {
-
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       const response = await agent
@@ -227,7 +224,6 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should create a post by userId2 and add one image`, async (): Promise<void> => {
-
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       const response = await agent
@@ -249,7 +245,6 @@ describe('PostsController: /post/:id, update post', (): void => {
     });
 
     it(`should return posts by userId`, async (): Promise<void> => {
-
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
       expect(response.body).toEqual([
@@ -259,6 +254,7 @@ describe('PostsController: /post/:id, update post', (): void => {
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           authorId: user.id,
+          username: createUserInput.username,
           imagesUrl: [expect.any(String)],
         },
         {
@@ -267,6 +263,7 @@ describe('PostsController: /post/:id, update post', (): void => {
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           authorId: user.id,
+          username: createUserInput.username,
           imagesUrl: [expect.any(String), expect.any(String)],
         },
       ]);
