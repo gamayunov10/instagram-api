@@ -1,4 +1,6 @@
 // Fields
+import { TimeUnit } from '../enums/time-unit';
+
 export const confirmCodeField = 'code';
 export const fileField = 'file';
 export const noneField = 'none';
@@ -66,3 +68,8 @@ export const productionDbGuard = `You do not have permissions to perform this op
 export const countPostsPublicPage = '4';
 export const pageNumberDefault = '1';
 export const pageSizeDefault = '8';
+
+//expirationDate
+export const confirmationCodeExpirationPeriod = 20;
+export const passwordRecoveryCodeExpirationPeriod = 20;
+export const codeExpirationPeriod: TimeUnit = TimeUnit.MINUTES;
