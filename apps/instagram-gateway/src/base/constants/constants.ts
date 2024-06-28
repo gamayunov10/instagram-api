@@ -70,6 +70,6 @@ export const pageNumberDefault = '1';
 export const pageSizeDefault = '8';
 
 //expirationDate
-export const confirmationCodeExpirationPeriod = 20;
-export const passwordRecoveryCodeExpirationPeriod = 20;
+export const confirmationCodeExpirationPeriod = 5;
+export const passwordRecoveryCodeExpirationPeriod = 10;
 export const codeExpirationPeriod: TimeUnit = TimeUnit.MINUTES;
