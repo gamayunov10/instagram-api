@@ -71,7 +71,7 @@ model DeviceAuthSession {
 model ConfirmationCode {
   id               String   @id @default(uuid()) @map("confirmation_code_id")
   confirmationCode String   @unique @map("confirmation_code")
-  expirationDate   DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '20 minutes'")) @map("expiration_date")
+  expirationDate   DateTime @map("expiration_date")
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String   @unique @map("user_id")
 
@@ -83,7 +83,7 @@ model PasswordRecoveryCode {
   recoveryCode   String   @unique @map("recovery_code")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
-  expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '10 minutes'")) @map("expiration_date")
+  expirationDate DateTime @map("expiration_date")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique @map("user_id")
