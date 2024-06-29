@@ -7,6 +7,12 @@ import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UserOauthCredInputModel } from '../../auth/models/input/user-oauth-cred.input.model';
 import { UserProfileInputModel } from '../models/input/user.profile.input.model';
 import { AccountType } from '../../../../../../libs/common/base/ts/enums/account-type.enum';
+import { calculateExpirationDate } from '../../../base/utils/calculate.expirationDate';
+import {
+  codeExpirationPeriod,
+  confirmationCodeExpirationPeriod,
+  passwordRecoveryCodeExpirationPeriod,
+} from '../../../base/constants/constants';
 
 @Injectable()
 export class UsersRepository {
@@ -37,8 +43,13 @@ export class UsersRepository {
 
         const userId = user.id;
 
+        const expirationDate = calculateExpirationDate(
+          confirmationCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
         await prisma.confirmationCode.create({
-          data: { userId, confirmationCode },
+          data: { userId, confirmationCode, expirationDate },
         });
 
         return userId;
@@ -189,10 +200,16 @@ export class UsersRepository {
   async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = calculateExpirationDate(
+          passwordRecoveryCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
         const createdRecord = await prisma.passwordRecoveryCode.create({
           data: {
             userId: id,
             recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
           },
           select: {
             id: true,
@@ -215,10 +232,16 @@ export class UsersRepository {
   async updatePasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = calculateExpirationDate(
+          passwordRecoveryCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
         const updatedRecord = await prisma.passwordRecoveryCode.update({
           where: { userId: id },
           data: {
             recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
           },
           select: {
             id: true,
@@ -261,18 +284,23 @@ export class UsersRepository {
   async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = calculateExpirationDate(
+          confirmationCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
         const updateResult = await prisma.confirmationCode.update({
           where: {
             userId: userId,
           },
           data: {
             confirmationCode: confirmationCode,
+            expirationDate: expirationDate,
           },
           select: {
             id: true,
           },
         });
-
         return !!updateResult;
       });
     } catch (e) {
