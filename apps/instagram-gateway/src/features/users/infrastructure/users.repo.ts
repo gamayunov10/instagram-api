@@ -204,6 +204,7 @@ export class UsersRepository {
           passwordRecoveryCodeExpirationPeriod,
           codeExpirationPeriod,
         );
+
         const createdRecord = await prisma.passwordRecoveryCode.create({
           data: {
             userId: id,
@@ -235,6 +236,7 @@ export class UsersRepository {
           passwordRecoveryCodeExpirationPeriod,
           codeExpirationPeriod,
         );
+
         const updatedRecord = await prisma.passwordRecoveryCode.update({
           where: { userId: id },
           data: {
@@ -286,6 +288,7 @@ export class UsersRepository {
           confirmationCodeExpirationPeriod,
           codeExpirationPeriod,
         );
+
         const updateResult = await prisma.confirmationCode.update({
           where: {
             userId: userId,
