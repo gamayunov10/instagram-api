@@ -69,6 +69,7 @@ import { PasswordUpdateCommand } from './application/use-cases/password/password
 import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
+import { OAuthConfig } from '../config/oauth.config';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -79,7 +80,12 @@ export class AuthController {
     private readonly configService: ConfigService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
-  ) {}
+	protected readonly oauthConfig: OAuthConfig,
+  ) {
+	// super({
+	// 	providerRed: oauthConfig.providerRedirect
+	// });
+  }
 
   @Get('me')
   @SwaggerOptions(
@@ -186,7 +192,8 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
+        // this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
+		this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
 
@@ -238,7 +245,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
+        this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
 
