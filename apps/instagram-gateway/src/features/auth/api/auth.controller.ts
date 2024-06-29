@@ -70,6 +70,7 @@ import { TerminateOtherSessionsCommand } from './application/use-cases/devices/t
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
 import { OAuthConfig } from '../config/oauth.config';
+import { PasswordRecoveryResendingCommand } from './application/use-cases/password/password-recovery-resending.use-case';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -192,8 +193,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        // this.configService.get<string>('PROVIDER_REDIRECT_URL') + `${result.accessToken}`,
-		this.oauthConfig.providerRedirect + `${result.accessToken}`,
+        this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
 
@@ -248,6 +248,7 @@ export class AuthController {
         this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
+
 
   @Post('refresh-token')
   @SwaggerOptions(
@@ -407,6 +408,37 @@ export class AuthController {
   ): Promise<void> {
     const result = await this.commandBus.execute(
       new PasswordRecoveryCommand(userPasswdRecoveryInputModel),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return result;
+  }
+
+  @Post('password-recovery-resending')
+  @SwaggerOptions(
+    'Resend password recovery via Email',
+    false,
+    false,
+    204,
+    'Success',
+    false,
+    true,
+    ApiErrorMessages,
+    false,
+    false,
+    `If User with this email doesn't exist`,
+    false,
+  )
+  @HttpCode(204)
+  async passwordRecoveryResending(
+    @Body()
+    emailInputModel: EmailInputModel,
+  ): Promise<void> {
+    const result = await this.commandBus.execute(
+      new PasswordRecoveryResendingCommand(emailInputModel),
     );
 
     if (result.code !== ResultCode.Success) {

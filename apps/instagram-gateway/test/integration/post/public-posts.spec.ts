@@ -144,14 +144,14 @@ describe('PublicPostController: /public-posts', (): void => {
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(public_posts_url)
-        .query({ skip: '1s' }) // should not be NaN
+        .query({ page: '1s' }) // should not be NaN
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(public_posts_url)
-        .query({ skip: true }) // should not be NaN
+        .query({ page: true }) // should not be NaN
         .expect(400);
     });
   });
@@ -172,7 +172,7 @@ describe('PublicPostController: /public-posts', (): void => {
       user2 = await testManager.createUser(createUserInput2);
     });
 
-    it(`should create 2 posts`, async (): Promise<void> => {
+    it(`should create 5 posts`, async (): Promise<void> => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
       const imagePath2 = path.join(__dirname, '../../base/assets/node.jpg');
 
@@ -209,20 +209,49 @@ describe('PublicPostController: /public-posts', (): void => {
           images: [photoId2],
         })
         .expect(201);
+
+      await agent
+        .post(post_with_photo_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          description: 'post #3',
+          images: [photoId2],
+        })
+        .expect(201);
+
+      await agent
+        .post(post_with_photo_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          description: 'post #4',
+          images: [photoId2],
+        })
+        .expect(201);
+
+      await agent
+        .post(post_with_photo_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          description: 'post #5',
+          images: [photoId2],
+        })
+        .expect(201);
     });
 
     it(`should return posts`, async (): Promise<void> => {
       const response = await agent.get(public_posts_url).expect(201);
 
-      expectPublicPostsView(
-        response,
-        1,
-        8,
-        2,
-        'description b',
-        user2.id,
-        'jpeg',
-      );
+      expect(response.body).toEqual({
+        page: 1,
+        pagesCount: 2,
+        pageSize: 4,
+        totalCount: 5,
+        items: expect.any(Array),
+      });
+
+      expectPublicPostsView(response, 2, 4, 5, 'post #5', user2.id, 'jpeg');
+
+      expect(response.body.items.length).toEqual(4);
     });
   });
 });

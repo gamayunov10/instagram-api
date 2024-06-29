@@ -25,6 +25,7 @@ export class FilesService {
       return {
         authorId: file.userId,
         url: this.s3Adapter.getFileUrl(file.url),
+        imageId: file.id,
       };
     });
   }

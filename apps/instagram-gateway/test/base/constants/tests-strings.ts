@@ -83,7 +83,8 @@ export const userProfileInputModel = {
   firstName: 'Armando',
   lastName: 'YouKnow',
   dateOfBirth: '31.10.1960',
-  city: 'q',
+  city: 'Minsk',
+  country: 'Belarus',
   aboutMe: lorem10,
 };
 

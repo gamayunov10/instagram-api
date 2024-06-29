@@ -7,7 +7,7 @@ export const paymentsServiceConfig = (): ClientsProviderAsyncOptions => {
       transport: Transport.TCP,
       options: {
         host: configService.get('PAY_SERVICE_HOST') || '0.0.0.0',
-        port: Number(configService.get('PAY_SERVICE_PORT')) || 3424,
+        port: Number(configService.get('PAY_SERVICE_PORT')) || 3437,
       },
     }),
     inject: [ConfigService],

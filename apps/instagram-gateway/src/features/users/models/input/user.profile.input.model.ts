@@ -76,6 +76,14 @@ export class UserProfileInputModel {
 
   @ApiProperty({
     type: String,
+    required: false,
+  })
+  @IsNotEmptyString()
+  @IsOptional()
+  country?: string;
+
+  @ApiProperty({
+    type: String,
     minLength: 0,
     maxLength: 200,
     required: false,

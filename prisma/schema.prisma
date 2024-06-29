@@ -19,12 +19,14 @@ model User {
   id                    String                @id @default(uuid())
   accountType           String                @default("Personal") @map("account_type")
   endDateOfSubscription DateTime?             @map("end_date_of_subscription")
+  autoRenewal           Boolean               @default(false) @map("auto_renewal")
   email                 String                @unique
   username              String                @unique
   firstName             String?               @map("first_name")
   lastName              String?               @map("last_name")
   birthDate             String?               @map("birth_date")
   city                  String?
+  country               String?
   aboutMe               String?               @map("about_me")
   passwordHash          String?               @map("password_hash")
   createdAt             DateTime              @default(now()) @map("created_at")
@@ -80,9 +82,11 @@ model PasswordRecoveryCode {
   id             String   @id @default(uuid()) @map("password_recovery_code_id")
   recoveryCode   String   @unique @map("recovery_code")
   createdAt      DateTime @default(now()) @map("created_at")
-  expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '4 hours'")) @map("expiration_date")
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String   @unique @map("user_id")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  expirationDate DateTime @map("expiration_date")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
 
   @@map("password_recovery_code")
 }

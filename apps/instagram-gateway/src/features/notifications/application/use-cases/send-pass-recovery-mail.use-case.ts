@@ -23,7 +23,7 @@ export class SendPasswordRecoveryUseCase
 
   async execute(command: SendPasswordRecoveryMailCommand) {
     if (this.configService.get('ENV') !== NodeEnv.TESTING) {
-      const url = `${this.configService.get('PUBLIC_FRONT_URL')}/auth/create-new-password?recoveryCode=${command.recoveryCode}`;
+      const url = `${this.configService.get('PUBLIC_FRONT_URL')}/auth/create-new-password?recoveryCode=${command.recoveryCode}&email=${command.email}`;
 
       await this.mailerService.sendMail({
         to: command.email,

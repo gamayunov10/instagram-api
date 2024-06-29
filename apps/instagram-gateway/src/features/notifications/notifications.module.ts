@@ -5,11 +5,13 @@ import { ConfigService } from '@nestjs/config';
 import { SendRegistrationMailUseCase } from './application/use-cases/send-registration-mail.use-case';
 import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-recovery-mail.use-case';
 import { SendSuccessSubscriptionUseCase } from './application/use-cases/send-success-subscription-message.use-case';
+import { SendSuccessRegistrationUseCase } from './application/use-cases/send-success-registration-message.use-case';
 
 const useCases = [
   SendRegistrationMailUseCase,
   SendPasswordRecoveryUseCase,
   SendSuccessSubscriptionUseCase,
+  SendSuccessRegistrationUseCase,
 ];
 @Module({
   imports: [

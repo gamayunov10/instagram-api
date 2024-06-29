@@ -204,7 +204,13 @@ describe('PostsController: /post/:id, delete post', (): void => {
         .get(`${public_posts_url}${post3.id}`)
         .expect(200);
 
-      expectPostById(response, 'Upload third post', user.id, '.png');
+      expectPostById(
+        response,
+        'Upload third post',
+        user.id,
+        createUserInput.username,
+        '.png',
+      );
     });
   });
 });

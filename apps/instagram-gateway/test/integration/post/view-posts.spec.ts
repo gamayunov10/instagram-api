@@ -11,7 +11,6 @@ import {
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
-import { expectPostsView } from '../../base/utils/post/expectPostsView';
 
 import {
   post_photo_url,
@@ -20,7 +19,7 @@ import {
 
 export const post_url = '/api/v1/post/';
 
-describe('PostsController: /post/:id, update post', (): void => {
+describe('PostsController: /post/:userId, View posts by userId', (): void => {
   let app: INestApplication;
   let agent: TestAgent<any>;
   let testManager: TestManager;
@@ -144,14 +143,14 @@ describe('PostsController: /post/:id, update post', (): void => {
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: '1s' }) // should not be NaN
+        .query({ pageSize: '1s' }) // should not be NaN
         .expect(400);
     });
 
     it(`should not return posts if query is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ skip: true }) // should not be NaN
+        .query({ page: true }) // should not be NaN
         .expect(400);
     });
   });
@@ -162,6 +161,7 @@ describe('PostsController: /post/:id, update post', (): void => {
 
     let photoId: string;
     let photoId2: string;
+    let photoId3: string;
 
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
@@ -172,9 +172,38 @@ describe('PostsController: /post/:id, update post', (): void => {
       user2 = await testManager.createUser(createUserInput2);
     });
 
-    it(`should create 2 posts`, async (): Promise<void> => {
+    it(`should create a post by userid and add two images`, async (): Promise<void> => {
       const imagePath = path.join(__dirname, '../../base/assets/node.png');
       const imagePath2 = path.join(__dirname, '../../base/assets/node.jpg');
+
+      const response = await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath)
+        .expect(201);
+
+      photoId = response.body.imageId;
+
+      const response2 = await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath2)
+        .expect(201);
+
+      photoId2 = response2.body.imageId;
+
+      await agent
+        .post(post_with_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          description: 'description post by user',
+          images: [photoId, photoId2],
+        })
+        .expect(201);
+    });
+
+    it(`should create a post2 by userId and add one image`, async (): Promise<void> => {
+      const imagePath = path.join(__dirname, '../../base/assets/node.png');
 
       const response = await agent
         .post(post_photo_url)
@@ -188,37 +217,56 @@ describe('PostsController: /post/:id, update post', (): void => {
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
-          description: 'description a',
+          description: 'description post2 by user',
           images: [photoId],
         })
         .expect(201);
+    });
 
-      const response2 = await agent
+    it(`should create a post by userId2 and add one image`, async (): Promise<void> => {
+      const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
+      const response = await agent
         .post(post_photo_url)
         .auth(user2.accessToken, { type: 'bearer' })
-        .attach('file', imagePath2)
+        .attach('file', imagePath)
         .expect(201);
 
-      photoId2 = response2.body.imageId;
+      photoId3 = response.body.imageId;
 
       await agent
         .post(post_with_photo_url)
         .auth(user2.accessToken, { type: 'bearer' })
         .send({
-          description: 'description b',
-          images: [photoId2],
+          description: 'description post by user2',
+          images: [photoId3],
         })
         .expect(201);
     });
 
-    it(`should return posts`, async (): Promise<void> => {
+    it(`should return posts by userId`, async (): Promise<void> => {
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
-      expectPostsView(response, 'description a', user.id, '.png');
-
-      const response2 = await agent.get(`${post_url}${user2.id}`).expect(201);
-
-      expectPostsView(response2, 'description b', user2.id, '.jpeg');
+      expect(response.body).toEqual([
+        {
+          id: expect.any(String),
+          description: 'description post2 by user',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          authorId: user.id,
+          username: createUserInput.username,
+          imagesUrl: [expect.any(String)],
+        },
+        {
+          id: expect.any(String),
+          description: 'description post by user',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+          authorId: user.id,
+          username: createUserInput.username,
+          imagesUrl: [expect.any(String), expect.any(String)],
+        },
+      ]);
     });
   });
 });

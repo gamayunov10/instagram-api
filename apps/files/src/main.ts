@@ -13,7 +13,7 @@ async function bootstrap() {
       transport: Transport.TCP,
       options: {
         host: configService.get<string>('SERVICE_HOST') || '0.0.0.0',
-        port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3393,
+        port: Number(configService.get<string>('FILE_SERVICE_PORT')) || 3438,
       },
     },
   );

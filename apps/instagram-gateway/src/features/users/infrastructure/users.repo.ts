@@ -7,6 +7,12 @@ import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UserOauthCredInputModel } from '../../auth/models/input/user-oauth-cred.input.model';
 import { UserProfileInputModel } from '../models/input/user.profile.input.model';
 import { AccountType } from '../../../../../../libs/common/base/ts/enums/account-type.enum';
+import { calculateExpirationDate } from '../../../base/utils/calculate.expirationDate';
+import {
+  codeExpirationPeriod,
+  confirmationCodeExpirationPeriod,
+  passwordRecoveryCodeExpirationPeriod,
+} from '../../../base/constants/constants';
 
 @Injectable()
 export class UsersRepository {
@@ -24,9 +30,6 @@ export class UsersRepository {
   ): Promise<string> {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
-        const expirationDate = new Date();
-        expirationDate.setHours(expirationDate.getHours() + 1);
-
         const user = await prisma.user.create({
           data: {
             username: userAuthInputModel.username,
@@ -39,6 +42,11 @@ export class UsersRepository {
         });
 
         const userId = user.id;
+
+        const expirationDate = calculateExpirationDate(
+          confirmationCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
 
         await prisma.confirmationCode.create({
           data: { userId, confirmationCode, expirationDate },
@@ -192,10 +200,16 @@ export class UsersRepository {
   async createPasswordRecoveryRecord(id: string, recoveryCode: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = calculateExpirationDate(
+          passwordRecoveryCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
         const createdRecord = await prisma.passwordRecoveryCode.create({
           data: {
             userId: id,
             recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
           },
           select: {
             id: true,
@@ -215,11 +229,65 @@ export class UsersRepository {
     }
   }
 
+  async updatePasswordRecoveryRecord(id: string, recoveryCode: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        const expirationDate = calculateExpirationDate(
+          passwordRecoveryCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
+
+        const updatedRecord = await prisma.passwordRecoveryCode.update({
+          where: { userId: id },
+          data: {
+            recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        return updatedRecord.id;
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async deletePasswordRecoveryCode(userId: string) {
+    try {
+      return await this.prismaClient.$transaction(async (prisma) => {
+        await prisma.passwordRecoveryCode.delete({
+          where: {
+            userId: userId,
+          },
+        });
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return false;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async updateEmailConfirmationCode(confirmationCode: string, userId: string) {
     try {
       return await this.prismaClient.$transaction(async (prisma) => {
-        const expirationDate = new Date();
-        expirationDate.setHours(expirationDate.getHours() + 5);
+        const expirationDate = calculateExpirationDate(
+          confirmationCodeExpirationPeriod,
+          codeExpirationPeriod,
+        );
 
         const updateResult = await prisma.confirmationCode.update({
           where: {
@@ -233,7 +301,6 @@ export class UsersRepository {
             id: true,
           },
         });
-
         return !!updateResult;
       });
     } catch (e) {
@@ -294,6 +361,7 @@ export class UsersRepository {
             lastName: userProfileInputModel.lastName,
             birthDate: userProfileInputModel?.dateOfBirth?.toString() || null,
             city: userProfileInputModel?.city || null,
+            country: userProfileInputModel?.country || null,
             aboutMe: userProfileInputModel?.aboutMe || null,
           },
         });

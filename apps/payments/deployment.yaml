@@ -32,11 +32,26 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: EMAIL_PASS
+             - name: APP_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: APP_PORT
              - name: PUBLIC_FRONT_URL
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: PUBLIC_FRONT_URL
+             - name: RECAPTCHA_SECRET_SITE
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: RECAPTCHA_SECRET_SITE
+             - name: RECAPTCHA_SECRET_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: RECAPTCHA_SECRET_KEY
              - name: GOOGLE_CLIENT_ID
                valueFrom:
                  secretKeyRef:
@@ -92,46 +107,21 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: S3_BUCKET_NAME_PLUS_S3_DOMAIN
-             - name: SERVICE_HOST
+             - name: MONGO_URL_FILES
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
-                   key: SERVICE_HOST
-             - name: ACCESS_TOKEN_EXP
+                   key: MONGO_URL_FILES
+             - name: FILE_SERVICE_HOST
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
-                   key: ACCESS_TOKEN_EXP
-             - name: REFRESH_TOKEN_SECRET
+                   key: FILE_SERVICE_HOST
+             - name: FILE_SERVICE_PORT
                valueFrom:
                  secretKeyRef:
                    name: payments-production-config-secret
-                   key: REFRESH_TOKEN_SECRET
-             - name: REFRESH_TOKEN_EXP
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: REFRESH_TOKEN_EXP
-             - name: ENV
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: ENV
-             - name: RECAPTCHA_SECRET_SITE
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: RECAPTCHA_SECRET_SITE
-             - name: RECAPTCHA_SECRET_KEY
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: RECAPTCHA_SECRET_KEY
-             - name: CRYPTO_SALT
-               valueFrom:
-                 secretKeyRef:
-                   name: payments-production-config-secret
-                   key: CRYPTO_SALT
+                   key: FILE_SERVICE_PORT
              - name: PAY_SERVICE_HOST
                valueFrom:
                  secretKeyRef:
@@ -187,6 +177,46 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: PAYPAL_ACCESS_TOKEN
+             - name: ACCESS_TOKEN_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: ACCESS_TOKEN_SECRET
+             - name: ACCESS_TOKEN_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: ACCESS_TOKEN_EXP
+             - name: REFRESH_TOKEN_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: REFRESH_TOKEN_SECRET
+             - name: REFRESH_TOKEN_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: REFRESH_TOKEN_EXP
+             - name: ENV
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: ENV
+             - name: CRYPTO_SALT
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: CRYPTO_SALT
+             - name: SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: SERVICE_HOST
+             - name: PROVIDER_REDIRECT_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: PROVIDER_REDIRECT_URL
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

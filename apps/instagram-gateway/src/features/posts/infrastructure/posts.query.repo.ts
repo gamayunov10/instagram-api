@@ -19,7 +19,7 @@ export class PostsQueryRepository {
     try {
       const post = await this.prismaClient.post.findUnique({
         where: { id, isDeleted: false },
-        include: { images: true },
+        include: { images: true, author: true },
       });
 
       return await this.postMapper(post);
@@ -34,14 +34,16 @@ export class PostsQueryRepository {
 
   async findFirstPostById(id: string): Promise<PostViewModel | null> {
     try {
-      return await this.prismaClient.post.findFirst({
+      const post = await this.prismaClient.post.findFirst({
         where: { id, isDeleted: false },
-        include: { images: true },
+        include: { images: true, author: true },
       });
+      return await this.postMapper(post);
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      return null;
     } finally {
       await this.prismaClient.$disconnect();
     }
@@ -49,12 +51,13 @@ export class PostsQueryRepository {
 
   async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
+      const skip = Number(query.pageSize) * (Number(query.page) - 1);
       return await this.prismaClient.post.findMany({
         where: { authorId: userId, isDeleted: false },
         orderBy: { [query.sortField]: query.sortDirection },
-        skip: Number(query.skip),
-        take: Number(query.take),
-        include: { images: true },
+        skip: skip,
+        take: Number(query.pageSize),
+        include: { images: true, author: true },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -67,13 +70,25 @@ export class PostsQueryRepository {
 
   async findPostsByQuery(query: PostQueryModel) {
     try {
-      return await this.prismaClient.post.findMany({
+      const result = await this.prismaClient.post.findMany({
+        where: { isDeleted: false },
+      });
+
+      const totalCount = result.length;
+      const skip = Number(query.pageSize) * (Number(query.page) - 1);
+
+      const posts = await this.prismaClient.post.findMany({
         where: { isDeleted: false },
         orderBy: { [query.sortField]: query.sortDirection },
-        skip: Number(query.skip),
-        take: Number(query.take),
-        include: { images: true },
+        skip: skip,
+        take: Number(query.pageSize),
+        include: { images: true, author: true },
       });
+
+      return {
+        posts,
+        totalCount,
+      };
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
@@ -128,6 +143,7 @@ export class PostsQueryRepository {
       id: data.id,
       description: data.description,
       authorId: data.authorId,
+      username: data.author.username,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
       images: data.images.map((image) => ({
