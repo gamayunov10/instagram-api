@@ -82,9 +82,11 @@ model PasswordRecoveryCode {
   id             String   @id @default(uuid()) @map("password_recovery_code_id")
   recoveryCode   String   @unique @map("recovery_code")
   createdAt      DateTime @default(now()) @map("created_at")
-  expirationDate DateTime @default(dbgenerated("CURRENT_TIMESTAMP + interval '4 hours'")) @map("expiration_date")
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String   @unique @map("user_id")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  expirationDate DateTime @map("expiration_date")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
 
   @@map("password_recovery_code")
 }

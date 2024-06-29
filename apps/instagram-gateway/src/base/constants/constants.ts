@@ -1,4 +1,6 @@
 // Fields
+import { TimeUnit } from '../enums/time-unit';
+
 export const confirmCodeField = 'code';
 export const fileField = 'file';
 export const noneField = 'none';
@@ -62,3 +64,13 @@ export const paymentTransactionFailed = 'transaction failed, please try again';
 
 // Database
 export const productionDbGuard = `You do not have permissions to perform this operation in this environment`;
+
+// Pagination
+export const countPostsPublicPage = '4';
+export const pageNumberDefault = '1';
+export const pageSizeDefault = '8';
+
+// expirationDate
+export const confirmationCodeExpirationPeriod = 5;
+export const passwordRecoveryCodeExpirationPeriod = 10;
+export const codeExpirationPeriod: TimeUnit = TimeUnit.MINUTES;

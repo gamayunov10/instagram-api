@@ -35,7 +35,11 @@ export class PasswordUpdateUseCase
       command.newPasswordModel.recoveryCode,
     );
 
-    if (!user || user?.expirationDate < new Date()) {
+    if (!user || user.expirationDate < new Date()) {
+      if (user) {
+        await this.usersRepository.deletePasswordRecoveryCode(user.userId);
+      }
+
       return exceptionHandler(
         ResultCode.BadRequest,
         recoveryCodeIsIncorrect,

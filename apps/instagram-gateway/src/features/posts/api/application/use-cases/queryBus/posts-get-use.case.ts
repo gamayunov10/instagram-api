@@ -97,6 +97,7 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
       authorId: p.authorId,
+      username: p.author.username,
       imagesUrl: url,
     };
   }

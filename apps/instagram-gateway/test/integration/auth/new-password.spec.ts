@@ -110,6 +110,14 @@ describe('AuthController: /new-password', () => {
           recoveryCode: recoveryCode,
         })
         .expect(400);
+
+      await agent
+        .post(new_password_url)
+        .send({
+          newPassword: userNewPassword, // incorrect value
+          recoveryCode: 'recoveryCode', // incorrect value
+        })
+        .expect(400);
     });
 
     it(`should return 400 when trying to new-password with 

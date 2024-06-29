@@ -3,6 +3,8 @@ import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { UsersQueryRepository } from '../../../infrastructure/users.query.repo';
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import {
+  pageNumberDefault,
+  pageSizeDefault,
   usernameField,
   userNotFound,
 } from '../../../../../base/constants/constants';
@@ -30,7 +32,9 @@ export class ViewUserPublicInfoUseCase
     private readonly fileServiceAdapter: FileServiceAdapter,
   ) {}
 
-  async execute(command: ViewUserPublicInfoCommand) {
+  async execute(
+    command: ViewUserPublicInfoCommand,
+  ): Promise<UserPublicProfileOutputModel | ExceptionResultType<boolean>> {
     const user = await this.usersQueryRepository.findUserByUsername(
       command.username,
     );
@@ -47,8 +51,8 @@ export class ViewUserPublicInfoUseCase
     const query: PostQueryModel = {
       sortDirection: SortDirection.ASC,
       sortField: PostSortFields.CREATED_AT,
-      skip: '0',
-      take: '8',
+      page: pageNumberDefault,
+      pageSize: pageSizeDefault,
     };
 
     const posts: ExceptionResultType<boolean> = await this.queryBus.execute(

@@ -3,7 +3,6 @@ import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
-import { UserPasswdRecoveryInputModel } from '../../../../models/input/user-passwd-recovery.input.model';
 import { SendPasswordRecoveryMailCommand } from '../../../../../notifications/application/use-cases/send-pass-recovery-mail.use-case';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
@@ -15,16 +14,17 @@ import { ExceptionResultType } from '../../../../../../base/types/exception.type
 import { UserDevicesRepository } from '../../../../../users/infrastructure/devices/user.devices.repo';
 import { UsersRepository } from '../../../../../users/infrastructure/users.repo';
 import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
+import { EmailInputModel } from '../../../../models/input/email-input.model';
 
-export class PasswordRecoveryCommand {
-  constructor(public userEmailInputModel: UserPasswdRecoveryInputModel) {}
+export class PasswordRecoveryResendingCommand {
+  constructor(public userInputModel: EmailInputModel) {}
 }
 
-@CommandHandler(PasswordRecoveryCommand)
-export class PasswordRecoveryUseCase
-  implements ICommandHandler<PasswordRecoveryCommand>
+@CommandHandler(PasswordRecoveryResendingCommand)
+export class PasswordRecoveryResendingUseCase
+  implements ICommandHandler<PasswordRecoveryResendingCommand>
 {
-  private readonly logger = new Logger(PasswordRecoveryUseCase.name);
+  private readonly logger = new Logger(PasswordRecoveryResendingUseCase.name);
 
   constructor(
     private readonly commandBus: CommandBus,
@@ -35,10 +35,10 @@ export class PasswordRecoveryUseCase
   ) {}
 
   async execute(
-    command: PasswordRecoveryCommand,
+    command: PasswordRecoveryResendingCommand,
   ): Promise<ExceptionResultType<boolean>> {
     const user = await this.usersQueryRepository.findUserByEmail(
-      command.userEmailInputModel.email,
+      command.userInputModel.email,
     );
 
     if (!user) {
@@ -52,17 +52,10 @@ export class PasswordRecoveryUseCase
 
     const recoveryCode = randomUUID();
 
-    const result = await this.usersRepository.createPasswordRecoveryRecord(
+    await this.usersRepository.updatePasswordRecoveryRecord(
       user.id,
       recoveryCode,
     );
-
-    if (!result) {
-      await this.usersRepository.createPasswordRecoveryRecord(
-        user.id,
-        recoveryCode,
-      );
-    }
 
     try {
       await this.commandBus.execute(
