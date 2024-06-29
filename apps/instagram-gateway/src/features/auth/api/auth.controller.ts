@@ -177,7 +177,13 @@ export class AuthController {
     const userAgent = headers['user-agent'] || 'unknown';
 
     await this.commandBus.execute(
-      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
+      new LoginDeviceCommand(
+        result.accessToken,
+        userAgent,
+        'oauth',
+        user.username,
+        user.email,
+      ),
     );
 
     (res as Response)
@@ -229,7 +235,13 @@ export class AuthController {
     const userAgent = headers['user-agent'] || 'unknown';
 
     await this.commandBus.execute(
-      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
+      new LoginDeviceCommand(
+        result.accessToken,
+        userAgent,
+        'oauth',
+        user.username,
+        user.email,
+      ),
     );
 
     (res as Response)
