@@ -46,7 +46,6 @@ export class LoginDeviceUseCase implements ICommandHandler<LoginDeviceCommand> {
         if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
           this.logger.error(e);
         }
-        return null;
       }
     }
 
