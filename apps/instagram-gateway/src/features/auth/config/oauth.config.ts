@@ -9,6 +9,7 @@ export class OAuthConfig {
   private readonly googleClientId: string;
   private readonly googleClientSecret: string;
   private readonly googleCallBackURL: string;
+  private readonly providerRedirectURL: string
 
   constructor(private readonly configService: ConfigService) {
     this.githubClientId = this.getSecret('GITHUB_CLIENT_ID');
@@ -17,6 +18,7 @@ export class OAuthConfig {
     this.googleClientId = this.getSecret('GOOGLE_CLIENT_ID');
     this.googleClientSecret = this.getSecret('GOOGLE_CLIENT_SECRET');
     this.googleCallBackURL = this.getSecret('GOOGLE_CALL_BACK_URL');
+    this.providerRedirectURL = this.getSecret('PROVIDER_REDIRECT_URL');
   }
 
   private getSecret(key: string): string {
@@ -52,4 +54,9 @@ export class OAuthConfig {
   get googleCallBackURLValue() {
     return this.googleCallBackURL;
   }
+
+  get providerRedirect() {
+	return this.providerRedirectURL;
+  } 
+
 }

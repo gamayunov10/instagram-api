@@ -212,6 +212,11 @@ spec:
                  secretKeyRef:
                    name: fs-production-config-secret
                    key: CRYPTO_SALT
+             - name: PROVIDER_REDIRECT_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: fs-production-config-secret
+                   key: PROVIDER_REDIRECT_URL
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

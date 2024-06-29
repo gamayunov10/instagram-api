@@ -20,7 +20,7 @@ export class RegistrationUseCase
   private readonly logger = new Logger(RegistrationUseCase.name);
 
   constructor(
-    private commandBus: CommandBus,
+    private readonly commandBus: CommandBus,
     private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,

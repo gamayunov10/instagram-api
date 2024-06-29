@@ -69,6 +69,7 @@ import { PasswordUpdateCommand } from './application/use-cases/password/password
 import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
+import { OAuthConfig } from '../config/oauth.config';
 import { PasswordRecoveryResendingCommand } from './application/use-cases/password/password-recovery-resending.use-case';
 
 @Controller('auth')
@@ -80,6 +81,7 @@ export class AuthController {
     private readonly configService: ConfigService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
+	protected readonly oauthConfig: OAuthConfig,
   ) {}
 
   @Get('me')
@@ -187,7 +189,7 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/provider-auth/?access-token=${result.accessToken}`,
+        this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
 
@@ -239,9 +241,10 @@ export class AuthController {
         sameSite: 'none',
       })
       .redirect(
-        `https://inctagram.org/provider-auth/?access-token=${result.accessToken}`,
+        this.oauthConfig.providerRedirect + `${result.accessToken}`,
       );
   }
+
 
   @Post('refresh-token')
   @SwaggerOptions(
