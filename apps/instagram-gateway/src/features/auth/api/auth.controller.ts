@@ -82,11 +82,7 @@ export class AuthController {
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
 	protected readonly oauthConfig: OAuthConfig,
-  ) {
-	// super({
-	// 	providerRed: oauthConfig.providerRedirect
-	// });
-  }
+  ) {}
 
   @Get('me')
   @SwaggerOptions(
