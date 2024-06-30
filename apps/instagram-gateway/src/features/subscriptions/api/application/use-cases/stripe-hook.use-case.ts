@@ -1,4 +1,4 @@
-import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
@@ -11,6 +11,9 @@ import { UsersRepository } from '../../../../users/infrastructure/users.repo';
 import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 import { SubscriptionsService } from '../../subscriptions.service';
+import { StripeEventSubscriptionCreatedDataType } from '../../../models/types/stripe-event-subscription-created-data';
+import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
+import { SubscribersRepository } from '../../../infrastructure/subscriber/subscribers.repo';
 
 export class StripeHookCommand {
   constructor(
@@ -24,7 +27,6 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
   private readonly logger = new Logger(StripeHookUseCase.name);
 
   constructor(
-    private readonly commandBus: CommandBus,
     private readonly configService: ConfigService,
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
@@ -32,6 +34,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
     private readonly subscriptionsService: SubscriptionsService,
+    private readonly subscribersRepository: SubscribersRepository,
   ) {}
 
   async execute(command: StripeHookCommand) {
@@ -39,7 +42,6 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       data: command.data,
       signature: command.signature,
     };
-
     const event =
       await this.paymentsServiceAdapter.stripeSignature(eventPayload);
     if (!event.data) {
@@ -55,8 +57,9 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
         event.res.response.client_reference_id,
       );
 
-      if (event.res.response.mode === 'subscription') {
+      if (event.res.response.object === 'subscription') {
         autoRenewal = true;
+        await this.createSubscriber(order.userId, event.res.response);
       }
 
       const payload = {
@@ -86,5 +89,24 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       data: true,
       code: ResultCode.Success,
     };
+  }
+  private async createSubscriber(
+    userId: string,
+    eventData: StripeEventSubscriptionCreatedDataType,
+  ) {
+    const customerId = eventData.customer;
+    const subscriptionId = eventData.id;
+    const startDate = new Date(eventData.start_date);
+    const endDate = new Date(eventData.ended_at);
+    const paymentSystem = PaymentType.STRIPE;
+
+    await this.subscribersRepository.createSubscriber(
+      userId,
+      customerId,
+      subscriptionId,
+      startDate,
+      endDate,
+      paymentSystem,
+    );
   }
 }
