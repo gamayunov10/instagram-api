@@ -67,9 +67,11 @@ export class StripeAdapter {
     try {
       // Checking the existence of a client or creating a new one
       let customer;
+
       const existingCustomers = await this.stripe.customers.list({
         email: payload.user.email,
       });
+
       if (existingCustomers.data.length > 0) {
         customer = existingCustomers.data[0];
       } else {
@@ -79,7 +81,7 @@ export class StripeAdapter {
           description: payload.product_data.description,
         });
       }
-      console.log(customer.id);
+
       const result = await this.stripe.checkout.sessions.create({
         success_url: payload.success_url,
         cancel_url: payload.cancel_url,
@@ -105,10 +107,6 @@ export class StripeAdapter {
         customer: customer.id,
       });
 
-      console.log(result.id);
-      const subscription = result.subscription;
-      console.log(subscription);
-
       return {
         data: true,
         code: ResultCode.Success,
@@ -116,7 +114,6 @@ export class StripeAdapter {
           status: result.status,
           url: result.url,
           openedPaymentData: result,
-          subscription: subscription,
         },
       };
     } catch (e) {

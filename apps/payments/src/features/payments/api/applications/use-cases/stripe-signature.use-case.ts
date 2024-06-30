@@ -40,6 +40,15 @@ export class StripeSignatureUseCase
         };
       }
 
+      if (event.type === 'customer.subscription.created') {
+        const session = event.data.object as Stripe.Subscription;
+        return {
+          data: true,
+          code: ResultCode.Success,
+          response: session,
+        };
+      }
+
       return {
         data: true,
         code: ResultCode.Success,
