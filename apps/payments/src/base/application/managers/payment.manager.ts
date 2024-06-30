@@ -20,7 +20,7 @@ export class PaymentManager {
   async createAutoSubscription(payment: MakePaymentRequest) {
     if (payment.paymentType === PaymentType.PAYPAL) {
       const paypalAdapter = new PaypalAdapter();
-      return await paypalAdapter.createSubscription(payment);
+      return await paypalAdapter.createAutoSubscription(payment);
     }
 
     if (payment.paymentType === PaymentType.STRIPE) {
