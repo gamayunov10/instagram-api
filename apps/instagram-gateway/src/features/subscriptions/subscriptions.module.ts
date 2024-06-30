@@ -17,6 +17,8 @@ import { SubscriptionsController } from './api/subscriptions.controller';
 import { BuySubscriptionsUseCase } from './api/application/use-cases/buy-subscriptions.use-case';
 import { StripeHookUseCase } from './api/application/use-cases/stripe-hook.use-case';
 import { PaypalHookUseCase } from './api/application/use-cases/paypal-hook.use-case';
+import { SubscribersRepository } from './infrastructure/subscriber/subscribers.repo';
+import { SubscribersQueryRepository } from './infrastructure/subscriber/subscriber.query.repo';
 
 const adapters = [PaymentsServiceAdapter];
 const services = [PrismaClient, SubscriptionsService, JwtService];
@@ -25,11 +27,16 @@ const useCases = [
   StripeHookUseCase,
   PaypalHookUseCase,
 ];
-const repositories = [SubscriptionsRepository, UsersRepository];
+const repositories = [
+  SubscriptionsRepository,
+  UsersRepository,
+  SubscribersRepository,
+];
 const queryRepositories = [
   SubscriptionsQueryRepository,
   UserDevicesQueryRepository,
   UsersQueryRepository,
+  SubscribersQueryRepository,
 ];
 
 @Module({
