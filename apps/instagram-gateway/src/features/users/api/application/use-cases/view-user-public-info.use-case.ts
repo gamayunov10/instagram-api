@@ -9,7 +9,6 @@ import {
   userNotFound,
 } from '../../../../../base/constants/constants';
 import { UserPublicProfileOutputModel } from '../../../models/output/user.public.profile.output.model';
-import { PostsQueryRepository } from '../../../../posts/infrastructure/posts.query.repo';
 import { PostsGetCommand } from '../../../../posts/api/application/use-cases/queryBus/posts-get-use.case';
 import { PostQueryModel } from '../../../../posts/models/query/post.query.model';
 import { SortDirection } from '../../../../../base/enums/sort/sort.direction.enum';
@@ -27,7 +26,6 @@ export class ViewUserPublicInfoUseCase
 {
   constructor(
     private readonly usersQueryRepository: UsersQueryRepository,
-    private readonly postQueryRepo: PostsQueryRepository,
     private readonly queryBus: QueryBus,
     private readonly fileServiceAdapter: FileServiceAdapter,
   ) {}
@@ -49,7 +47,7 @@ export class ViewUserPublicInfoUseCase
     }
 
     const query: PostQueryModel = {
-      sortDirection: SortDirection.ASC,
+      sortDirection: SortDirection.DESC,
       sortField: PostSortFields.CREATED_AT,
       page: pageNumberDefault,
       pageSize: pageSizeDefault,
@@ -71,7 +69,7 @@ export class ViewUserPublicInfoUseCase
       avatarUrl = { url: avatar };
     }
 
-    const result: UserPublicProfileOutputModel = {
+    return {
       username: user.username,
       aboutMe: user.aboutMe,
       following: 0,
@@ -80,7 +78,5 @@ export class ViewUserPublicInfoUseCase
       publications: publications,
       avatar: avatarUrl,
     };
-
-    return result;
   }
 }
