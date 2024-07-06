@@ -215,13 +215,14 @@ export class UsersRepository {
             id: true,
           },
         });
-
+        console.log(createdRecord.id);
         return createdRecord.id;
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      console.log('vsasv');
 
       return false;
     } finally {
@@ -237,9 +238,16 @@ export class UsersRepository {
           codeExpirationPeriod,
         );
 
-        const updatedRecord = await prisma.passwordRecoveryCode.update({
-          where: { userId: id },
-          data: {
+        const updatedRecord = await prisma.passwordRecoveryCode.upsert({
+          where: {
+            userId: id,
+          },
+          update: {
+            recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
+          },
+          create: {
+            userId: id,
             recoveryCode: recoveryCode,
             expirationDate: expirationDate,
           },
