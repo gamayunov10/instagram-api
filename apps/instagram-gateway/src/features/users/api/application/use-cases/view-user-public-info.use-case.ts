@@ -69,7 +69,7 @@ export class ViewUserPublicInfoUseCase
       avatarUrl = { url: avatar };
     }
 
-    const result: UserPublicProfileOutputModel = {
+    return {
       username: user.username,
       aboutMe: user.aboutMe,
       following: 0,
@@ -78,7 +78,5 @@ export class ViewUserPublicInfoUseCase
       publications: publications,
       avatar: avatarUrl,
     };
-
-    return result;
   }
 }
