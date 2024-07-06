@@ -19,7 +19,6 @@ import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 
 import { UserAuthInputModel } from '../models/input/user-auth.input.model';
 import { SwaggerOptions } from '../../../infrastructure/decorators/swagger.decorator';
@@ -55,6 +54,7 @@ import { DeviceViewModel } from '../models/output/device-view.model';
 import { UserDevicesQueryRepository } from '../../users/infrastructure/devices/user.devices.query.repo';
 import { RecaptchaV2Guard } from '../../../infrastructure/guards/recaptcha-v2.guard';
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
+import { OAuthConfig } from '../config/oauth.config';
 
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
@@ -69,7 +69,6 @@ import { PasswordUpdateCommand } from './application/use-cases/password/password
 import { TerminateOtherSessionsCommand } from './application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionCommand } from './application/use-cases/devices/terminate-session.use-case';
 import { LoginDeviceCommand } from './application/use-cases/devices/login-device.use-case';
-import { OAuthConfig } from '../config/oauth.config';
 import { PasswordRecoveryResendingCommand } from './application/use-cases/password/password-recovery-resending.use-case';
 
 @Controller('auth')
@@ -78,10 +77,9 @@ export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly userDevicesQueryRepository: UserDevicesQueryRepository,
-	protected readonly oauthConfig: OAuthConfig,
+    protected readonly oauthConfig: OAuthConfig,
   ) {}
 
   @Get('me')
@@ -179,7 +177,13 @@ export class AuthController {
     const userAgent = headers['user-agent'] || 'unknown';
 
     await this.commandBus.execute(
-      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
+      new LoginDeviceCommand(
+        result.accessToken,
+        userAgent,
+        'oauth',
+        user.username,
+        user.email,
+      ),
     );
 
     (res as Response)
@@ -188,9 +192,7 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .redirect(
-        this.oauthConfig.providerRedirect + `${result.accessToken}`,
-      );
+      .redirect(this.oauthConfig.providerRedirect + `${result.accessToken}`);
   }
 
   @Get('github/login')
@@ -231,7 +233,13 @@ export class AuthController {
     const userAgent = headers['user-agent'] || 'unknown';
 
     await this.commandBus.execute(
-      new LoginDeviceCommand(result.accessToken, userAgent, 'oauth'),
+      new LoginDeviceCommand(
+        result.accessToken,
+        userAgent,
+        'oauth',
+        user.username,
+        user.email,
+      ),
     );
 
     (res as Response)
@@ -240,11 +248,8 @@ export class AuthController {
         secure: true,
         sameSite: 'none',
       })
-      .redirect(
-        this.oauthConfig.providerRedirect + `${result.accessToken}`,
-      );
+      .redirect(this.oauthConfig.providerRedirect + `${result.accessToken}`);
   }
-
 
   @Post('refresh-token')
   @SwaggerOptions(
