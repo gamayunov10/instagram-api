@@ -215,14 +215,13 @@ export class UsersRepository {
             id: true,
           },
         });
-        console.log(createdRecord.id);
+
         return createdRecord.id;
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
-      console.log('vsasv');
 
       return false;
     } finally {
