@@ -1,21 +1,17 @@
-import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
 import { SubscriptionsQueryRepository } from '../../../infrastructure/subscriptions.query.repo';
-import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
-import { StripeSignatureRequest } from '../../../../../../../../libs/common/base/subscriptions/stripe-signature-request';
-import { UsersRepository } from '../../../../users/infrastructure/users.repo';
-import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
-import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 import { SubscriptionsService } from '../../subscriptions.service';
+import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
+import { PaymentStatus } from '../../../../../../../../libs/common/base/ts/enums/payment-status.enum';
 
 export class StripeHookCommand {
   constructor(
     public readonly signature: string,
-    public readonly data: Buffer,
+    public readonly data: any,
   ) {}
 }
 
@@ -24,44 +20,26 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
   private readonly logger = new Logger(StripeHookUseCase.name);
 
   constructor(
-    private readonly commandBus: CommandBus,
-    private readonly configService: ConfigService,
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
-    private readonly usersRepository: UsersRepository,
-    private readonly usersQueryRepository: UsersQueryRepository,
-    private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
     private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async execute(command: StripeHookCommand) {
-    const eventPayload: StripeSignatureRequest = {
-      data: command.data,
-      signature: command.signature,
-    };
+    // TODO signature => StripeSignatureUseCase important!
 
-    const event =
-      await this.paymentsServiceAdapter.stripeSignature(eventPayload);
-
-    if (!event.data) {
-      return {
-        data: false,
-        code: ResultCode.InternalServerError,
-      };
-    }
-
-    if (event.res.response !== 'pending') {
+    if (command.data?.type === 'checkout.session.completed') {
       const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
-        event.res.response.client_reference_id,
+        command.data.data.client_reference_id,
       );
 
       const payload = {
-        status: event.res.response.status,
-        confirmedPaymentData: event.res.response,
+        status: PaymentStatus.COMPLETED,
+        confirmedPaymentData: command.data,
       };
 
       await this.subscriptionsRepo.updatePaymentTransaction(
-        event.res.response.client_reference_id,
+        command.data.data.object.client_reference_id,
         payload,
       );
 
