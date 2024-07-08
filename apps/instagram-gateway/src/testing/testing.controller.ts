@@ -116,6 +116,7 @@ export class TestingController {
           this.prismaClient.passwordRecoveryCode.deleteMany({}),
           this.prismaClient.post.deleteMany({}),
           this.prismaClient.user.deleteMany({}),
+          this.prismaClient.subscriber.deleteMany({}),
         ]);
 
         const deleteFileResult = await this.fileServiceAdapter.deleteAllFiles();
