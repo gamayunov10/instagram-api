@@ -6,5 +6,5 @@ export type PaymentTransactionPayloadType = {
   status: string;
   url: string;
   openedPaymentData: string;
-  confirmedPaymentData: string;
+  confirmedPaymentData: any;
 };

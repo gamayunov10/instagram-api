@@ -37,7 +37,6 @@ model User {
   posts                 Post[]
   device                DeviceAuthSession[]
   providers             UserProviderInfo[]
-  Subscriber            Subscriber[]
 
   @@unique([username, email])
   @@map("user")
@@ -153,8 +152,7 @@ model SubscriptionPaymentTransaction {
 
 model Subscriber {
   id             String   @id @default(uuid())
-  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String   @map("user_id")
+  userId         String?  @map("user_id")
   customerId     String   @map("customer_id")
   subscriptionId String   @map("subscription_id")
   createdAt      DateTime @default(now()) @map("created_at")
@@ -162,5 +160,6 @@ model Subscriber {
   endDate        DateTime @map("end_date")
   paymentSystem  String   @map("payment_system")
 
+  @@unique([customerId, subscriptionId])
   @@map("subscriber")
 }

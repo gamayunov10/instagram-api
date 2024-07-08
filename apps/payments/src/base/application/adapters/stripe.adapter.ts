@@ -31,6 +31,9 @@ export class StripeAdapter {
       ],
       mode: 'payment',
       client_reference_id: payload.client_reference_id,
+      metadata: {
+        userId: payload.user.id,
+      },
     });
 
     const res = {
@@ -79,6 +82,9 @@ export class StripeAdapter {
           name: payload.user.username,
           email: payload.user.email,
           description: payload.product_data.description,
+          metadata: {
+            userId: payload.user.id,
+          },
         });
       }
 
@@ -103,8 +109,16 @@ export class StripeAdapter {
           },
         ],
         mode: 'subscription',
+        subscription_data: {
+          metadata: {
+            userId: payload.user.id,
+          },
+        },
         client_reference_id: payload.client_reference_id,
         customer: customer.id,
+        metadata: {
+          userId: payload.user.id,
+        },
       });
 
       return {
