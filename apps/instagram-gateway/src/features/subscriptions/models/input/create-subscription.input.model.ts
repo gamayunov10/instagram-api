@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNumber } from 'class-validator';
+import { IsIn, IsInt, Min } from 'class-validator';
 
 import { SubscriptionTime } from '../../../../../../../libs/common/base/ts/enums/subscription-time.enum';
 import { PaymentType } from '../../../../../../../libs/common/base/ts/enums/payment-type.enum';
@@ -25,7 +25,9 @@ export class CreateSubscriptionInputModel {
 
   @ApiProperty({
     type: Number,
+    description: 'The number of payments must be a positive integer',
   })
-  @IsNumber()
-  amount: number;
+  @IsInt()
+  @Min(1)
+  paymentCount: number;
 }
