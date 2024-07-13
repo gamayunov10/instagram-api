@@ -86,7 +86,7 @@ export class BuySubscriptionsUseCase
         description: `${command.createSubscriptionInputModel.subscriptionTimeType} subscription`,
       },
       unit_amount: availableSubscription.price,
-      quantity: Number(command.createSubscriptionInputModel.amount),
+      quantity: Number(command.createSubscriptionInputModel.paymentCount),
       client_reference_id: createdPaymentTr,
     };
 
@@ -102,7 +102,7 @@ export class BuySubscriptionsUseCase
     const paymentTransactionsPayload = {
       price:
         availableSubscription.price *
-        command.createSubscriptionInputModel.amount,
+        command.createSubscriptionInputModel.paymentCount,
       paymentSystem: command.createSubscriptionInputModel.paymentType,
       status: result.res.response.status,
       url: result.res.response.url,
@@ -129,7 +129,7 @@ export class BuySubscriptionsUseCase
         PaymentIds[command.createSubscriptionInputModel.subscriptionTimeType],
       price:
         availableSubscription.price *
-        command.createSubscriptionInputModel.amount,
+        command.createSubscriptionInputModel.paymentCount,
       paymentId: paymentTransactionId.toString(),
       subscriptionTime:
         command.createSubscriptionInputModel.subscriptionTimeType,
