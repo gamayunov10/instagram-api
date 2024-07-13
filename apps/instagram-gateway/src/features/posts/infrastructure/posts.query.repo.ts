@@ -51,14 +51,25 @@ export class PostsQueryRepository {
 
   async findPostsByQueryAndUserId(userId: string, query: PostQueryModel) {
     try {
+      const result = await this.prismaClient.post.findMany({
+        where: { authorId: userId, isDeleted: false },
+      });
+
+      const totalCount = result.length;
       const skip = Number(query.pageSize) * (Number(query.page) - 1);
-      return await this.prismaClient.post.findMany({
+
+      const posts = await this.prismaClient.post.findMany({
         where: { authorId: userId, isDeleted: false },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: skip,
         take: Number(query.pageSize),
         include: { images: true, author: true },
       });
+
+      return {
+        posts,
+        totalCount,
+      };
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);

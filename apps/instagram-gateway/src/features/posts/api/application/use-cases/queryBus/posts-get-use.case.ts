@@ -3,8 +3,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 import { ExceptionResultType } from '../../../../../../base/types/exception.type';
 import {
-  postIdField,
-  postNotFound,
   userIdField,
   userNotFound,
 } from '../../../../../../base/constants/constants';
@@ -13,6 +11,7 @@ import { PostsQueryRepository } from '../../../../infrastructure/posts.query.rep
 import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
 import { FileMetaResponse } from '../../../../../../../../../libs/common/base/post/file-meta-response';
 import { PostQueryModel } from '../../../../models/query/post.query.model';
+import { Paginator } from '../../../../../../base/pagination/paginator';
 
 export class PostsGetCommand {
   constructor(
@@ -41,17 +40,24 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
       };
     }
 
-    const posts = await this.postsQueryRepository.findPostsByQueryAndUserId(
-      query.userId,
-      query.queryQueryModel,
-    );
+    const resultPosts =
+      await this.postsQueryRepository.findPostsByQueryAndUserId(
+        query.userId,
+        query.queryQueryModel,
+      );
 
-    if (!posts || posts.length === 0) {
+    const posts = resultPosts.posts;
+
+    if (posts.length === 0) {
       return {
-        data: false,
-        code: ResultCode.NotFound,
-        field: postIdField,
-        message: postNotFound,
+        data: true,
+        code: ResultCode.Success,
+        response: Paginator.paginate({
+          pageNumber: Number(query.queryQueryModel.page),
+          pageSize: Number(query.queryQueryModel.pageSize),
+          totalCount: 0,
+          items: [],
+        }),
       };
     }
 
@@ -78,7 +84,12 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
     return {
       data: true,
       code: ResultCode.Success,
-      response: response,
+      response: Paginator.paginate({
+        pageNumber: Number(query.queryQueryModel.page),
+        pageSize: Number(query.queryQueryModel.pageSize),
+        totalCount: resultPosts.totalCount,
+        items: response,
+      }),
     };
   }
 

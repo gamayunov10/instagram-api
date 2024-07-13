@@ -34,6 +34,7 @@ import { UpdatePostModel } from '../models/input/update-post.model';
 import { PostQueryModel } from '../models/query/post.query.model';
 import { invalidPostPhoto } from '../../../base/constants/constants';
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
+import { PublicPostsSchema } from '../../../base/schemas/public.posts.schema';
 
 import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
@@ -57,7 +58,7 @@ export class PostsController {
     false,
     201,
     '',
-    PostViewModel,
+    PublicPostsSchema,
     ``,
     ApiErrorMessages,
     false,
