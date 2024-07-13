@@ -179,19 +179,39 @@ export class PaypalAdapter {
         description: payload.description,
         type: 'SERVICE',
         category: 'SOFTWARE',
-        home_url: this.hookUrl,
+        home_url: this.baseUrl,
       }),
     });
 
     const data = await response.json();
     return data.id;
   }
+
   private async createPlan(
     token: string,
     productId: string,
     payload: MakePaymentRequest,
   ) {
-    const response = await fetch(`${this.baseUrl}v1/billing/plans`, {
+    let interval;
+
+    switch (payload.interval) {
+      case 'MONTHLY':
+        interval = 'MONTH';
+        break;
+      case 'WEEKLY':
+        interval = 'WEEK';
+        break;
+      case 'DAY':
+        interval = 'DAY';
+        break;
+      default:
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+        };
+    }
+
+    const response = await fetch(`${this.baseUrl}/v1/billing/plans`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -204,15 +224,15 @@ export class PaypalAdapter {
         billing_cycles: [
           {
             frequency: {
-              interval_unit: payload.interval,
-              interval_count: payload.quantity,
+              interval_unit: interval,
+              interval_count: payload.unit_amount,
             },
             tenure_type: 'REGULAR',
             sequence: 1,
             total_cycles: 0,
             pricing_scheme: {
               fixed_price: {
-                value: (payload.unit_amount / 100).toFixed(2),
+                value: '0',
                 currency_code: 'USD',
               },
             },
@@ -229,7 +249,6 @@ export class PaypalAdapter {
         },
       }),
     });
-
     const data = await response.json();
     return data.id;
   }
