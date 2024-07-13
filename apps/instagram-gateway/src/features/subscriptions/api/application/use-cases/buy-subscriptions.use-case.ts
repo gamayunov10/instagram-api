@@ -78,6 +78,9 @@ export class BuySubscriptionsUseCase
       await this.subscriptionsRepo.createPaymentTransaction(
         createdPaymentTrPayload,
       );
+    if (command.createSubscriptionInputModel.autoRenewal) {
+      command.createSubscriptionInputModel.amount = 1;
+    }
 
     const payload: MakePaymentRequest = {
       paymentType: command.createSubscriptionInputModel.paymentType,

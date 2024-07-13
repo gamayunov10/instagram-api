@@ -75,35 +75,41 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
 
     if (event.type === 'customer.subscription.created') {
       const subscriptionData = event.data.object as Stripe.Stripe.Subscription;
+
       const userId: string = subscriptionData.metadata.userId;
-      await this.createSubscriber(userId, subscriptionData);
-      // await this.subscriptionsService.sendaAutomaticSubscriptionNotifications(
-      //   order.userId,
-      // );
+      const interval = subscriptionData.items.data[0].plan.interval as string;
+      const customerId = subscriptionData.customer as string;
+      const subscriptionId = subscriptionData.id;
+      const startDate = new Date(subscriptionData.current_period_start * 1000);
+      const endDate = new Date(subscriptionData.ended_at * 1000);
+      const paymentSystem = PaymentType.STRIPE;
+
+      const subscriber = await this.subscribersRepository.createSubscriber(
+        userId,
+        customerId,
+        subscriptionId,
+        interval,
+        startDate,
+        endDate,
+        paymentSystem,
+      );
+
+      if (!subscriber) {
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+        };
+      }
+
+      await this.subscriptionsService.sendNotificationsAboutAutomaticDebiting(
+        userId,
+        interval,
+      );
     }
 
     return {
       data: true,
       code: ResultCode.Success,
     };
-  }
-  private async createSubscriber(
-    userId: string,
-    eventData: Stripe.Stripe.Subscription,
-  ) {
-    const customerId = eventData.customer as string;
-    const subscriptionId = eventData.id;
-    const startDate = new Date(eventData.start_date);
-    const endDate = new Date(eventData.ended_at);
-    const paymentSystem = PaymentType.STRIPE;
-
-    await this.subscribersRepository.createSubscriber(
-      userId,
-      customerId,
-      subscriptionId,
-      startDate,
-      endDate,
-      paymentSystem,
-    );
   }
 }

@@ -9,6 +9,7 @@ import { UsersRepository } from '../../users/infrastructure/users.repo';
 import { SendSuccessSubscriptionCommand } from '../../notifications/application/use-cases/send-success-subscription-message.use-case';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repo';
+import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/application/use-cases/send-success-auto-renewal-message.use-case';
 
 @Injectable()
 export class SubscriptionsService {
@@ -105,6 +106,34 @@ export class SubscriptionsService {
 
       await this.commandBus.execute(
         new SendSuccessSubscriptionCommand(user.username, user.email),
+      );
+    }
+  }
+  async sendNotificationsAboutAutomaticDebiting(
+    userId: string,
+    interval: string,
+  ): Promise<void> {
+    const user = await this.usersQueryRepository.findUserById(userId);
+
+    try {
+      await this.commandBus.execute(
+        new SendSuccessAutoRenewalSubscriptionCommand(
+          user.username,
+          user.email,
+          interval,
+        ),
+      );
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      await this.commandBus.execute(
+        new SendSuccessAutoRenewalSubscriptionCommand(
+          user.username,
+          user.email,
+          interval,
+        ),
       );
     }
   }
