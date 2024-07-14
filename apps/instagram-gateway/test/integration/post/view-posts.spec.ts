@@ -260,7 +260,7 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
             updatedAt: expect.any(String),
             authorId: user.id,
             username: createUserInput.username,
-            imagesUrl: [expect.any(String)],
+            images: [expect.any(String)],
           },
           {
             id: expect.any(String),
@@ -269,7 +269,7 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
             updatedAt: expect.any(String),
             authorId: user.id,
             username: createUserInput.username,
-            imagesUrl: [expect.any(String), expect.any(String)],
+            images: [expect.any(String), expect.any(String)],
           },
         ],
       });

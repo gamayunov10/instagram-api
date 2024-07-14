@@ -58,7 +58,7 @@ export class ViewUserPublicInfoUseCase
     );
 
     const publications =
-      posts.code === ResultCode.Success ? posts.response : [];
+      posts.code === ResultCode.Success ? posts.response.items : [];
 
     let avatarUrl = null;
 
