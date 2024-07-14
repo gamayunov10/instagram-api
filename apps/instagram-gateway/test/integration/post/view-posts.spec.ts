@@ -247,26 +247,32 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
     it(`should return posts by userId`, async (): Promise<void> => {
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
 
-      expect(response.body).toEqual([
-        {
-          id: expect.any(String),
-          description: 'description post2 by user',
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String),
-          authorId: user.id,
-          username: createUserInput.username,
-          imagesUrl: [expect.any(String)],
-        },
-        {
-          id: expect.any(String),
-          description: 'description post by user',
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String),
-          authorId: user.id,
-          username: createUserInput.username,
-          imagesUrl: [expect.any(String), expect.any(String)],
-        },
-      ]);
+      expect(response.body).toEqual({
+        pagesCount: 1,
+        page: 1,
+        pageSize: 8,
+        totalCount: 2,
+        items: [
+          {
+            id: expect.any(String),
+            description: 'description post2 by user',
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            authorId: user.id,
+            username: createUserInput.username,
+            images: [expect.any(String)],
+          },
+          {
+            id: expect.any(String),
+            description: 'description post by user',
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+            authorId: user.id,
+            username: createUserInput.username,
+            images: [expect.any(String), expect.any(String)],
+          },
+        ],
+      });
     });
   });
 });

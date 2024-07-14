@@ -237,9 +237,16 @@ export class UsersRepository {
           codeExpirationPeriod,
         );
 
-        const updatedRecord = await prisma.passwordRecoveryCode.update({
-          where: { userId: id },
-          data: {
+        const updatedRecord = await prisma.passwordRecoveryCode.upsert({
+          where: {
+            userId: id,
+          },
+          update: {
+            recoveryCode: recoveryCode,
+            expirationDate: expirationDate,
+          },
+          create: {
+            userId: id,
             recoveryCode: recoveryCode,
             expirationDate: expirationDate,
           },

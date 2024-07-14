@@ -62,7 +62,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'day', // incorrect
           paymentType: 'STRIPE',
-          amount: 2,
+          paymentCount: 2,
         })
         .expect(400);
     });
@@ -74,7 +74,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 1, // incorrect
           paymentType: 'STRIPE',
-          amount: 2,
+          paymentCount: 2,
         })
         .expect(400);
     });
@@ -86,7 +86,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'DAY',
           paymentType: 'MasterCard', // incorrect
-          amount: 2,
+          paymentCount: 2,
         })
         .expect(400);
     });
@@ -98,7 +98,43 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'DAY',
           paymentType: 'STRIPE',
-          amount: true, // incorrect
+          paymentCount: true, // incorrect
+        })
+        .expect(400);
+    });
+
+    it(`should not create-payment if input model has incorrect values`, async (): Promise<void> => {
+      await agent
+        .post(create_payment_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'STRIPE',
+          paymentCount: 0, // incorrect
+        })
+        .expect(400);
+    });
+
+    it(`should not create-payment if input model has incorrect values`, async (): Promise<void> => {
+      await agent
+        .post(create_payment_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'STRIPE',
+          paymentCount: 12.95, // incorrect
+        })
+        .expect(400);
+    });
+
+    it(`should not create-payment if input model has incorrect values`, async (): Promise<void> => {
+      await agent
+        .post(create_payment_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'STRIPE',
+          paymentCount: -3, // incorrect
         })
         .expect(400);
     });
@@ -125,7 +161,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'DAY',
           paymentType: 'STRIPE',
-          amount: 1,
+          paymentCount: 1,
         })
         .expect(202);
       console.log(result.body);
