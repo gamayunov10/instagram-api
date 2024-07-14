@@ -125,7 +125,7 @@ describe('PublicUsersController: /public-user', () => {
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
             description: 'a',
-            imagesUrl: expect.any(Array),
+            images: expect.any(Array),
           },
         ],
         avatar: { url: expect.any(String) },

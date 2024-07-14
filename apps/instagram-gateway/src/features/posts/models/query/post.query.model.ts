@@ -5,7 +5,6 @@ import { PostSortFields } from '../../../../base/enums/sort/post/post.sort.field
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
 import { IsValidNumber } from '../../../../infrastructure/decorators/is-nan.decorator';
 import {
-  countPostsPublicPage,
   pageNumberDefault,
   pageSizeDefault,
 } from '../../../../base/constants/constants';
@@ -39,7 +38,7 @@ export class PostQueryModel {
   @IsOptional()
   page?: string = pageNumberDefault;
 
-  @ApiProperty({ default: countPostsPublicPage, required: false })
+  @ApiProperty({ default: pageSizeDefault, required: false })
   @IsString()
   @IsValidNumber()
   @IsOptional()
