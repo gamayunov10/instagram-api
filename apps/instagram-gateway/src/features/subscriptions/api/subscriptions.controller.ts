@@ -13,6 +13,7 @@ import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import * as Buffer from 'node:buffer';
 import { Response } from 'express';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
@@ -33,6 +34,7 @@ import {
 import { BuySubscriptionsCommand } from './application/use-cases/buy-subscriptions.use-case';
 import { StripeHookCommand } from './application/use-cases/stripe-hook.use-case';
 import { PaypalHookCommand } from './application/use-cases/paypal-hook.use-case';
+import { PaypalEventHookCommand } from './application/use-cases/paypal-event-hook.use-case';
 
 @Controller('subscriptions')
 @ApiTags('Subscriptions')
@@ -81,10 +83,10 @@ export class SubscriptionsController {
     @Body() data: Buffer,
     @Req() request: Request,
   ): Promise<void> {
-    const signature = request.headers['stripe-signature'];
+    const signatureHeader = request.headers['stripe-signature'];
 
     const result = await this.commandBus.execute(
-      new StripeHookCommand(signature, data),
+      new StripeHookCommand(signatureHeader, data),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -107,5 +109,28 @@ export class SubscriptionsController {
     }
 
     res.redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
+  }
+
+  @Post('paypal-hook')
+  @ApiExcludeEndpoint()
+  async paypalEventHook(
+    @Body() data: Buffer,
+    @Req() request: Request,
+  ): Promise<void> {
+    const signatureHeader = request.headers['stripe-signature'];
+    console.log(data);
+    // const result = await this.commandBus.execute(
+    //   new VerifyPaypalHookCommand(request, data),
+    // );
+    //
+    // if (result.code !== ResultCode.Success) {
+    //   return exceptionHandler(result.code, serverNotAvailable, noneField);
+    // }
+    const res = await this.commandBus.execute(
+      new PaypalEventHookCommand(signatureHeader, data),
+    );
+    if (res.code !== ResultCode.Success) {
+      return exceptionHandler(res.code, paymentTransactionFailed, noneField);
+    }
   }
 }

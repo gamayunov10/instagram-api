@@ -10,12 +10,17 @@ import { PaymentsController } from './api/payments.controller';
 import { PaymentsService } from './api/payments.service';
 import { StripeSignatureUseCase } from './api/applications/use-cases/stripe-signature.use-case';
 import { PaypalCaptureUseCase } from './api/applications/use-cases/paypal-capture.use-case';
+import { VerifyPaypalSignatureUseCase } from './api/applications/use-cases/verify-paypal.use-case';
 
 const adapters = [PaypalAdapter];
 const providers = [PaymentsService];
 const repositories = [PaymentsRepository];
 const queryRepositories = [PaymentsQueryRepository];
-const useCases = [StripeSignatureUseCase, PaypalCaptureUseCase];
+const useCases = [
+  StripeSignatureUseCase,
+  PaypalCaptureUseCase,
+  VerifyPaypalSignatureUseCase,
+];
 const managers = [PaymentManager];
 
 @Module({

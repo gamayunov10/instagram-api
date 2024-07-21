@@ -8,12 +8,14 @@ import {
   CREATE_PAYMENT,
   PAYPAL_CAPTURE,
   STRIPE_SIGNATURE,
+  VERIFY_PAYPAL_HOOK,
 } from '../../../../../../libs/common/base/constants/service.constants';
 import { ResultCode } from '../../enums/result-code.enum';
 import { noneField } from '../../constants/constants';
 import { NodeEnv } from '../../enums/node-env.enum';
 import { StripeSignatureRequest } from '../../../../../../libs/common/base/subscriptions/stripe-signature-request';
 import { MakePaymentRequest } from '../../../../../../libs/common/base/subscriptions/make-payment-request';
+import { PaypalSignatureRequest } from '../../../../../../libs/common/base/subscriptions/paypal-signature-request';
 
 @Injectable()
 export class PaymentsServiceAdapter {
@@ -138,6 +140,41 @@ export class PaymentsServiceAdapter {
         code: ResultCode.InternalServerError,
         field: noneField,
         message: 'error: 3044',
+      };
+    }
+  }
+
+  async verifyPaypalHook(payload: PaypalSignatureRequest) {
+    try {
+      const response = this.paymentsServiceClient
+        .send({ cmd: VERIFY_PAYPAL_HOOK }, payload)
+        .pipe(timeout(10000));
+      const result = await firstValueFrom(response);
+
+      if (!result.data) {
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+          field: noneField,
+          message: 'error: verifyPaypalHook',
+        };
+      }
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: 3045',
       };
     }
   }
