@@ -1,6 +1,6 @@
-import * as Buffer from 'node:buffer';
+import Buffer from 'node:buffer';
 
 export class StripeSignatureRequest {
   data: Buffer;
-  signature: string;
+  signature: string[] | string;
 }

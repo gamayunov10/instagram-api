@@ -23,7 +23,7 @@ export class StripeSignatureUseCase
     try {
       const stripe = new Stripe(this.configService.get('STRIPE_SECRET'));
 
-      const dataBuffer = Buffer.from(command.payload.data);
+      const dataBuffer = command.payload.data;
 
       const event = stripe.webhooks.constructEvent(
         dataBuffer,
@@ -36,7 +36,7 @@ export class StripeSignatureUseCase
         return {
           data: true,
           code: ResultCode.Success,
-          response: session,
+          response: event,
         };
       }
 
@@ -45,7 +45,7 @@ export class StripeSignatureUseCase
         return {
           data: true,
           code: ResultCode.Success,
-          response: session,
+          response: event,
         };
       }
 

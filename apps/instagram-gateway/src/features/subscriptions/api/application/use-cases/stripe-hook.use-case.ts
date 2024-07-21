@@ -12,10 +12,11 @@ import { PaymentStatus } from '../../../../../../../../libs/common/base/ts/enums
 import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
 import { SubscribersRepository } from '../../../infrastructure/subscriber/subscribers.repo';
 import { PaymentTransactionPayloadType } from '../../../models/types/payment-transaction-payload.type';
+import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 
 export class StripeHookCommand {
   constructor(
-    public readonly signature: string,
+    public readonly signature: string[] | string,
     public readonly data: any,
   ) {}
 }
@@ -30,10 +31,24 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly subscriptionsService: SubscriptionsService,
     private readonly subscribersRepository: SubscribersRepository,
+    private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
   ) {}
 
   async execute(command: StripeHookCommand) {
     // TODO signature => StripeSignatureUseCase important!
+    // const result = await this.paymentsServiceAdapter.stripeSignature({
+    //   signature: command.signature,
+    //   data: command.data,
+    // });
+    //
+    // if (!result.data) {
+    //   return {
+    //     data: false,
+    //     code: ResultCode.InternalServerError,
+    //   };
+    // }
+    //const event = result.res as Stripe.Stripe.Event; // StripeEventDataType;
+
     const event = command.data as Stripe.Stripe.Event; // StripeEventDataType;
 
     if (event.type === 'checkout.session.completed') {

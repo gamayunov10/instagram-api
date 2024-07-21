@@ -79,7 +79,7 @@ export class BuySubscriptionsUseCase
         createdPaymentTrPayload,
       );
     if (command.createSubscriptionInputModel.autoRenewal) {
-      command.createSubscriptionInputModel.amount = 1;
+      command.createSubscriptionInputModel.paymentCount = 1;
     }
 
     const payload: MakePaymentRequest = {
