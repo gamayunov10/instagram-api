@@ -1,5 +1,3 @@
-import { VerifyPaypalHookCommand } from '../../../../apps/instagram-gateway/src/features/subscriptions/api/application/use-cases/verify-paypal-signature.use-case';
-
 export const GET_FILES_META = 'get_files_meta';
 export const GET_FILE_URL = 'get_file_url';
 export const UPLOAD_FILE = 'upload_file';
