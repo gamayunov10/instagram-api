@@ -29,10 +29,13 @@ import {
   noneField,
   paymentTransactionFailed,
 } from '../../../base/constants/constants';
+import { GetMyPayments } from '../../../base/schemas/paymants.schema';
+import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
 
 import { BuySubscriptionsCommand } from './application/use-cases/buy-subscriptions.use-case';
 import { StripeHookCommand } from './application/use-cases/stripe-hook.use-case';
 import { PaypalHookCommand } from './application/use-cases/paypal-hook.use-case';
+import { GetMyPaymentsHookCommand } from './application/use-cases/get-my-payments-use.case';
 
 @Controller('subscriptions')
 @ApiTags('Subscriptions')
@@ -41,6 +44,36 @@ export class SubscriptionsController {
     private readonly commandBus: CommandBus,
     private readonly configService: ConfigService,
   ) {}
+
+  @Get('my-payments')
+  @SwaggerOptions(
+    'Get payments',
+    true,
+    false,
+    200,
+    'Get my payments',
+    GetMyPayments,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(DeviceAuthSessionGuard)
+  @UseGuards(JwtBearerGuard)
+  @HttpCode(200)
+  async getMyPayments(
+    @UserIdFromGuard() userId: string,
+    @Query() query: MyPaymentsQueryModel,
+  ): Promise<GetMyPayments> {
+    const res = await this.commandBus.execute(
+      new GetMyPaymentsHookCommand(userId, query),
+    );
+    if (res.data) {
+      return res.response;
+    }
+  }
 
   @Post('create-payment')
   @SwaggerOptions(
