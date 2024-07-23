@@ -75,6 +75,10 @@ export class PostsController {
       new PostsGetCommand(userId, query),
     );
 
+    if (!post.data) {
+      return exceptionHandler(post.code, post.message, post.field);
+    }
+
     return post.response;
   }
 

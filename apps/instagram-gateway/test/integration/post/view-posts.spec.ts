@@ -70,88 +70,115 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
       post = result.body;
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortDirection is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortDirection: 'ASC' }) // should be in lowercase
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortDirection is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortDirection: 'Asc' }) // should be in lowercase
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortDirection is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortDirection: 'DESC' }) // should be in lowercase
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortDirection is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortDirection: 'Desc' }) // should be in lowercase
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'createdat' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'someField' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'AUTHOR_ID' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'authorid' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'UPDATED_AT' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query sortField is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ sortField: 'updatedat' }) // should contain PostSortFields enum values
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query pageSize is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ pageSize: '1s' }) // should not be NaN
         .expect(400);
     });
 
-    it(`should not return posts if query is incorrect`, async (): Promise<void> => {
+    it(`should not return posts if query page is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
         .query({ page: true }) // should not be NaN
         .expect(400);
+    });
+
+    it(`should not return posts if query pageSize is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${user.id}`)
+        .query({ pageSize: -1 }) // incorrect
+        .expect(400);
+    });
+
+    it(`should not return posts if query page is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${user.id}`)
+        .query({ page: -1 }) // incorrect
+        .expect(400);
+    });
+
+    it(`should not return posts if query page is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${user.id}`)
+        .query({ page: 0 }) // incorrect
+        .expect(400);
+    });
+
+    it(`should not return posts if param userId is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${'incorrect'}`) // incorrect
+        .expect(404);
     });
   });
 
