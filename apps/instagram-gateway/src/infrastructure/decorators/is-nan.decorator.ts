@@ -13,12 +13,25 @@ export function IsValidNumber(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate: (value: any): boolean => {
+          let numericValue: number;
+
           if (typeof value === 'number') {
-            return !Number.isNaN(value) && isFinite(value);
+            numericValue = value;
           } else if (typeof value === 'string') {
-            return /^-?\d+(\.\d+)?$/.test(value);
+            if (/^-?\d+(\.\d+)?$/.test(value)) {
+              numericValue = parseFloat(value);
+            } else {
+              return false;
+            }
+          } else {
+            return false;
           }
-          return false;
+
+          return (
+            !Number.isNaN(numericValue) &&
+            isFinite(numericValue) &&
+            numericValue > 0
+          );
         },
         defaultMessage: (validationArguments?: ValidationArguments): string =>
           `${validationArguments.property} should be a valid number or a string that can be converted to a number`,
