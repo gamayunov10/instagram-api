@@ -133,6 +133,7 @@ export class BuySubscriptionsUseCase
       paymentId: paymentTransactionId.toString(),
       subscriptionTime:
         command.createSubscriptionInputModel.subscriptionTimeType,
+      paymentSystem: command.createSubscriptionInputModel.paymentType,
     };
 
     const order = await this.subscriptionsRepo.createOrder(
