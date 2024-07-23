@@ -124,28 +124,30 @@ model Subscriptions {
 }
 
 model SubscriptionOrder {
-  id               String   @id @default(uuid())
+  id               String                         @id @default(uuid())
   userId           String
-  productId        String   @map("product_id")
+  productId        String                         @map("product_id")
   price            Int
-  paymentId        String   @map("payment_id")
-  subscriptionTime String?  @map("subscription_time")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
+  paymentId        String                         @unique @map("payment_id")
+  payment          SubscriptionPaymentTransaction @relation(fields: [paymentId], references: [id])
+  subscriptionTime String?                        @map("subscription_time")
+  createdAt        DateTime                       @default(now()) @map("created_at")
+  updatedAt        DateTime                       @updatedAt @map("updated_at")
 
   @@map("subscription_order")
 }
 
 model SubscriptionPaymentTransaction {
-  id                   String   @id @default(uuid())
+  id                   String             @id @default(uuid())
   price                Int
-  paymentSystem        String   @map("payment_system")
+  paymentSystem        String             @map("payment_system")
   status               String
   url                  String
-  openedPaymentData    Json     @map("opened_payment_data")
-  confirmedPaymentData Json     @map("confirmed_payment_data")
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  openedPaymentData    Json               @map("opened_payment_data")
+  confirmedPaymentData Json               @map("confirmed_payment_data")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+  order                SubscriptionOrder?
 
   @@map("subscription_payment_transaction")
 }
