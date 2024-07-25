@@ -17,6 +17,7 @@ import { SubscriptionsController } from './api/subscriptions.controller';
 import { BuySubscriptionsUseCase } from './api/application/use-cases/buy-subscriptions.use-case';
 import { StripeHookUseCase } from './api/application/use-cases/stripe-hook.use-case';
 import { PaypalHookUseCase } from './api/application/use-cases/paypal-hook.use-case';
+import { GetMyPaymentsUseCase } from './api/application/use-cases/get-my-payments-use.case';
 import { SubscribersRepository } from './infrastructure/subscriber/subscribers.repo';
 import { SubscribersQueryRepository } from './infrastructure/subscriber/subscriber.query.repo';
 import { VerifyPaypalHookUseCase } from './api/application/use-cases/verify-paypal-signature.use-case';
@@ -28,6 +29,7 @@ const useCases = [
   BuySubscriptionsUseCase,
   StripeHookUseCase,
   PaypalHookUseCase,
+  GetMyPaymentsUseCase,
   VerifyPaypalHookUseCase,
   PaypalEventHookUseCase,
 ];
