@@ -9,7 +9,6 @@ import {
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import { PostsQueryRepository } from '../../../../infrastructure/posts.query.repo';
 import { FileServiceAdapter } from '../../../../../../base/application/adapters/file-service.adapter';
-import { FileMetaResponse } from '../../../../../../../../../libs/common/base/post/file-meta-response';
 import { PostQueryModel } from '../../../../models/query/post.query.model';
 import { Paginator } from '../../../../../../base/pagination/paginator';
 
@@ -60,47 +59,34 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
         }),
       };
     }
+    const items = await Promise.all(
+      posts.map(async (p) => await this.postMapper(p)),
+    );
 
-    const imageIds = posts.flatMap((p) => p.images.map((i) => i.imageId));
-
-    const result = await this.fileServiceAdapter.getFilesMeta(imageIds);
-
-    if (!result.data) {
-      return {
-        data: false,
-        code: result.code,
-        field: result.field,
-        message: result.message,
-      };
-    }
-
-    const response =
-      result.code !== ResultCode.Success
-        ? await Promise.all(posts.map(async (p) => await this.postMapper(p)))
-        : await Promise.all(
-            posts.map(async (p) => await this.postMapper(p, result.res)),
-          );
+    const resultResponse = Paginator.paginate({
+      pageNumber: Number(query.queryQueryModel.page),
+      pageSize: Number(query.queryQueryModel.pageSize),
+      totalCount: resultPosts.totalCount,
+      items: items,
+    });
 
     return {
       data: true,
       code: ResultCode.Success,
-      response: Paginator.paginate({
-        pageNumber: Number(query.queryQueryModel.page),
-        pageSize: Number(query.queryQueryModel.pageSize),
-        totalCount: resultPosts.totalCount,
-        items: response,
-      }),
+      response: resultResponse,
     };
   }
 
-  private async postMapper(p, postImages?: FileMetaResponse[]) {
-    let url = [];
-
-    if (postImages) {
-      url = postImages
-        .filter((i) => p.images.some((img) => img.imageId === i.imageId))
-        .map((i) => i.url);
-    }
+  private async postMapper(p) {
+    const urls =
+      p.images.length === 0
+        ? []
+        : await Promise.all(
+            p.images.map(
+              async (i) =>
+                await this.fileServiceAdapter.getFileUrlByFileId(i.imageId),
+            ),
+          );
 
     return {
       id: p.id,
@@ -109,7 +95,7 @@ export class PostsGetUseCase implements IQueryHandler<PostsGetCommand> {
       updatedAt: p.updatedAt,
       authorId: p.authorId,
       username: p.author.username,
-      images: url,
+      images: urls,
     };
   }
 }
