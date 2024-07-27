@@ -16,7 +16,7 @@ import { PaymentsServiceAdapter } from '../../../../../base/application/adapters
 
 export class StripeHookCommand {
   constructor(
-    public readonly signature: string[] | string,
+    public readonly signature: string,
     public readonly data: any,
   ) {}
 }
@@ -47,8 +47,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     //     code: ResultCode.InternalServerError,
     //   };
     // }
-    //const event = result.res as Stripe.Stripe.Event; // StripeEventDataType;
-
+    // const event = result.res as Stripe.Stripe.Event; // StripeEventDataType;
     const event = command.data as Stripe.Stripe.Event; // StripeEventDataType;
 
     if (event.type === 'checkout.session.completed') {

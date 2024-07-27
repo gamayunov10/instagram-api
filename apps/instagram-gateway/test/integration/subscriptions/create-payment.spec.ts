@@ -164,8 +164,6 @@ describe('Subscriptions: /create-payment;', (): void => {
           paymentCount: 1,
         })
         .expect(202);
-      console.log(result.body);
-
       expectCreatePaymentResponse(result);
     });
 
@@ -176,7 +174,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'DAY',
           paymentType: 'PAYPAL',
-          amount: 1,
+          paymentCount: 1,
           autoRenewal: false,
         })
         .expect(202);
@@ -190,7 +188,7 @@ describe('Subscriptions: /create-payment;', (): void => {
         .send({
           subscriptionTimeType: 'DAY',
           paymentType: 'STRIPE',
-          amount: 1,
+          paymentCount: 1,
           autoRenewal: true,
         })
         .expect(202);

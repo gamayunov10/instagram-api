@@ -310,7 +310,7 @@ export class PaypalAdapter {
       'paypal-transmission-sig'
     ] as string;
 
-    const webhookId = this.webhookPayPalId; // Замените на ваш ID вебхука
+    const webhookId = this.webhookPayPalId;
 
     const webhookEvent = data;
 

@@ -5,6 +5,7 @@ import {
   HttpCode,
   Post,
   Query,
+  RawBodyRequest,
   Req,
   Res,
   UseGuards,
@@ -112,14 +113,13 @@ export class SubscriptionsController {
 
   @Post('stripe-hook')
   @ApiExcludeEndpoint()
-  async stripeHook(
-    @Body() data: Buffer,
-    @Req() request: Request,
-  ): Promise<void> {
-    const signatureHeader = request.headers['stripe-signature'];
+  async stripeHook(@Req() req: RawBodyRequest<Request>): Promise<void> {
+    const rawBody = req.rawBody;
+
+    const signatureHeader = req.headers['stripe-signature'] as string;
 
     const result = await this.commandBus.execute(
-      new StripeHookCommand(signatureHeader, data),
+      new StripeHookCommand(signatureHeader, rawBody),
     );
 
     if (result.code !== ResultCode.Success) {
