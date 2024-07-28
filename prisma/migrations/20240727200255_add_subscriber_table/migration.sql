@@ -12,3 +12,6 @@ CREATE TABLE "subscriber" (
 
     CONSTRAINT "subscriber_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "subscriber_user_id_customer_id_subscription_id_key" ON "subscriber"("user_id", "customer_id", "subscription_id");

@@ -163,5 +163,6 @@ model Subscriber {
   endDate          DateTime? @map("end_date")
   paymentSystem    String    @map("payment_system")
 
+  @@unique([userId, customerId, subscriptionId])
   @@map("subscriber")
 }
