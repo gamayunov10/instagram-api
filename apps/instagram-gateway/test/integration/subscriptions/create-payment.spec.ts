@@ -143,7 +143,6 @@ describe('Subscriptions: /create-payment;', (): void => {
   describe('positive', () => {
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
-      await agent.post('/api/v1/insert-products');
     });
 
     let user: UserCredentialsType;
@@ -192,8 +191,6 @@ describe('Subscriptions: /create-payment;', (): void => {
           autoRenewal: true,
         })
         .expect(202);
-      console.log(result.body);
-
       expectCreatePaymentResponse(result);
     });
   });
