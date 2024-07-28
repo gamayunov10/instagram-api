@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as Stripe from 'stripe';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';

@@ -31,23 +31,10 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly subscriptionsService: SubscriptionsService,
     private readonly subscribersRepository: SubscribersRepository,
-    private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
   ) {}
 
   async execute(command: StripeHookCommand) {
     // TODO signature => StripeSignatureUseCase important!
-    // const result = await this.paymentsServiceAdapter.stripeSignature({
-    //   signature: command.signature,
-    //   data: command.data,
-    // });
-    //
-    // if (!result.data) {
-    //   return {
-    //     data: false,
-    //     code: ResultCode.InternalServerError,
-    //   };
-    // }
-    // const event = result.res as Stripe.Stripe.Event; // StripeEventDataType;
     const event = command.data as Stripe.Stripe.Event; // StripeEventDataType;
 
     if (event.type === 'checkout.session.completed') {
