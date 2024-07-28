@@ -23,8 +23,21 @@ export class SubscribersRepository {
     paymentSystem: PaymentType,
   ) {
     try {
-      const result = await this.prismaClient.subscriber.create({
-        data: {
+      const result = await this.prismaClient.subscriber.upsert({
+        where: {
+          userId_customerId_subscriptionId: {
+            userId: userId,
+            customerId: customerId,
+            subscriptionId: subscriptionId,
+          },
+        },
+        update: {
+          subscriptionTime: interval,
+          startDate: startDate,
+          endDate: endDate,
+          paymentSystem: paymentSystem,
+        },
+        create: {
           userId: userId,
           customerId: customerId,
           subscriptionId: subscriptionId,
