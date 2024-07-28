@@ -12,7 +12,6 @@ import { PaymentStatus } from '../../../../../../../../libs/common/base/ts/enums
 import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
 import { SubscribersRepository } from '../../../infrastructure/subscriber/subscribers.repo';
 import { PaymentTransactionPayloadType } from '../../../models/types/payment-transaction-payload.type';
-import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 
 export class StripeHookCommand {
   constructor(
