@@ -37,8 +37,8 @@ import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
 import { BuySubscriptionsCommand } from './application/use-cases/buy-subscriptions.use-case';
 import { StripeHookCommand } from './application/use-cases/stripe-hook.use-case';
 import { PaypalHookCommand } from './application/use-cases/paypal-hook.use-case';
-import { PaypalEventHookCommand } from './application/use-cases/paypal-event-hook.use-case';
 import { GetMyPaymentsHookCommand } from './application/use-cases/get-my-payments-use.case';
+import { PaypalEventHookCommand } from './application/use-cases/paypal-event-hook.use-case';
 
 @Controller('subscriptions')
 @ApiTags('Subscriptions')
@@ -114,7 +114,7 @@ export class SubscriptionsController {
   @Post('stripe-hook')
   @ApiExcludeEndpoint()
   async stripeHook(@Req() req: RawBodyRequest<Request>): Promise<void> {
-    const rawBody = req.rawBody;
+    const rawBody = req.body;
 
     const signatureHeader = req.headers['stripe-signature'] as string;
 
@@ -151,14 +151,7 @@ export class SubscriptionsController {
     @Req() request: Request,
   ): Promise<void> {
     const signatureHeader = request.headers['stripe-signature'];
-    console.log(data);
-    // const result = await this.commandBus.execute(
-    //   new VerifyPaypalHookCommand(request, data),
-    // );
-    //
-    // if (result.code !== ResultCode.Success) {
-    //   return exceptionHandler(result.code, serverNotAvailable, noneField);
-    // }
+
     const res = await this.commandBus.execute(
       new PaypalEventHookCommand(signatureHeader, data),
     );

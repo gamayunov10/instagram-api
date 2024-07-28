@@ -95,7 +95,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       const customerId = subscriptionData.customer as string;
       const subscriptionId = subscriptionData.id;
       const startDate = new Date(subscriptionData.current_period_start * 1000);
-      const endDate = new Date(subscriptionData.ended_at * 1000);
+      const endDate = new Date(subscriptionData.current_period_end * 1000);
       const paymentSystem = PaymentType.STRIPE;
 
       const subscriber = await this.subscribersRepository.createSubscriber(

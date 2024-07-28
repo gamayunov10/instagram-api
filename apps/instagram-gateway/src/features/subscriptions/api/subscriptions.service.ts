@@ -23,7 +23,7 @@ export class SubscriptionsService {
     private readonly configService: ConfigService,
   ) {}
 
-  private async endDateOfSubscription(
+  async endDateOfSubscription(
     price: number,
     subscriptionTime: string,
     currentSubscriptionDate: Date | null,
