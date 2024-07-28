@@ -12,6 +12,9 @@ import { PaymentStatus } from '../../../../../../../../libs/common/base/ts/enums
 import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
 import { SubscribersRepository } from '../../../infrastructure/subscriber/subscribers.repo';
 import { PaymentTransactionPayloadType } from '../../../models/types/payment-transaction-payload.type';
+import { PaypalEventSubscriptionActiveData } from '../../../models/types/paypal-event-subscription-active-data';
+import { PaypalBaseEventType } from '../../../models/types/paypal-base-event.type';
+import { PaypalEventPaymentDataType } from '../../../models/types/paypal-event-payment-data.type';
 
 export class PaypalEventHookCommand {
   constructor(
@@ -35,14 +38,14 @@ export class PaypalEventHookUseCase
   ) {}
 
   async execute(command: PaypalEventHookCommand) {
-    const event = command.data;
-    console.log(event);
+    // TODO signature => VerifyPaypalHookUseCase important!
+    const event = command.data as PaypalBaseEventType;
 
-    if (event.event_type === 'CHECKOUT.ORDER.COMPLETED') {
-      const checkoutSession = event.resource;
+    if (event.event_type === 'PAYMENT.SALE.COMPLETED') {
+      const paymentData = event as PaypalEventPaymentDataType;
 
       const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
-        checkoutSession.purchase_units[0].reference_id,
+        paymentData.resource.custom,
       );
 
       const payload: Partial<PaymentTransactionPayloadType> = {
@@ -51,15 +54,11 @@ export class PaypalEventHookUseCase
       };
 
       await this.subscriptionsRepo.updatePaymentTransaction(
-        checkoutSession.purchase_units[0].reference_id,
+        paymentData.resource.custom,
         payload,
       );
 
-      let autoRenewal: boolean = false;
-
-      if (checkoutSession.mode === 'subscription') {
-        autoRenewal = true;
-      }
+      const autoRenewal: boolean = false;
 
       await this.subscriptionsService.updateAccountType(
         order.userId,
@@ -74,16 +73,36 @@ export class PaypalEventHookUseCase
       );
     }
 
-    if (event.type === 'customer.subscription.created') {
-      const subscriptionData = event.data.object as Stripe.Stripe.Subscription;
+    if (event.event_type === 'BILLING.SUBSCRIPTION.ACTIVATED') {
+      const subscriptionData = event as PaypalEventSubscriptionActiveData;
 
-      const userId: string = subscriptionData.metadata.userId;
-      const interval = subscriptionData.items.data[0].plan.interval as string;
-      const customerId = subscriptionData.customer as string;
-      const subscriptionId = subscriptionData.id;
-      const startDate = new Date(subscriptionData.current_period_start * 1000);
-      const endDate = new Date(subscriptionData.ended_at * 1000);
+      const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
+        subscriptionData.resource.custom_id,
+      );
+
+      const userId: string = order.userId;
+      const interval = order.subscriptionTime as string;
+      const customerId = subscriptionData.resource.subscriber
+        .payer_id as string;
+
+      const subscriptionId = subscriptionData.resource.id;
+      const startDate = new Date(subscriptionData.resource.start_time);
+      const endDate = await this.subscriptionsService.endDateOfSubscription(
+        order.price,
+        order.subscriptionTime,
+        startDate,
+      );
       const paymentSystem = PaymentType.STRIPE;
+
+      const autoRenewal: boolean = true;
+
+      await this.subscriptionsService.updateAccountType(
+        order.userId,
+        AccountType.BUSINESS,
+        order.price,
+        order.subscriptionTime,
+        autoRenewal,
+      );
 
       const subscriber = await this.subscribersRepository.createSubscriber(
         userId,

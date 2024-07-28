@@ -143,7 +143,11 @@ export class PaypalAdapter {
 
       await this.activatePlan(token, planId);
 
-      const subscriptionData = await this.createSubscription(token, planId);
+      const subscriptionData = await this.createSubscription(
+        token,
+        planId,
+        payload,
+      );
 
       const link = subscriptionData.links.find(
         (link) => link.rel === 'approve',
@@ -267,7 +271,11 @@ export class PaypalAdapter {
     });
   }
 
-  private async createSubscription(token: string, planId: string) {
+  private async createSubscription(
+    token: string,
+    planId: string,
+    payload: MakePaymentRequest,
+  ) {
     const response = await fetch(`${this.baseUrl}v1/billing/subscriptions`, {
       method: 'POST',
       headers: {
@@ -284,6 +292,7 @@ export class PaypalAdapter {
           return_url: `${this.hookUrl}api/v1/subscriptions/paypal-hook`,
           cancel_url: `${this.hookUrl}api/v1/subscriptions/paypal-hook`,
         },
+        custom_id: payload.client_reference_id,
       }),
     });
 
