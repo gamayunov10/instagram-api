@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
@@ -17,7 +18,7 @@ import { PaypalEventPaymentDataType } from '../../../models/types/paypal-event-p
 
 export class PaypalEventHookCommand {
   constructor(
-    public readonly signature: string[] | string,
+    public readonly signature: Request,
     public readonly data: any,
   ) {}
 }

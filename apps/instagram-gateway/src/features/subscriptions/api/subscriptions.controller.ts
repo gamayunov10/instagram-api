@@ -150,11 +150,10 @@ export class SubscriptionsController {
     @Body() data: Buffer,
     @Req() request: Request,
   ): Promise<void> {
-    const signatureHeader = request.headers['stripe-signature'];
-
     const res = await this.commandBus.execute(
-      new PaypalEventHookCommand(signatureHeader, data),
+      new PaypalEventHookCommand(request, data),
     );
+
     if (res.code !== ResultCode.Success) {
       return exceptionHandler(res.code, paymentTransactionFailed, noneField);
     }
