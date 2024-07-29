@@ -94,7 +94,9 @@ export class BuySubscriptionsUseCase
       quantity: Number(command.createSubscriptionInputModel.paymentCount),
       client_reference_id: createdPaymentTr,
       interval: command.createSubscriptionInputModel.subscriptionTimeType,
-      user: user,
+      userId: user.id,
+      username: user.username,
+      email: user.email,
     };
 
     let result;

@@ -48,6 +48,13 @@ export class PaypalEventHookUseCase
         paymentData.resource.custom,
       );
 
+      if (!order) {
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+        };
+      }
+
       const payload: Partial<PaymentTransactionPayloadType> = {
         status: PaymentStatus.COMPLETED,
         confirmedPaymentData: command.data,
@@ -92,7 +99,7 @@ export class PaypalEventHookUseCase
         order.subscriptionTime,
         startDate,
       );
-      const paymentSystem = PaymentType.STRIPE;
+      const paymentSystem = PaymentType.PAYPAL;
 
       const autoRenewal: boolean = true;
 

@@ -32,7 +32,7 @@ export class StripeAdapter {
       mode: 'payment',
       client_reference_id: payload.client_reference_id,
       metadata: {
-        userId: payload.user.id,
+        userId: payload.userId,
       },
     });
 
@@ -72,18 +72,18 @@ export class StripeAdapter {
       let customer;
 
       const existingCustomers = await this.stripe.customers.list({
-        email: payload.user.email,
+        email: payload.email,
       });
 
       if (existingCustomers.data.length > 0) {
         customer = existingCustomers.data[0];
       } else {
         customer = await this.stripe.customers.create({
-          name: payload.user.username,
-          email: payload.user.email,
+          name: payload.username,
+          email: payload.email,
           description: payload.product_data.description,
           metadata: {
-            userId: payload.user.id,
+            userId: payload.userId,
           },
         });
       }
@@ -111,13 +111,13 @@ export class StripeAdapter {
         mode: 'subscription',
         subscription_data: {
           metadata: {
-            userId: payload.user.id,
+            userId: payload.userId,
           },
         },
         client_reference_id: payload.client_reference_id,
         customer: customer.id,
         metadata: {
-          userId: payload.user.id,
+          userId: payload.userId,
         },
       });
 
