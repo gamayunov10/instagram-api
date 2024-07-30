@@ -16,4 +16,16 @@ export class PaymentManager {
       return await stripeAdapter.makePayment(payment);
     }
   }
+
+  async createAutoSubscription(payment: MakePaymentRequest) {
+    if (payment.paymentType === PaymentType.PAYPAL) {
+      const paypalAdapter = new PaypalAdapter();
+      return await paypalAdapter.createAutoSubscription(payment);
+    }
+
+    if (payment.paymentType === PaymentType.STRIPE) {
+      const stripeAdapter = new StripeAdapter();
+      return await stripeAdapter.createAutoSubscription(payment);
+    }
+  }
 }

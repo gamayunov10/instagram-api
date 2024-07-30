@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as Stripe from 'stripe';
+import { Request } from 'express';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
@@ -12,17 +12,22 @@ import { PaymentStatus } from '../../../../../../../../libs/common/base/ts/enums
 import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
 import { SubscribersRepository } from '../../../infrastructure/subscriber/subscribers.repo';
 import { PaymentTransactionPayloadType } from '../../../models/types/payment-transaction-payload.type';
+import { PaypalEventSubscriptionActiveData } from '../../../models/types/paypal-event-subscription-active-data';
+import { PaypalBaseEventType } from '../../../models/types/paypal-base-event.type';
+import { PaypalEventPaymentDataType } from '../../../models/types/paypal-event-payment-data.type';
 
-export class StripeHookCommand {
+export class PaypalEventHookCommand {
   constructor(
-    public readonly signature: string,
+    public readonly signature: Request,
     public readonly data: any,
   ) {}
 }
 
-@CommandHandler(StripeHookCommand)
-export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
-  private readonly logger = new Logger(StripeHookUseCase.name);
+@CommandHandler(PaypalEventHookCommand)
+export class PaypalEventHookUseCase
+  implements ICommandHandler<PaypalEventHookCommand>
+{
+  private readonly logger = new Logger(PaypalEventHookUseCase.name);
 
   constructor(
     private readonly configService: ConfigService,
@@ -32,17 +37,23 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
     private readonly subscribersRepository: SubscribersRepository,
   ) {}
 
-  async execute(command: StripeHookCommand) {
-    // TODO signature => StripeSignatureUseCase important!
-    const event = command.data as Stripe.Stripe.Event; // StripeEventDataType;
+  async execute(command: PaypalEventHookCommand) {
+    // TODO signature => VerifyPaypalHookUseCase important!
+    const event = command.data as PaypalBaseEventType;
 
-    if (event.type === 'checkout.session.completed') {
-      const checkoutSession = event.data
-        .object as Stripe.Stripe.Checkout.Session;
+    if (event.event_type === 'PAYMENT.SALE.COMPLETED') {
+      const paymentData = event as PaypalEventPaymentDataType;
 
       const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
-        checkoutSession.client_reference_id,
+        paymentData.resource.custom,
       );
+
+      if (!order) {
+        return {
+          data: false,
+          code: ResultCode.InternalServerError,
+        };
+      }
 
       const payload: Partial<PaymentTransactionPayloadType> = {
         status: PaymentStatus.COMPLETED,
@@ -50,15 +61,11 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       };
 
       await this.subscriptionsRepo.updatePaymentTransaction(
-        checkoutSession.client_reference_id,
+        paymentData.resource.custom,
         payload,
       );
 
-      let autoRenewal: boolean = false;
-
-      if (checkoutSession.mode === 'subscription') {
-        autoRenewal = true;
-      }
+      const autoRenewal: boolean = false;
 
       await this.subscriptionsService.updateAccountType(
         order.userId,
@@ -73,16 +80,36 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       );
     }
 
-    if (event.type === 'customer.subscription.created') {
-      const subscriptionData = event.data.object as Stripe.Stripe.Subscription;
+    if (event.event_type === 'BILLING.SUBSCRIPTION.ACTIVATED') {
+      const subscriptionData = event as PaypalEventSubscriptionActiveData;
 
-      const userId: string = subscriptionData.metadata.userId;
-      const interval = subscriptionData.items.data[0].plan.interval as string;
-      const customerId = subscriptionData.customer as string;
-      const subscriptionId = subscriptionData.id;
-      const startDate = new Date(subscriptionData.current_period_start * 1000);
-      const endDate = new Date(subscriptionData.current_period_end * 1000);
-      const paymentSystem = PaymentType.STRIPE;
+      const order = await this.subscriptionsQueryRepo.findOrderByPaymentId(
+        subscriptionData.resource.custom_id,
+      );
+
+      const userId: string = order.userId;
+      const interval = order.subscriptionTime as string;
+      const customerId = subscriptionData.resource.subscriber
+        .payer_id as string;
+
+      const subscriptionId = subscriptionData.resource.id;
+      const startDate = new Date(subscriptionData.resource.start_time);
+      const endDate = await this.subscriptionsService.endDateOfSubscription(
+        order.price,
+        order.subscriptionTime,
+        startDate,
+      );
+      const paymentSystem = PaymentType.PAYPAL;
+
+      const autoRenewal: boolean = true;
+
+      await this.subscriptionsService.updateAccountType(
+        order.userId,
+        AccountType.BUSINESS,
+        order.price,
+        order.subscriptionTime,
+        autoRenewal,
+      );
 
       const subscriber = await this.subscribersRepository.createSubscriber(
         userId,

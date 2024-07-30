@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsInt, Min } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsOptional, Min } from 'class-validator';
 
 import { SubscriptionTime } from '../../../../../../../libs/common/base/ts/enums/subscription-time.enum';
 import { PaymentType } from '../../../../../../../libs/common/base/ts/enums/payment-type.enum';
@@ -30,4 +30,13 @@ export class CreateSubscriptionInputModel {
   @IsInt()
   @Min(1)
   paymentCount: number;
+
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+    description: `Default value false`,
+  })
+  @IsOptional()
+  @IsBoolean()
+  autoRenewal?: boolean = false;
 }

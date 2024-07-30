@@ -4,7 +4,10 @@ import TestAgent from 'supertest/lib/agent';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
-import { createUserInput } from '../../base/constants/tests-strings';
+import {
+  createUserInput,
+  createUserInput2,
+} from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { expectCreatePaymentResponse } from '../../base/utils/subscriptions/expectCreatePaymentResponse';
 
@@ -143,12 +146,14 @@ describe('Subscriptions: /create-payment;', (): void => {
     });
 
     let user: UserCredentialsType;
+    let user2: UserCredentialsType;
 
-    it(`should create user`, async (): Promise<void> => {
+    it(`should create 2 user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
+      user2 = await testManager.createUser(createUserInput2);
     });
 
-    it(`should create-payment`, async (): Promise<void> => {
+    it(`should create-payment by STRIPE`, async (): Promise<void> => {
       const result = await agent
         .post(create_payment_url)
         .auth(user.accessToken, { type: 'bearer' })
@@ -158,7 +163,34 @@ describe('Subscriptions: /create-payment;', (): void => {
           paymentCount: 1,
         })
         .expect(202);
+      expectCreatePaymentResponse(result);
+    });
 
+    it(`should create-payment by PAYPAL`, async (): Promise<void> => {
+      const result = await agent
+        .post(create_payment_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'PAYPAL',
+          paymentCount: 1,
+          autoRenewal: false,
+        })
+        .expect(202);
+      expectCreatePaymentResponse(result);
+    });
+
+    it(`should create auto subscription by STRIPE`, async (): Promise<void> => {
+      const result = await agent
+        .post(create_payment_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          subscriptionTimeType: 'DAY',
+          paymentType: 'STRIPE',
+          paymentCount: 1,
+          autoRenewal: true,
+        })
+        .expect(202);
       expectCreatePaymentResponse(result);
     });
   });

@@ -22,21 +22,42 @@ export class StripeSignatureUseCase
   async execute(command: StripeSignatureCommand) {
     try {
       const stripe = new Stripe(this.configService.get('STRIPE_SECRET'));
+      const secret = this.configService.get('STRIPE_SIGNING_SECRET');
 
-      const dataBuffer = Buffer.from(command.payload.data);
+      const header = stripe.webhooks.generateTestHeaderString({
+        payload: command.payload.signature,
+        secret,
+      });
 
       const event = stripe.webhooks.constructEvent(
-        dataBuffer,
-        command.payload.signature,
-        this.configService.get('STRIPE_SIGNING_SECRET'),
+        command.payload.data,
+        header,
+        secret,
       );
+
+      // const dataBuffer = command.payload.data;
+      //
+      // const event = stripe.webhooks.constructEvent(
+      //   dataBuffer,
+      //   command.payload.signature,
+      //   this.configService.get('STRIPE_SIGNING_SECRET'),
+      // );
 
       if (event.type === 'checkout.session.completed') {
         const session = event.data.object as Stripe.Checkout.Session;
         return {
           data: true,
           code: ResultCode.Success,
-          response: session,
+          response: event,
+        };
+      }
+
+      if (event.type === 'customer.subscription.created') {
+        const session = event.data.object as Stripe.Subscription;
+        return {
+          data: true,
+          code: ResultCode.Success,
+          response: event,
         };
       }
 

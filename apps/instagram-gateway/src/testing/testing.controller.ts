@@ -110,6 +110,7 @@ export class TestingController {
           this.prismaClient.confirmationCode.deleteMany({}),
           this.prismaClient.subscriptionOrder.deleteMany({}),
           this.prismaClient.subscriptionPaymentTransaction.deleteMany({}),
+          this.prismaClient.subscriber.deleteMany({}),
           this.prismaClient.userProviderInfo.deleteMany({}),
           this.prismaClient.deviceAuthSession.deleteMany({}),
           this.prismaClient.postImage.deleteMany({}),

@@ -13,4 +13,8 @@ export class PaymentsService {
   async makePayment(payload: MakePaymentRequest) {
     return await this.paymentManager.makePayment(payload);
   }
+
+  async createAutoPayment(payload: MakePaymentRequest) {
+    return await this.paymentManager.createAutoSubscription(payload);
+  }
 }

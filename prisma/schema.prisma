@@ -151,3 +151,18 @@ model SubscriptionPaymentTransaction {
 
   @@map("subscription_payment_transaction")
 }
+
+model Subscriber {
+  id               String    @id @default(uuid())
+  userId           String    @map("user_id")
+  customerId       String    @map("customer_id")
+  subscriptionId   String    @map("subscription_id")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  subscriptionTime String    @map("subscription_time")
+  startDate        DateTime  @map("start_date")
+  endDate          DateTime? @map("end_date")
+  paymentSystem    String    @map("payment_system")
+
+  @@unique([userId, customerId, subscriptionId])
+  @@map("subscriber")
+}

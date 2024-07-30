@@ -5,6 +5,7 @@ import {
   HttpCode,
   Post,
   Query,
+  RawBodyRequest,
   Req,
   Res,
   UseGuards,
@@ -13,6 +14,7 @@ import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import * as Buffer from 'node:buffer';
 import { Response } from 'express';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
@@ -36,6 +38,7 @@ import { BuySubscriptionsCommand } from './application/use-cases/buy-subscriptio
 import { StripeHookCommand } from './application/use-cases/stripe-hook.use-case';
 import { PaypalHookCommand } from './application/use-cases/paypal-hook.use-case';
 import { GetMyPaymentsHookCommand } from './application/use-cases/get-my-payments-use.case';
+import { PaypalEventHookCommand } from './application/use-cases/paypal-event-hook.use-case';
 
 @Controller('subscriptions')
 @ApiTags('Subscriptions')
@@ -110,14 +113,13 @@ export class SubscriptionsController {
 
   @Post('stripe-hook')
   @ApiExcludeEndpoint()
-  async stripeHook(
-    @Body() data: Buffer,
-    @Req() request: Request,
-  ): Promise<void> {
-    const signature = request.headers['stripe-signature'];
+  async stripeHook(@Req() req: RawBodyRequest<Request>): Promise<void> {
+    const rawBody = req.body;
+
+    const signatureHeader = req.headers['stripe-signature'] as string;
 
     const result = await this.commandBus.execute(
-      new StripeHookCommand(signature, data),
+      new StripeHookCommand(signatureHeader, rawBody),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -140,5 +142,20 @@ export class SubscriptionsController {
     }
 
     res.redirect(this.configService.get<string>('PUBLIC_FRONT_URL'));
+  }
+
+  @Post('paypal-hook')
+  @ApiExcludeEndpoint()
+  async paypalEventHook(
+    @Body() data: Buffer,
+    @Req() request: Request,
+  ): Promise<void> {
+    const res = await this.commandBus.execute(
+      new PaypalEventHookCommand(request, data),
+    );
+
+    if (res.code !== ResultCode.Success) {
+      return exceptionHandler(res.code, paymentTransactionFailed, noneField);
+    }
   }
 }
