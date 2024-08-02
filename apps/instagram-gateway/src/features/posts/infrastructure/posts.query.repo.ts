@@ -74,6 +74,7 @@ export class PostsQueryRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      return { posts: [], totalCount: 0 };
     } finally {
       await this.prismaClient.$disconnect();
     }
@@ -104,6 +105,7 @@ export class PostsQueryRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      return { posts: [], totalCount: 0 };
     } finally {
       await this.prismaClient.$disconnect();
     }
