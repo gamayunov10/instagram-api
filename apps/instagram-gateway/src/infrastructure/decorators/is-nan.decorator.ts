@@ -26,11 +26,12 @@ export function IsValidNumber(validationOptions?: ValidationOptions) {
           } else {
             return false;
           }
-
           return (
             !Number.isNaN(numericValue) &&
             isFinite(numericValue) &&
-            numericValue > 0
+            numericValue > 0 &&
+            BigInt(parseInt(numericValue.toString(), 10)) ===
+              BigInt(numericValue.toString())
           );
         },
         defaultMessage: (validationArguments?: ValidationArguments): string =>

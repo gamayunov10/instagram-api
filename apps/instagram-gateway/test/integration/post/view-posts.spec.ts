@@ -175,6 +175,20 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
         .expect(400);
     });
 
+    it(`should not return posts if query page is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${user.id}`)
+        .query({ page: BigInt('8989898988989898980'), pageSize: 10 }) // incorrect
+        .expect(400);
+    });
+
+    it(`should not return posts if query pageSize is incorrect`, async (): Promise<void> => {
+      await agent
+        .get(`${post_url}${user.id}`)
+        .query({ page: 10, pageSize: BigInt('8989898988989898980') }) // incorrect
+        .expect(400);
+    });
+
     it(`should not return posts if param userId is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${'incorrect'}`) // incorrect
