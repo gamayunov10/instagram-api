@@ -434,12 +434,16 @@ export class UsersRepository {
     }
   }
 
-  async updateAvatarId(userId: string, avatarId: string): Promise<boolean> {
+  async updateAvatarId(
+    userId: string,
+    avatarId: string,
+    avatarURL: string,
+  ): Promise<boolean> {
     try {
       await this.prismaClient.$transaction(async (prisma) => {
         await prisma.user.update({
           where: { id: userId },
-          data: { avatarId },
+          data: { avatarId, avatarURL },
         });
       });
 

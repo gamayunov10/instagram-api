@@ -32,6 +32,7 @@ model User {
   createdAt             DateTime              @default(now()) @map("created_at")
   isConfirmed           Boolean               @default(false) @map("is_confirmed")
   avatarId              String?               @map("avatar_id")
+  avatarURL             String?               @map("avatar_url")
   confirmationCode      ConfirmationCode?
   passwordRecoveryCode  PasswordRecoveryCode?
   posts                 Post[]

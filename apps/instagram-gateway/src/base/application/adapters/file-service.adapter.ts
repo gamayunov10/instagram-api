@@ -86,7 +86,7 @@ export class FileServiceAdapter {
       return {
         data: true,
         code: ResultCode.Success,
-        res: result.fileId,
+        res: result,
       };
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {

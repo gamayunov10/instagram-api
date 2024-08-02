@@ -5,6 +5,7 @@ export const expectPublicPostsView = (
   totalCount: number,
   description: string,
   authorId: string,
+  avatar: { url: string },
   url: string,
 ) => {
   expect(response.body).toHaveProperty('pagesCount');
@@ -26,6 +27,7 @@ export const expectPublicPostsView = (
   expect(response.body.items[0].createdAt).toBeDefined();
   expect(response.body.items[0].updatedAt).toBeDefined();
   expect(response.body.items[0].authorId).toBe(authorId);
+  expect(response.body.items[0].avatar).toBe({ url: String });
   expect(response.body.items[0].imagesUrl).toBeInstanceOf(Array);
   expect(response.body.items[0].imagesUrl[0]).toContain(url);
 };

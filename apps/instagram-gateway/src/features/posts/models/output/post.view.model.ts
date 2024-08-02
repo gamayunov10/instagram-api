@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { AvatarViewModel } from '../../../users/models/output/avatar.view.model';
+
 import { PostImageViewModel } from './post-images.view.model';
 
 export class PostViewModel {
@@ -17,6 +19,11 @@ export class PostViewModel {
     type: String,
   })
   authorId: string;
+
+  @ApiProperty({
+    type: Object(AvatarViewModel || null),
+  })
+  avatar: AvatarViewModel | null;
 
   @ApiProperty({
     type: String,

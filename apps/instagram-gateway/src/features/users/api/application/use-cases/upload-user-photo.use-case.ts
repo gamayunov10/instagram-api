@@ -71,7 +71,8 @@ export class UploadUserPhotoUseCase
 
     const updateAvatarId = await this.usersRepository.updateAvatarId(
       data.userId,
-      uploadResult.res.toString(),
+      uploadResult.res.fileId.toString(),
+      uploadResult.res.fileURL,
     );
 
     if (!updateAvatarId) {

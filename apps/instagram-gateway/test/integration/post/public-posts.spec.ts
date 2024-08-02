@@ -249,7 +249,18 @@ describe('PublicPostController: /public-posts', (): void => {
         items: expect.any(Array),
       });
 
-      expectPublicPostsView(response, 2, 4, 5, 'post #5', user2.id, 'jpeg');
+      expectPublicPostsView(
+        response,
+        2,
+        4,
+        5,
+        'post #5',
+        user2.id,
+        {
+          url: 'avatar_url',
+        },
+        'jpeg',
+      );
 
       expect(response.body.items.length).toEqual(4);
     });
