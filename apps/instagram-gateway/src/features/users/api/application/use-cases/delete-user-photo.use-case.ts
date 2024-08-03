@@ -53,6 +53,7 @@ export class DeleteUserPhotoUseCase
     const updateAvatarId = await this.usersRepository.updateAvatarId(
       user.id,
       null,
+      null,
     );
 
     if (!updateAvatarId) {

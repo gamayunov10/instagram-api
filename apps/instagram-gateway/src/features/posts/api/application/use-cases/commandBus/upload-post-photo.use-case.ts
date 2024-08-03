@@ -71,7 +71,7 @@ export class UploadPostPhotoUseCase
     return {
       data: true,
       code: ResultCode.Success,
-      res: uploadResult.res,
+      res: uploadResult.res.fileId,
     };
   }
 

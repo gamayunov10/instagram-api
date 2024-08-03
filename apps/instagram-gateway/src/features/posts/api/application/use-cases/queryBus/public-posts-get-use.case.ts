@@ -84,6 +84,7 @@ export class PublicPostsGetUseCase
       updatedAt: p.updatedAt,
       authorId: p.authorId,
       username: p.author.username,
+      avatar: { url: p.author.avatarURL },
       imagesUrl: urls,
     };
   }

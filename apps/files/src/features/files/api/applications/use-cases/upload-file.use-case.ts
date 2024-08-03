@@ -34,6 +34,9 @@ export class UploadFileUseCase implements ICommandHandler<UploadFileCommand> {
 
     const file = await this.fileRepository.createFile(fileEntity);
 
-    return { fileId: file._id };
+    return {
+      fileId: file._id,
+      fileURL: this.s3Adapter.getFileUrl(fileModel.url),
+    };
   }
 }
