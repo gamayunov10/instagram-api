@@ -217,6 +217,16 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: PROVIDER_REDIRECT_URL
+             - name: WEBHOOK_PAYPAL_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: WEBHOOK_PAYPAL_ID
+             - name: STRIPE_PUBLISH_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: STRIPE_PUBLISH_SECRET
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
