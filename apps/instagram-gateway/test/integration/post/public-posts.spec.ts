@@ -257,7 +257,7 @@ describe('PublicPostController: /public-posts', (): void => {
         'post #5',
         user2.id,
         {
-          url: 'avatar_url',
+          url: null,
         },
         'jpeg',
       );
