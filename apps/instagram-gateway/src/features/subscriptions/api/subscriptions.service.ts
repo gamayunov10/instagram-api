@@ -52,16 +52,14 @@ export class SubscriptionsService {
 
     const result = subTime(subscriptionTime) * quantity;
 
-    if (currentSubscriptionDate) {
-      if (now < currentSubscriptionDate) {
-        return new Date(
-          currentSubscriptionDate.getTime() + result * 24 * 60 * 60 * 1000,
-        );
-      }
-    }
-
     function getDateFromDays(days: number): Date {
-      return new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+      if (currentSubscriptionDate) {
+        return new Date(
+          currentSubscriptionDate.getTime() + days * 24 * 60 * 60 * 1000,
+        );
+      } else {
+        return new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+      }
     }
 
     return getDateFromDays(result);

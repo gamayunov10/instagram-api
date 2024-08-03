@@ -13,6 +13,7 @@ import { Paginator } from '../../../../../base/pagination/paginator';
 import { PaymentsViewModel } from '../../../models/output/paymants.view.model';
 import { SubscriptionTime } from '../../../../../../../../libs/common/base/ts/enums/subscription-time.enum';
 import { PaymentType } from '../../../../../../../../libs/common/base/ts/enums/payment-type.enum';
+import { SubscriptionsService } from '../../subscriptions.service';
 
 export class GetMyPaymentsHookCommand {
   constructor(
@@ -28,6 +29,7 @@ export class GetMyPaymentsUseCase
   constructor(
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
   async execute(command: GetMyPaymentsHookCommand) {
     const user = await this.usersQueryRepository.findUserById(command.userId);
@@ -59,15 +61,25 @@ export class GetMyPaymentsUseCase
       };
     }
 
-    const items: PaymentsViewModel[] = payments.payments.map((p) => {
-      return {
-        userId: p.userId,
-        dateOfPayment: p.createdAt,
-        price: p.price,
-        subscriptionTimeType: p.subscriptionTime as SubscriptionTime,
-        paymentType: p.payment.paymentSystem as PaymentType,
-      };
-    });
+    const items: PaymentsViewModel[] = await Promise.all(
+      payments.payments.map(async (p) => {
+        const endDateOfSubscription =
+          await this.subscriptionsService.endDateOfSubscription(
+            p.price,
+            p.subscriptionTime,
+            p.payment.updatedAt,
+          );
+
+        return {
+          userId: p.userId,
+          dateOfPayment: p.payment.updatedAt,
+          endDateOfSubscription: endDateOfSubscription,
+          price: p.price,
+          subscriptionTimeType: p.subscriptionTime as SubscriptionTime,
+          paymentType: p.payment.paymentSystem as PaymentType,
+        };
+      }),
+    );
 
     return {
       data: true,

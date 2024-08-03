@@ -16,6 +16,11 @@ export class PaymentsViewModel {
   dateOfPayment: Date;
 
   @ApiProperty({
+    type: String,
+  })
+  endDateOfSubscription: Date;
+
+  @ApiProperty({
     type: Number,
   })
   price: number;
