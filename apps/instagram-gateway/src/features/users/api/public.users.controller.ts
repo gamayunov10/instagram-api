@@ -38,7 +38,7 @@ export class PublicUsersController {
     );
   }
 
-  @Get(':username')
+  @Get(':userId')
   @SwaggerOptions(
     'Viewing a users public profile via a link',
     false,
@@ -54,9 +54,9 @@ export class PublicUsersController {
     false,
   )
   @HttpCode(200)
-  async viewUserPublic(@Param('username') username: string): Promise<void> {
+  async viewUserPublic(@Param('userId') userId: string): Promise<void> {
     const result = await this.commandBus.execute(
-      new ViewUserPublicInfoCommand(username),
+      new ViewUserPublicInfoCommand(userId),
     );
 
     if (result.code === ResultCode.NotFound) {
