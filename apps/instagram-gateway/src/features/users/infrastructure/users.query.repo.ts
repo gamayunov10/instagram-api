@@ -115,6 +115,25 @@ export class UsersQueryRepository {
     }
   }
 
+  async getUserByEndDate(today: Date) {
+    try {
+      return await this.prismaClient.user.findMany({
+        where: {
+          endDateOfSubscription: {
+            lt: today,
+          },
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return null;
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
   async findUserByEmailConfirmationCode(confirmationCode: string) {
     try {
       return this.prismaClient.user.findFirst({

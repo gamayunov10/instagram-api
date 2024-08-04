@@ -33,12 +33,14 @@ import {
 } from '../../../base/constants/constants';
 import { GetMyPayments } from '../../../base/schemas/paymants.schema';
 import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
+import { CurrentSubscriptionViewModel } from '../models/output/get-current-subscription';
 
 import { BuySubscriptionsCommand } from './application/use-cases/buy-subscriptions.use-case';
 import { StripeHookCommand } from './application/use-cases/stripe-hook.use-case';
 import { PaypalHookCommand } from './application/use-cases/paypal-hook.use-case';
 import { GetMyPaymentsHookCommand } from './application/use-cases/get-my-payments-use.case';
 import { PaypalEventHookCommand } from './application/use-cases/paypal-event-hook.use-case';
+import { GetCurrentSubscriptionCommand } from './application/use-cases/get-current-subscription';
 
 @Controller('subscriptions')
 @ApiTags('Subscriptions')
@@ -76,6 +78,33 @@ export class SubscriptionsController {
     if (res.data) {
       return res.response;
     }
+  }
+
+  @Get('current-subscription')
+  @SwaggerOptions(
+    'Get current payment-subscription',
+    true,
+    false,
+    200,
+    'Get current payment-subscription',
+    CurrentSubscriptionViewModel,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(DeviceAuthSessionGuard)
+  @UseGuards(JwtBearerGuard)
+  @HttpCode(200)
+  async getCurrentSubscription(
+    @UserIdFromGuard() userId: string,
+  ): Promise<CurrentSubscriptionViewModel> {
+    const result = await this.commandBus.execute(
+      new GetCurrentSubscriptionCommand(userId),
+    );
+    return result;
   }
 
   @Post('create-payment')

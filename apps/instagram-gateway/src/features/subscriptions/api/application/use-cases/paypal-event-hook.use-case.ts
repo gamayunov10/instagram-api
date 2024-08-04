@@ -115,7 +115,7 @@ export class PaypalEventHookUseCase
         userId,
         customerId,
         subscriptionId,
-        interval,
+        interval.toUpperCase(),
         startDate,
         endDate,
         paymentSystem,

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class PaypalHookQueryModel {
   @ApiProperty({ type: String })
@@ -8,5 +8,6 @@ export class PaypalHookQueryModel {
 
   @ApiProperty({ type: String })
   @IsString()
-  PayerID: string;
+  @IsOptional()
+  PayerID?: string;
 }

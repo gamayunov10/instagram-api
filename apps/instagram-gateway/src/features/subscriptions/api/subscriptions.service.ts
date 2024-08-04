@@ -10,6 +10,7 @@ import { SendSuccessSubscriptionCommand } from '../../notifications/application/
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repo';
 import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/application/use-cases/send-success-auto-renewal-message.use-case';
+import { SendMessageAboutEndSubscriptionCommand } from '../../notifications/application/use-cases/send-message-about-end-subscription.use-case';
 
 @Injectable()
 export class SubscriptionsService {
@@ -63,6 +64,35 @@ export class SubscriptionsService {
     }
 
     return getDateFromDays(result);
+  }
+
+  async nextPaymentDateOfSubscription(
+    subscriptionTime: string,
+    endDateOfSubscription: Date,
+  ): Promise<Date> {
+    const subTime = (subscriptionTime: string): number => {
+      if (subscriptionTime === SubscriptionTime.DAY) {
+        return 1;
+      }
+
+      if (subscriptionTime === SubscriptionTime.WEEKLY) {
+        return 7;
+      }
+
+      if (subscriptionTime === SubscriptionTime.MONTHLY) {
+        return 30;
+      }
+    };
+
+    const daysToAdd = subTime(subscriptionTime);
+
+    const getDateFromDays = (days: number): Date => {
+      return new Date(
+        endDateOfSubscription.getTime() + days * 24 * 60 * 60 * 1000,
+      );
+    };
+
+    return getDateFromDays(daysToAdd);
   }
 
   async updateAccountType(
@@ -131,6 +161,34 @@ export class SubscriptionsService {
           user.username,
           user.email,
           interval,
+        ),
+      );
+    }
+  }
+
+  async sendMessageAboutEndSubscription(
+    username: string,
+    email: string,
+    endDateOfSubscription: Date,
+  ): Promise<void> {
+    try {
+      await this.commandBus.execute(
+        new SendMessageAboutEndSubscriptionCommand(
+          username,
+          email,
+          endDateOfSubscription,
+        ),
+      );
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      await this.commandBus.execute(
+        new SendMessageAboutEndSubscriptionCommand(
+          username,
+          email,
+          endDateOfSubscription,
         ),
       );
     }

@@ -7,6 +7,7 @@ import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-r
 import { SendSuccessSubscriptionUseCase } from './application/use-cases/send-success-subscription-message.use-case';
 import { SendSuccessRegistrationUseCase } from './application/use-cases/send-success-registration-message.use-case';
 import { SendSuccessAutoRenewalSubscriptionUseCase } from './application/use-cases/send-success-auto-renewal-message.use-case';
+import { SendMessageAboutEndSubscriptionUseCase } from './application/use-cases/send-message-about-end-subscription.use-case';
 
 const useCases = [
   SendRegistrationMailUseCase,
@@ -14,6 +15,7 @@ const useCases = [
   SendSuccessSubscriptionUseCase,
   SendSuccessRegistrationUseCase,
   SendSuccessAutoRenewalSubscriptionUseCase,
+  SendMessageAboutEndSubscriptionUseCase,
 ];
 @Module({
   imports: [
