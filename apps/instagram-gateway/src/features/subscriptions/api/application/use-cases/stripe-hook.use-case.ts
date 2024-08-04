@@ -88,7 +88,7 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
         userId,
         customerId,
         subscriptionId,
-        interval,
+        interval.toUpperCase(),
         startDate,
         endDate,
         paymentSystem,
