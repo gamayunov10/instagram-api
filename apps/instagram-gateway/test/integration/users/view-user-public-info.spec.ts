@@ -66,7 +66,7 @@ describe('PublicUsersController: /public-user', () => {
 
     it(`getting data from a user's public page`, async () => {
       const result = await agent
-        .get(view_user_public_url + `${userProfileInputModel.username}`)
+        .get(view_user_public_url + `${user.id}`)
         .expect(200);
 
       expect(result.body).toEqual({
@@ -108,7 +108,7 @@ describe('PublicUsersController: /public-user', () => {
     it(`getting data from a user's public page after 
     uploading an avatar and creating a post`, async () => {
       const result = await agent
-        .get(view_user_public_url + `${userProfileInputModel.username}`)
+        .get(view_user_public_url + `${user.id}`)
         .expect(200);
 
       expect(result.body).toEqual({

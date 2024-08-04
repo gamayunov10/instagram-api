@@ -17,7 +17,7 @@ import { ExceptionResultType } from '../../../../../base/types/exception.type';
 import { FileServiceAdapter } from '../../../../../base/application/adapters/file-service.adapter';
 
 export class ViewUserPublicInfoCommand {
-  constructor(public username: string) {}
+  constructor(public userId: string) {}
 }
 
 @CommandHandler(ViewUserPublicInfoCommand)
@@ -33,9 +33,7 @@ export class ViewUserPublicInfoUseCase
   async execute(
     command: ViewUserPublicInfoCommand,
   ): Promise<UserPublicProfileOutputModel | ExceptionResultType<boolean>> {
-    const user = await this.usersQueryRepository.findUserByUsername(
-      command.username,
-    );
+    const user = await this.usersQueryRepository.findUserById(command.userId);
 
     if (!user) {
       return {
