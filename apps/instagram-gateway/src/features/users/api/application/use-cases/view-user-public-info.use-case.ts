@@ -5,7 +5,7 @@ import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import {
   pageNumberDefault,
   pageSizeDefault,
-  usernameField,
+  userIdField,
   userNotFound,
 } from '../../../../../base/constants/constants';
 import { UserPublicProfileOutputModel } from '../../../models/output/user.public.profile.output.model';
@@ -39,7 +39,7 @@ export class ViewUserPublicInfoUseCase
       return {
         data: false,
         code: ResultCode.NotFound,
-        field: usernameField,
+        field: userIdField,
         message: userNotFound,
       };
     }

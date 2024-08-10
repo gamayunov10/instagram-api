@@ -1,13 +1,14 @@
-import { IsIn, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PostSortFields } from '../../../../base/enums/sort/post/post.sort.fields.enum';
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
-import { IsValidNumber } from '../../../../infrastructure/decorators/is-nan.decorator';
 import {
   pageNumberDefault,
   pageSizeDefault,
 } from '../../../../base/constants/constants';
+import { TransformToInteger } from '../../../../infrastructure/decorators/transform-to-integer.decorator';
+import { IsStandardInteger } from '../../../../infrastructure/decorators/is-standard-integer.decorator';
 
 export class PostQueryModel {
   @ApiProperty({
@@ -32,15 +33,15 @@ export class PostQueryModel {
   @IsOptional()
   sortField?: string = PostSortFields.CREATED_AT;
 
-  @ApiProperty({ default: 1, required: false })
-  @IsString()
-  @IsValidNumber()
+  @ApiProperty({ default: pageNumberDefault, required: false })
+  @IsStandardInteger()
+  @TransformToInteger()
   @IsOptional()
-  page?: string = pageNumberDefault;
+  page?: number = pageNumberDefault;
 
   @ApiProperty({ default: pageSizeDefault, required: false })
-  @IsString()
-  @IsValidNumber()
+  @IsStandardInteger()
+  @TransformToInteger()
   @IsOptional()
-  pageSize?: string = pageSizeDefault;
+  pageSize?: number = pageSizeDefault;
 }

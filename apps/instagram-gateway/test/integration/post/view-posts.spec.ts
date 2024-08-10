@@ -178,14 +178,14 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
     it(`should not return posts if query page is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ page: BigInt('8989898988989898980'), pageSize: 10 }) // incorrect
+        .query({ pageSize: 10, page: 999999999999999 }) // incorrect
         .expect(400);
     });
 
     it(`should not return posts if query pageSize is incorrect`, async (): Promise<void> => {
       await agent
         .get(`${post_url}${user.id}`)
-        .query({ page: 10, pageSize: BigInt('8989898988989898980') }) // incorrect
+        .query({ page: 10, pageSize: 99999999999 }) // incorrect
         .expect(400);
     });
 

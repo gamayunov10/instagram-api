@@ -1,22 +1,23 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsValidNumber } from '../../../../infrastructure/decorators/is-nan.decorator';
 import {
   pageNumberDefault,
   pageSizeDefault,
 } from '../../../../base/constants/constants';
+import { IsStandardInteger } from '../../../../infrastructure/decorators/is-standard-integer.decorator';
+import { TransformToInteger } from '../../../../infrastructure/decorators/transform-to-integer.decorator';
 
 export class MyPaymentsQueryModel {
   @ApiProperty({ default: 1, required: false })
-  @IsString()
-  @IsValidNumber()
+  @IsStandardInteger()
+  @TransformToInteger()
   @IsOptional()
-  page?: string = pageNumberDefault;
+  page?: number = pageNumberDefault;
 
   @ApiProperty({ default: pageSizeDefault, required: false })
-  @IsString()
-  @IsValidNumber()
+  @IsStandardInteger()
+  @TransformToInteger()
   @IsOptional()
-  pageSize?: string = pageSizeDefault;
+  pageSize?: number = pageSizeDefault;
 }
