@@ -72,7 +72,7 @@ export class ViewUserPublicInfoUseCase
       aboutMe: user.aboutMe,
       following: 0,
       followers: 0,
-      publicationsCount: publications.length,
+      publicationsCount: posts.response.totalCount,
       publications: publications,
       avatar: avatarUrl,
     };
