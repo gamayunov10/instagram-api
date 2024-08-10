@@ -65,7 +65,7 @@ export class PublicPostGetUseCase
       updatedAt: p.updatedAt,
       authorId: p.authorId,
       username: p.username,
-      imagesUrl: urls,
+      images: urls,
     };
   }
 }

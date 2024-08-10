@@ -29,8 +29,8 @@ export const expectPublicPostsView = (
   expect(response.body.items[0].authorId).toBe(authorId);
   expect(response.body.items[0].avatar).toBeInstanceOf(Object);
   expect(response.body.items[0].avatar.url).toBe(null);
-  expect(response.body.items[0].imagesUrl).toBeInstanceOf(Array);
-  expect(response.body.items[0].imagesUrl[0]).toContain(url);
+  expect(response.body.items[0].images).toBeInstanceOf(Array);
+  expect(response.body.items[0].images[0]).toContain(url);
 };
 
 // Example

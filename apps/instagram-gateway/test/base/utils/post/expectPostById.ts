@@ -11,8 +11,8 @@ export const expectPostById = (
   expect(response.body.updatedAt).toBeDefined();
   expect(response.body.authorId).toBe(authorId);
   expect(response.body.username).toBe(username);
-  expect(response.body.imagesUrl).toBeInstanceOf(Array);
-  expect(response.body.imagesUrl[0]).toContain(url);
+  expect(response.body.images).toBeInstanceOf(Array);
+  expect(response.body.images[0]).toContain(url);
 };
 
 // Example
