@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
-import { PostViewModel } from '../../../posts/models/output/post.view.model';
-
 import { AvatarViewModel } from './avatar.view.model';
+import { PublicationsViewModel } from './publications.view.model';
 
 export class UserPublicProfileOutputModel {
   @ApiProperty({
@@ -33,9 +32,9 @@ export class UserPublicProfileOutputModel {
   aboutMe: string;
 
   @ApiProperty({
-    type: Array(PostViewModel || []),
+    type: Array(PublicationsViewModel || []),
   })
-  publications: PostViewModel[] | [];
+  publications: PublicationsViewModel[] | [];
 
   @ApiProperty({
     type: Object(AvatarViewModel || null),
