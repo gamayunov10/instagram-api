@@ -85,7 +85,7 @@ export class PublicPostsGetUseCase
       authorId: p.authorId,
       username: p.author.username,
       avatar: { url: p.author.avatarURL },
-      imagesUrl: urls,
+      images: urls,
     };
   }
 }

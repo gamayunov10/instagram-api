@@ -9,8 +9,8 @@ export const expectPostsView = (
   expect(response.body[0].createdAt).toBeDefined();
   expect(response.body[0].updatedAt).toBeDefined();
   expect(response.body[0].authorId).toBe(authorId);
-  expect(response.body[0].imagesUrl).toBeInstanceOf(Array);
-  expect(response.body[0].imagesUrl[0]).toContain(url);
+  expect(response.body[0].images).toBeInstanceOf(Array);
+  expect(response.body[0].images[0]).toContain(url);
 };
 
 // Example
