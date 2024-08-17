@@ -32,11 +32,11 @@ export class UserProfileInputModel {
     type: String,
     minLength: 1,
     maxLength: 50,
-    pattern: '^[A-Za-zА-Яа-я]*$',
+    pattern: '^[A-Za-zА-Яа-яЁё]*$',
   })
   @MinLength(1, { message: minChar1 })
   @MaxLength(50, { message: maxChar50 })
-  @Matches(/^[A-Za-zА-Яа-я]*$/, {
+  @Matches(/^[A-Za-zА-Яа-яЁё]*$/, {
     message: firstNameIsIncorrect,
   })
   firstName: string;
@@ -45,11 +45,11 @@ export class UserProfileInputModel {
     type: String,
     minLength: 1,
     maxLength: 50,
-    pattern: '^[A-Za-zА-Яа-я]*$',
+    pattern: '^[A-Za-zА-Яа-яЁё]*$',
   })
   @MinLength(1, { message: minChar1 })
   @MaxLength(50, { message: maxChar50 })
-  @Matches(/^[A-Za-zА-Яа-я]*$/, {
+  @Matches(/^[A-Za-zА-Яа-яЁё]*$/, {
     message: lastNameIsIncorrect,
   })
   lastName: string;
