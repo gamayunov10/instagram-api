@@ -90,8 +90,8 @@ export const userProfileInputModel = {
 
 export const userProfileInputModel2 = {
   username: 'DiegoM',
-  firstName: 'Армандо',
-  lastName: 'Фамилия',
+  firstName: 'Армандоё',
+  lastName: 'ФамилиЁ',
   dateOfBirth: '31.10.1960',
   city: 'q',
   aboutMe: lorem10,
