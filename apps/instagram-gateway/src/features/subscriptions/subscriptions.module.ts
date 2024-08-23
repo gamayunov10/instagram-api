@@ -23,9 +23,15 @@ import { SubscribersQueryRepository } from './infrastructure/subscriber/subscrib
 import { VerifyPaypalHookUseCase } from './api/application/use-cases/verify-paypal-signature.use-case';
 import { PaypalEventHookUseCase } from './api/application/use-cases/paypal-event-hook.use-case';
 import { GetCurrentSubscriptionUseCase } from './api/application/use-cases/get-current-subscription';
+import { CheckSubscriptions } from './api/application/check-subscriptions';
 
 const adapters = [PaymentsServiceAdapter];
-const services = [PrismaClient, SubscriptionsService, JwtService];
+const services = [
+  PrismaClient,
+  SubscriptionsService,
+  JwtService,
+  CheckSubscriptions,
+];
 const useCases = [
   BuySubscriptionsUseCase,
   StripeHookUseCase,

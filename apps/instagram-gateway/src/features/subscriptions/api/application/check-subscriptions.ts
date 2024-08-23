@@ -19,25 +19,50 @@ export class CheckSubscriptions {
 
   @Cron('0 7 * * *') // every day at 7 a.m.
   async checkSubscriptionsFromDB() {
-    const today = new Date();
-    const subscriptions =
-      await this.usersQueryRepository.getUserByEndDate(today);
+    this.logger.log('Cron job started for checking subscriptions.');
 
-    if (subscriptions && subscriptions.length > 0) {
-      for (const subscription of subscriptions) {
-        await this.subscriptionsService.sendMessageAboutEndSubscription(
-          subscription.username,
-          subscription.email,
-          subscription.endDateOfSubscription,
-        );
+    try {
+      const today = new Date();
+      this.logger.debug(
+        `Checking subscriptions for date: ${today.toISOString()}`,
+      );
 
-        await this.usersRepository.updateAccountType(
-          subscription.id,
-          AccountType.PERSONAL,
-          subscription.endDateOfSubscription,
-          false,
-        );
+      const subscriptions =
+        await this.usersQueryRepository.getUserByEndDate(today);
+
+      if (subscriptions && subscriptions.length > 0) {
+        for (const subscription of subscriptions) {
+          await this.subscriptionsService.sendMessageAboutEndSubscription(
+            subscription.username,
+            subscription.email,
+            subscription.endDateOfSubscription,
+          );
+
+          this.logger.debug(
+            `Sent end subscription message to: ${subscription.username}`,
+          );
+
+          await this.usersRepository.updateAccountType(
+            subscription.id,
+            AccountType.PERSONAL,
+            subscription.endDateOfSubscription,
+            false,
+          );
+
+          this.logger.debug(
+            `Updated account type for user: ${subscription.username}`,
+          );
+        }
+      } else {
+        this.logger.log('No subscriptions ending today.');
       }
+    } catch (error) {
+      this.logger.error(
+        'An error occurred while checking subscriptions',
+        error.stack,
+      );
     }
+
+    this.logger.log('Cron job completed.');
   }
 }
