@@ -276,13 +276,7 @@ describe('PostsController: /post/photo; /post;', (): void => {
         })
         .expect(201);
 
-      expectCreatedPostWithPhoto(
-        response,
-        user.id,
-        photoId.body.imageId,
-        1,
-        'a',
-      );
+      expectCreatedPostWithPhoto(response, user.id, 'image.url', 1, 'a');
     });
 
     it(`should create post with photo | without description`, async (): Promise<void> => {
@@ -294,7 +288,7 @@ describe('PostsController: /post/photo; /post;', (): void => {
         })
         .expect(201);
 
-      expectCreatedPostWithPhoto(response, user.id, photoId.body.imageId, 1);
+      expectCreatedPostWithPhoto(response, user.id, 'image.url', 1);
     });
   });
 });
