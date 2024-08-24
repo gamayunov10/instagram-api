@@ -19,6 +19,8 @@ export class PostsCleanupService {
 
   @Cron('0 1 * * 0') // every Sunday at 1 a.m.
   async clearDeletedPostsFromDB() {
+    this.logger.log('Cron job started for clearing deleted posts.');
+
     try {
       const postsToDelete = await this.postsQueryRepo.findPostsToDelete();
 
