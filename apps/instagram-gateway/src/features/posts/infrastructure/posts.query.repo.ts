@@ -132,7 +132,7 @@ export class PostsQueryRepository {
     try {
       return this.prismaClient.post.findMany({
         where: {
-          isDeleted: false,
+          isDeleted: true,
           deletedAt: {
             not: null,
             lt: deletionThreshold,
