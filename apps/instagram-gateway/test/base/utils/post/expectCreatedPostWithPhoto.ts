@@ -1,7 +1,7 @@
 export const expectCreatedPostWithPhoto = (
   response,
   authorId: string,
-  imageId: string,
+  images: string,
   imageCount: number,
   description?: string,
 ) => {
@@ -10,7 +10,7 @@ export const expectCreatedPostWithPhoto = (
 
   expect(response.body.images).toBeDefined();
   expect(response.body.images).toHaveLength(imageCount);
-  expect(response.body.images[0].imageId).toBe(imageId);
+  expect(response.body.images[0]).toEqual(expect.any(String));
 
   if (description) {
     expect(response.body.description).toBe(description);

@@ -38,10 +38,10 @@ import { PublicPostsSchema } from '../../../base/schemas/public.posts.schema';
 
 import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
-import { PostViewCommand } from './application/use-cases/queryBus/public-post-view.use-case';
 import { UpdatePostCommand } from './application/use-cases/commandBus/update-post.use-case';
 import { PostsGetCommand } from './application/use-cases/queryBus/posts-get-use.case';
 import { DeletePostCommand } from './application/use-cases/delete-post.use-case';
+import { PublicPostGetCommand } from './application/use-cases/queryBus/public-post-get-use.case';
 
 @Controller('post')
 @ApiTags('Post')
@@ -183,11 +183,15 @@ export class PostsController {
       return exceptionHandler(result.code, result.message, result.field);
     }
 
-    const postView = await this.queryBus.execute(
-      new PostViewCommand(result.res, userId),
+    const post = await this.queryBus.execute(
+      new PublicPostGetCommand(result.res.id),
     );
 
-    return postView.response;
+    if (post.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return post.response;
   }
 
   @Put(':id')
