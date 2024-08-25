@@ -23,9 +23,6 @@ export class CheckSubscriptions {
 
     try {
       const today = new Date();
-      this.logger.debug(
-        `Checking subscriptions for date: ${today.toISOString()}`,
-      );
 
       const subscriptions =
         await this.usersQueryRepository.getUserByEndDate(today);
@@ -38,23 +35,13 @@ export class CheckSubscriptions {
             subscription.endDateOfSubscription,
           );
 
-          this.logger.debug(
-            `Sent end subscription message to: ${subscription.username}`,
-          );
-
           await this.usersRepository.updateAccountType(
             subscription.id,
             AccountType.PERSONAL,
             subscription.endDateOfSubscription,
             false,
           );
-
-          this.logger.debug(
-            `Updated account type for user: ${subscription.username}`,
-          );
         }
-      } else {
-        this.logger.log('No subscriptions ending today.');
       }
     } catch (error) {
       this.logger.error(
