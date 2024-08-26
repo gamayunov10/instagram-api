@@ -184,7 +184,7 @@ export class PostsController {
     }
 
     const post = await this.queryBus.execute(
-      new PublicPostGetCommand(result.res.id),
+      new PublicPostGetCommand(result.res),
     );
 
     if (post.code !== ResultCode.Success) {
