@@ -5,7 +5,10 @@ import * as path from 'path';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
-import { createUserInput } from '../../base/constants/tests-strings';
+import {
+  createUserInput,
+  createUserInput2,
+} from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { expectPhotoId } from '../../base/utils/post/expectPhotoId';
 import { expectCreatedPostWithPhoto } from '../../base/utils/post/expectCreatedPostWithPhoto';
@@ -248,10 +251,13 @@ describe('PostsController: /post/photo; /post;', (): void => {
     });
 
     let user: UserCredentialsType;
+    let user2: UserCredentialsType;
+
     let photoId;
 
     it(`should create user`, async (): Promise<void> => {
       user = await testManager.createUser(createUserInput);
+      user2 = await testManager.createUser(createUserInput2);
     });
 
     it(`should Upload post photo`, async (): Promise<void> => {
@@ -289,6 +295,18 @@ describe('PostsController: /post/photo; /post;', (): void => {
         .expect(201);
 
       expectCreatedPostWithPhoto(response, user.id, 'image.url', 1);
+    });
+    it(`should create post 2 with photo by user2`, async (): Promise<void> => {
+      const response = await agent
+        .post(post_with_photo_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({
+          description: 'post 2',
+          images: [photoId.body.imageId],
+        })
+        .expect(201);
+
+      expectCreatedPostWithPhoto(response, user2.id, 'image.url', 1, 'post 2');
     });
   });
 });
