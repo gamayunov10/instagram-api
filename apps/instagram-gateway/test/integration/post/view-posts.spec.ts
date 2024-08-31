@@ -10,7 +10,6 @@ import {
   createUserInput2,
 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
-import { PostViewModel } from '../../../src/features/posts/models/output/post.view.model';
 
 import {
   post_photo_url,
@@ -39,7 +38,6 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
   describe('negative', () => {
     let user: UserCredentialsType;
     let photoId;
-    let post: PostViewModel;
 
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
@@ -58,7 +56,7 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
         .attach('file', imagePath)
         .expect(201);
 
-      const result = await agent
+      await agent
         .post(post_with_photo_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({
@@ -66,8 +64,6 @@ describe('PostsController: /post/:userId, View posts by userId', (): void => {
           images: [photoId.body.imageId],
         })
         .expect(201);
-
-      post = result.body;
     });
 
     it(`should not return posts if query sortDirection is incorrect`, async (): Promise<void> => {

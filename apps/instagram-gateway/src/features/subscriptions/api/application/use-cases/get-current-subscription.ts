@@ -23,9 +23,11 @@ export class GetCurrentSubscriptionUseCase
     command: GetCurrentSubscriptionCommand,
   ): Promise<CurrentSubscriptionViewModel> {
     const user = await this.usersQueryRepository.findUserById(command.userId);
+
     const subscriber = await this.subscribersQueryRepository.findSubscriberById(
       command.userId,
     );
+
     if (!subscriber) {
       return {
         userId: user.id,
@@ -36,6 +38,7 @@ export class GetCurrentSubscriptionUseCase
         autoRenewal: user.autoRenewal,
       };
     }
+
     const nextPayment =
       await this.subscriptionsService.nextPaymentDateOfSubscription(
         subscriber.subscriptionTime,

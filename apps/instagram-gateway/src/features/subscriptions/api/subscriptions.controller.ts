@@ -13,8 +13,7 @@ import {
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import * as Buffer from 'node:buffer';
-import { Response } from 'express';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
@@ -101,10 +100,9 @@ export class SubscriptionsController {
   async getCurrentSubscription(
     @UserIdFromGuard() userId: string,
   ): Promise<CurrentSubscriptionViewModel> {
-    const result = await this.commandBus.execute(
+    return await this.commandBus.execute(
       new GetCurrentSubscriptionCommand(userId),
     );
-    return result;
   }
 
   @Post('create-payment')

@@ -68,6 +68,7 @@ describe('Subscriptions: /my-payments;', (): void => {
         .get(get_my_payment_url)
         .auth(user.accessToken, { type: 'bearer' })
         .expect(200);
+
       expect(result.body).toEqual({
         page: 1,
         pageSize: 8,

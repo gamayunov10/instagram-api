@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { PaypalSignatureRequest } from '../../../../../../../../libs/common/base/subscriptions/paypal-signature-request';
+import { ExceptionResultType } from '../../../../../base/types/exception.type';
 
 export class VerifyPaypalHookCommand {
   constructor(
@@ -20,12 +21,15 @@ export class VerifyPaypalHookUseCase
   constructor(
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
   ) {}
-  async execute(command: VerifyPaypalHookCommand) {
+  async execute(
+    command: VerifyPaypalHookCommand,
+  ): Promise<ExceptionResultType<boolean>> {
     {
       const payload: PaypalSignatureRequest = {
         request: command.request as Request,
         data: command.data,
       };
+
       const result =
         await this.paymentsServiceAdapter.verifyPaypalHook(payload);
 
@@ -35,6 +39,7 @@ export class VerifyPaypalHookUseCase
           code: ResultCode.InternalServerError,
         };
       }
+
       return {
         data: true,
         code: ResultCode.Success,
