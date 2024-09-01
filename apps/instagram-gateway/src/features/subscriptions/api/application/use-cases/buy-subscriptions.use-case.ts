@@ -78,6 +78,7 @@ export class BuySubscriptionsUseCase
       await this.subscriptionsRepo.createPaymentTransaction(
         createdPaymentTrPayload,
       );
+
     if (command.createSubscriptionInputModel.autoRenewal) {
       command.createSubscriptionInputModel.paymentCount = 1;
     }

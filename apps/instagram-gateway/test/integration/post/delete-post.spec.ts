@@ -180,7 +180,6 @@ describe('PostsController: /post/:id, delete post', (): void => {
         .expect(204);
 
       const response = await agent.get(`${post_url}${user.id}`).expect(201);
-      console.log(response.body);
 
       expectPostsView(response, 'Upload third post', user.id, '.png');
 

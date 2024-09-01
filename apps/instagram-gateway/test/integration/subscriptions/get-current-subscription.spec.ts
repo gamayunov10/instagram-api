@@ -69,6 +69,7 @@ describe('Subscriptions: /current-subscription;', (): void => {
         .get(get_current_subscription_url)
         .auth(user.accessToken, { type: 'bearer' })
         .expect(200);
+
       expect(result.body).toEqual({
         userId: user.id,
         expireAt: null,

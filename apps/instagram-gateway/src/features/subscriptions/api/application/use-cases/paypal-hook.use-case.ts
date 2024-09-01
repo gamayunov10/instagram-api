@@ -1,14 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
 import { SubscriptionsRepository } from '../../../infrastructure/subscriptions.repo';
 import { SubscriptionsQueryRepository } from '../../../infrastructure/subscriptions.query.repo';
 import { PaymentsServiceAdapter } from '../../../../../base/application/adapters/payments-service.adapter';
-import { UsersRepository } from '../../../../users/infrastructure/users.repo';
 import { AccountType } from '../../../../../../../../libs/common/base/ts/enums/account-type.enum';
-import { UsersQueryRepository } from '../../../../users/infrastructure/users.query.repo';
 import { SubscriptionsService } from '../../subscriptions.service';
 
 export class PaypalHookCommand {
@@ -17,15 +13,10 @@ export class PaypalHookCommand {
 
 @CommandHandler(PaypalHookCommand)
 export class PaypalHookUseCase implements ICommandHandler<PaypalHookCommand> {
-  private readonly logger = new Logger(PaypalHookUseCase.name);
-
   constructor(
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
-    private readonly usersRepository: UsersRepository,
-    private readonly usersQueryRepository: UsersQueryRepository,
     private readonly paymentsServiceAdapter: PaymentsServiceAdapter,
-    private readonly configService: ConfigService,
     private readonly subscriptionsService: SubscriptionsService,
   ) {}
 

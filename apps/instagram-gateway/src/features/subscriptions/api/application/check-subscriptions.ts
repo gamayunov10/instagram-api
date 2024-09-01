@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { ConfigService } from '@nestjs/config';
 
 import { UsersQueryRepository } from '../../../users/infrastructure/users.query.repo';
 import { SubscriptionsService } from '../subscriptions.service';
@@ -11,7 +10,6 @@ import { AccountType } from '../../../../../../../libs/common/base/ts/enums/acco
 export class CheckSubscriptions {
   private readonly logger = new Logger(CheckSubscriptions.name);
   constructor(
-    private readonly configService: ConfigService,
     private readonly subscriptionsService: SubscriptionsService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly usersRepository: UsersRepository,

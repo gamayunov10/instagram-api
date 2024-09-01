@@ -163,6 +163,7 @@ describe('Subscriptions: /create-payment;', (): void => {
           paymentCount: 1,
         })
         .expect(202);
+
       expectCreatePaymentResponse(result);
     });
 
@@ -177,6 +178,7 @@ describe('Subscriptions: /create-payment;', (): void => {
           autoRenewal: false,
         })
         .expect(202);
+
       expectCreatePaymentResponse(result);
     });
 
@@ -191,6 +193,7 @@ describe('Subscriptions: /create-payment;', (): void => {
           autoRenewal: true,
         })
         .expect(202);
+
       expectCreatePaymentResponse(result);
     });
   });
