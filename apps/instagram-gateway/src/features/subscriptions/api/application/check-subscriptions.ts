@@ -22,7 +22,7 @@ export class CheckSubscriptions {
     this.logger.log('Cron job started for checking subscriptions.');
 
     try {
-      const today = new Date();
+      const today = null;
 
       const subscriptions =
         await this.usersQueryRepository.getUserByEndDate(today);
