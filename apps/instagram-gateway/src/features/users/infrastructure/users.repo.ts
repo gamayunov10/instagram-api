@@ -389,7 +389,7 @@ export class UsersRepository {
   async updateAccountType(
     userId: string,
     accountType: AccountType,
-    endDateOfSubscription: Date,
+    endDateOfSubscription: Date | null,
     autoRenewal: boolean,
   ): Promise<boolean> {
     try {
