@@ -38,7 +38,7 @@ export class CheckSubscriptions {
           await this.usersRepository.updateAccountType(
             subscription.id,
             AccountType.PERSONAL,
-            subscription.endDateOfSubscription,
+            null,
             false,
           );
         }
