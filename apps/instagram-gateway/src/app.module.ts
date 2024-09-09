@@ -24,6 +24,7 @@ import { PaymentsServiceAdapter } from './base/application/adapters/payments-ser
 import { RawBodyMiddleware } from './infrastructure/middlewares/raw-body.middleware';
 import { JsonBodyMiddleware } from './infrastructure/middlewares/json-body.middleware';
 import { UsersModule } from './features/users/users.module';
+import { SocketGatewayModule } from './features/socket/socket.gateway.module';
 
 const services = [
   AppService,
@@ -38,6 +39,7 @@ const modules = [
   AuthModule,
   NotificationsModule,
   SubscriptionsModule,
+  SocketGatewayModule,
 ];
 const controllers = [AppController, TestingController];
 

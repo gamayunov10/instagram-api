@@ -48,5 +48,6 @@ const queryRepositories = [
     ...useCases,
     ...adapters,
   ],
+  exports: [UsersQueryRepository],
 })
 export class UsersModule {}
