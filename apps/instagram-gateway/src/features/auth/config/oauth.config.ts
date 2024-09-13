@@ -9,7 +9,7 @@ export class OAuthConfig {
   private readonly googleClientId: string;
   private readonly googleClientSecret: string;
   private readonly googleCallBackURL: string;
-  private readonly providerRedirectURL: string
+  private readonly providerRedirectURL: string;
 
   constructor(private readonly configService: ConfigService) {
     this.githubClientId = this.getSecret('GITHUB_CLIENT_ID');
@@ -56,7 +56,6 @@ export class OAuthConfig {
   }
 
   get providerRedirect() {
-	return this.providerRedirectURL;
-  } 
-
+    return this.providerRedirectURL;
+  }
 }
