@@ -74,3 +74,8 @@ export const pageSizeDefault = 8;
 export const confirmationCodeExpirationPeriod = 5;
 export const passwordRecoveryCodeExpirationPeriod = 10;
 export const codeExpirationPeriod: TimeUnit = TimeUnit.MINUTES;
+
+// notification
+export const notificationEvent = 'notification';
+export const messageForOneDay = 'Your subscription expires in 1 day';
+export const messageForSevenDay = 'Your subscription expires in 7 day';
