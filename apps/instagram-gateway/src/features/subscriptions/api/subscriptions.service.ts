@@ -6,11 +6,11 @@ import { SubscriptionsQueryRepository } from '../infrastructure/subscriptions.qu
 import { SubscriptionTime } from '../../../../../../libs/common/base/ts/enums/subscription-time.enum';
 import { AccountType } from '../../../../../../libs/common/base/ts/enums/account-type.enum';
 import { UsersRepository } from '../../users/infrastructure/users.repo';
-import { SendSuccessSubscriptionCommand } from '../../notifications/application/use-cases/send-success-subscription-message.use-case';
+import { SendSuccessSubscriptionCommand } from '../../notifications/api/application/use-cases/send-success-subscription-message.use-case';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repo';
-import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/application/use-cases/send-success-auto-renewal-message.use-case';
-import { SendMessageAboutEndSubscriptionCommand } from '../../notifications/application/use-cases/send-message-about-end-subscription.use-case';
+import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/api/application/use-cases/send-success-auto-renewal-message.use-case';
+import { SendMessageAboutEndSubscriptionCommand } from '../../notifications/api/application/use-cases/send-message-about-end-subscription.use-case';
 
 @Injectable()
 export class SubscriptionsService {

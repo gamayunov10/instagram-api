@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 
-import { NodeEnv } from '../../../../base/enums/node-env.enum';
+import { NodeEnv } from '../../../../../base/enums/node-env.enum';
 
 export class SendPasswordRecoveryMailCommand {
   constructor(

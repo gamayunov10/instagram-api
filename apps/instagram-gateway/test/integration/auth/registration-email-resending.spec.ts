@@ -8,7 +8,7 @@ import {
   userPassword,
 } from '../../base/constants/tests-strings';
 import { expectErrorMessages } from '../../base/utils/expectErrorMessages';
-import { SendRegistrationMailUseCase } from '../../../src/features/notifications/application/use-cases/send-registration-mail.use-case';
+import { SendRegistrationMailUseCase } from '../../../src/features/notifications/api/application/use-cases/send-registration-mail.use-case';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
 

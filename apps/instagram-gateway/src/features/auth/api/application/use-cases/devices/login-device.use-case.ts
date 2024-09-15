@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { UserDevicesRepository } from '../../../../../users/infrastructure/devices/user.devices.repo';
-import { SendSuccessRegistrationCommand } from '../../../../../notifications/application/use-cases/send-success-registration-message.use-case';
+import { SendSuccessRegistrationCommand } from '../../../../../notifications/api/application/use-cases/send-success-registration-message.use-case';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
 
 export class LoginDeviceCommand {

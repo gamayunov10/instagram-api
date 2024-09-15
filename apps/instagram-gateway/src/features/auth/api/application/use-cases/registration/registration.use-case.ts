@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { UserAuthInputModel } from '../../../../models/input/user-auth.input.model';
-import { SendRegistrationMailCommand } from '../../../../../notifications/application/use-cases/send-registration-mail.use-case';
+import { SendRegistrationMailCommand } from '../../../../../notifications/api/application/use-cases/send-registration-mail.use-case';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
 import { AuthService } from '../../auth.service';
 import { UsersRepository } from '../../../../../users/infrastructure/users.repo';
