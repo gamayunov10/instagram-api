@@ -17,7 +17,6 @@ export class SocketAuthGuard implements CanActivate {
 
     const token = client.handshake.query.token as string;
 
-    console.log(token);
     if (!token) {
       new WsException('Missing token');
       return false;

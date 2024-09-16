@@ -62,4 +62,20 @@ export class NotificationsQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
+
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    try {
+      return this.prismaClient.notification.count({
+        where: {
+          userId,
+          isRead: false,
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return 0;
+    }
+  }
 }

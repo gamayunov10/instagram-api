@@ -1,7 +1,6 @@
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
   WsException,
@@ -9,15 +8,13 @@ import {
 import { Socket, Server } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
+import { corsWhiteList } from '../../settings/app.settings';
+import { notificationEvent } from '../../base/constants/constants';
+import { NotificationViewModel } from '../notifications/models/notification.view.model';
 
-const corsWhiteList = [
-  'http://localhost:3000',
-  'http://localhost:5000',
-  'http://localhost:3439',
-  'https://inctagram.org',
-];
 @WebSocketGateway({
   cors: {
     origin: corsWhiteList,
@@ -32,6 +29,7 @@ export class SocketGatewayService
   constructor(
     private readonly usersQueryRepo: UsersQueryRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   private clients: Map<Socket, string> = new Map();
@@ -45,14 +43,22 @@ export class SocketGatewayService
         return;
       }
 
-      const decodedToken = this.jwtService.decode(token);
+      const decodedToken = this.jwtService.verify(token, {
+        secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+      });
+
       const user = await this.usersQueryRepo.findUserById(decodedToken.userId);
+
       if (!user) {
         this.forceDisconnect(client, 'Unauthorized');
         return;
       }
+
       client.data.user = user.id;
+
       this.clients.set(client, user.id);
+
+      client.join(user.id);
     } catch (e) {
       this.forceDisconnect(client, 'Unauthorized');
       return;
@@ -71,11 +77,7 @@ export class SocketGatewayService
     client.disconnect(true);
   }
 
-  @SubscribeMessage('get_notifications')
-  async handleGetNotifications(client: Socket) {
-    const userId = client.data.user;
-    const notifications =
-      'await this.notificationsService.getNotifications(userId)';
-    client.emit('notifications', notifications); // Отправляем уведомления пользователю
+  sendNotificationToUser(userId: string, notification: NotificationViewModel) {
+    this.server.to(userId).emit(notificationEvent, notification);
   }
 }

@@ -3,11 +3,15 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { CommandBus } from '@nestjs/cqrs';
 
 import { SocketGatewayService } from '../socket/socket.gateway.service';
 import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
 import { UserDevicesQueryRepository } from '../users/infrastructure/devices/user.devices.query.repo';
 import { UsersModule } from '../users/users.module';
+import { SubscriptionsService } from '../subscriptions/api/subscriptions.service';
+import { SubscriptionsQueryRepository } from '../subscriptions/infrastructure/subscriptions.query.repo';
+import { UsersRepository } from '../users/infrastructure/users.repo';
 
 import { SendRegistrationMailUseCase } from './api/application/use-cases/send-registration-mail.use-case';
 import { SendPasswordRecoveryUseCase } from './api/application/use-cases/send-pass-recovery-mail.use-case';
@@ -19,6 +23,7 @@ import { NotificationsRepository } from './infrastructure/notifications.repo';
 import { NotificationsService } from './api/application/notifications.service';
 import { NotificationsQueryRepository } from './infrastructure/notifications.query.repo';
 import { NotificationsController } from './api/application/notifications.controller';
+import { SendNotificationsService } from './api/application/send.notifications.service';
 
 const useCases = [
   SendRegistrationMailUseCase,
@@ -31,14 +36,19 @@ const useCases = [
 const repositories = [
   NotificationsRepository,
   NotificationsQueryRepository,
+  UsersRepository,
   UsersQueryRepository,
   UserDevicesQueryRepository,
+  SubscriptionsQueryRepository,
 ];
 const services = [
   PrismaClient,
   SocketGatewayService,
   NotificationsService,
   JwtService,
+  SendNotificationsService,
+  SubscriptionsService,
+  CommandBus,
 ];
 
 @Module({
@@ -62,7 +72,7 @@ const services = [
     }),
     UsersModule,
   ],
-  providers: [...useCases, ...repositories, NotificationsService, ...services],
+  providers: [...useCases, ...repositories, ...services],
   controllers: [NotificationsController],
 })
 export class NotificationsModule {}

@@ -19,6 +19,7 @@ import { ApiErrorMessages } from '../../../../base/schemas/api-error-messages.sc
 import { ResultCode } from '../../../../base/enums/result-code.enum';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception-handler';
 import { UpdateNotificationIsReadDto } from '../../models/update.notification.ids';
+import { UnreadNotificationCountViewModel } from '../../models/unread.notification.count.view.model';
 
 import { NotificationsService } from './notifications.service';
 
@@ -68,7 +69,7 @@ export class NotificationsController {
     NotificationsSchema,
     false,
     false,
-    false,
+    true,
     false,
     false,
     false,
@@ -81,5 +82,30 @@ export class NotificationsController {
     @Query() query: NotificationQueryModel,
   ) {
     return this.notificationsService.getNotificationsByUserId(userId, query);
+  }
+
+  @Get('unread-count')
+  @SwaggerOptions(
+    'Get unread notification count',
+    true,
+    false,
+    200,
+    '',
+    UnreadNotificationCountViewModel,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+  )
+  @UseGuards(DeviceAuthSessionGuard)
+  @UseGuards(JwtBearerGuard)
+  async getUnreadNotificationCount(
+    @UserIdFromGuard() userId: string,
+  ): Promise<UnreadNotificationCountViewModel> {
+    const count =
+      await this.notificationsService.getUnreadNotificationCount(userId);
+    return { count };
   }
 }

@@ -78,6 +78,12 @@ export class PaypalEventHookUseCase
       await this.subscriptionsService.sendSubscriptionNotification(
         order.userId,
       );
+
+      await this.subscriptionsService.scheduleSubscriptionNotification(
+        order.userId,
+        order.price,
+        order.subscriptionTime,
+      );
     }
 
     if (event.event_type === 'BILLING.SUBSCRIPTION.ACTIVATED') {

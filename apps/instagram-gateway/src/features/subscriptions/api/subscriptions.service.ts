@@ -11,6 +11,8 @@ import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repo';
 import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/api/application/use-cases/send-success-auto-renewal-message.use-case';
 import { SendMessageAboutEndSubscriptionCommand } from '../../notifications/api/application/use-cases/send-message-about-end-subscription.use-case';
+import { NotificationsService } from '../../notifications/api/application/notifications.service';
+import { messageSuccessfulSubscription } from '../../../base/constants/constants';
 
 @Injectable()
 export class SubscriptionsService {
@@ -22,6 +24,7 @@ export class SubscriptionsService {
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly commandBus: CommandBus,
     private readonly configService: ConfigService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async endDateOfSubscription(
@@ -192,5 +195,21 @@ export class SubscriptionsService {
         ),
       );
     }
+  }
+  async scheduleSubscriptionNotification(
+    userId: string,
+    price: number,
+    subscriptionTime: string,
+  ) {
+    const user = await this.usersQueryRepository.findUserById(userId);
+
+    const endDate = await this.endDateOfSubscription(
+      price,
+      subscriptionTime,
+      user.endDateOfSubscription,
+    );
+
+    const message = `${messageSuccessfulSubscription} ${endDate.toLocaleDateString()}`;
+    await this.notificationsService.createNotification(userId, message, 30000);
   }
 }

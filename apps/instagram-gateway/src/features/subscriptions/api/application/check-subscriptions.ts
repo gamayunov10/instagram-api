@@ -17,7 +17,7 @@ export class CheckSubscriptions {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  @Cron('0 7 * * *') // every day at 7 a.m.
+  @Cron('0 * * * *') // every hour at the 0th minute
   async checkSubscriptionsFromDB() {
     this.logger.log('Cron job started for checking subscriptions.');
 

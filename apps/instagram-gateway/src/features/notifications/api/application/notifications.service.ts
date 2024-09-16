@@ -15,14 +15,24 @@ export class NotificationsService {
     private notificationsQueryRepo: NotificationsQueryRepository,
   ) {}
 
-  async createNotification(userId: string, message: string) {
+  async createNotification(
+    userId: string,
+    message: string,
+    delayInMs?: number,
+  ) {
     const notification = await this.notificationsRepo.createNotification(
       userId,
       message,
     );
 
     // Sending a notification via WebSocket
-    this.socketGatewayService.sendNotificationToUser(userId, notification);
+    if (delayInMs && delayInMs > 0) {
+      setTimeout(() => {
+        this.socketGatewayService.sendNotificationToUser(userId, notification);
+      }, delayInMs);
+    } else {
+      this.socketGatewayService.sendNotificationToUser(userId, notification);
+    }
 
     return notification;
   }
@@ -61,5 +71,9 @@ export class NotificationsService {
       data: true,
       code: ResultCode.Success,
     };
+  }
+
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    return this.notificationsQueryRepo.getUnreadNotificationCount(userId);
   }
 }
