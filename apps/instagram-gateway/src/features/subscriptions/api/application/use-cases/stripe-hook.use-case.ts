@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as Stripe from 'stripe';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
@@ -25,7 +24,6 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
   private readonly logger = new Logger(StripeHookUseCase.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly subscriptionsService: SubscriptionsService,

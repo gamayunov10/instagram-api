@@ -27,9 +27,8 @@ export class SendMessageAboutEndSubscriptionUseCase
       await this.mailerService.sendMail({
         to: command.email,
         subject: 'Subscription',
-        html: `<h1>Congratulations, ${command.username}!</h1>
-               <p>Your subscription expired on ${command.endDateOfSubscription}. Please renew your subscription.!</p>
-               <p> The subscription has expired. To renew your subscription, change your account type to business <p>
+        html: `<h1>Hello, ${command.username}!</h1>
+               <p> The subscription has expired. To renew your subscription, change your account type to business. <p>
             `,
         context: {
           login: command.username,

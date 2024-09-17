@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
 import { ResultCode } from '../../../../../base/enums/result-code.enum';
@@ -30,7 +29,6 @@ export class PaypalEventHookUseCase
   private readonly logger = new Logger(PaypalEventHookUseCase.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly subscriptionsRepo: SubscriptionsRepository,
     private readonly subscriptionsQueryRepo: SubscriptionsQueryRepository,
     private readonly subscriptionsService: SubscriptionsService,
@@ -99,12 +97,14 @@ export class PaypalEventHookUseCase
         .payer_id as string;
 
       const subscriptionId = subscriptionData.resource.id;
+
       const startDate = new Date(subscriptionData.resource.start_time);
       const endDate = await this.subscriptionsService.endDateOfSubscription(
         order.price,
         order.subscriptionTime,
         startDate,
       );
+
       const paymentSystem = PaymentType.PAYPAL;
 
       const autoRenewal: boolean = true;
