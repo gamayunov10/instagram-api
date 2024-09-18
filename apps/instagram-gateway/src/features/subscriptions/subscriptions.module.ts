@@ -9,6 +9,10 @@ import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
 import { paymentsServiceConfig } from '../../base/application/config/payments-service.config';
 import { PaymentsServiceAdapter } from '../../base/application/adapters/payments-service.adapter';
 import { UsersRepository } from '../users/infrastructure/users.repo';
+import { NotificationsService } from '../notifications/api/application/notifications.service';
+import { NotificationsRepository } from '../notifications/infrastructure/notifications.repo';
+import { NotificationsQueryRepository } from '../notifications/infrastructure/notifications.query.repo';
+import { SocketGatewayService } from '../socket/socket.gateway.service';
 
 import { SubscriptionsService } from './api/subscriptions.service';
 import { SubscriptionsQueryRepository } from './infrastructure/subscriptions.query.repo';
@@ -31,6 +35,8 @@ const services = [
   SubscriptionsService,
   JwtService,
   CheckSubscriptions,
+  SocketGatewayService,
+  NotificationsService,
 ];
 const useCases = [
   BuySubscriptionsUseCase,
@@ -45,6 +51,8 @@ const repositories = [
   SubscriptionsRepository,
   UsersRepository,
   SubscribersRepository,
+  NotificationsRepository,
+  NotificationsQueryRepository,
 ];
 const queryRepositories = [
   SubscriptionsQueryRepository,

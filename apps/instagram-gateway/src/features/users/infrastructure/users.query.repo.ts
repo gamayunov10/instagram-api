@@ -154,4 +154,21 @@ export class UsersQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
+
+  async getSubscriptionsExpiringOn(date: Date) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0); // Начало дня
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999); // Конец дня
+
+    return this.prismaClient.user.findMany({
+      where: {
+        endDateOfSubscription: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+    });
+  }
 }

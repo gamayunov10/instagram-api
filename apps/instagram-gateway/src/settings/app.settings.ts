@@ -16,6 +16,13 @@ config();
 
 export const APP_PREFIX = '/api/v1';
 
+export const corsWhiteList = [
+  'http://localhost:3000',
+  'http://localhost:3439',
+  'http://localhost:5000',
+  'https://inctagram.org',
+];
+
 export type EnvironmentVariable = {
   [key: string]: string | undefined;
 };
@@ -94,12 +101,6 @@ export class AppSettings {
   ) {}
 
   applySettings(app: INestApplication) {
-    const corsWhiteList = [
-      'http://localhost:3000',
-      'http://localhost:5000',
-      'https://inctagram.org',
-    ];
-
     app.enableCors({
       origin: corsWhiteList,
       credentials: true,
