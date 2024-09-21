@@ -28,7 +28,7 @@ export class GetCurrentSubscriptionUseCase
       command.userId,
     );
 
-    if (!subscriber) {
+    if (!subscriber || !user.endDateOfSubscription) {
       return {
         userId: user.id,
         expireAt: user.endDateOfSubscription,
