@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { SubscriptionTime } from '../../../../../../libs/common/base/ts/enums/subscription-time.enum';
 import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
+import { PaymentStatus } from '../../../../../../libs/common/base/ts/enums/payment-status.enum';
+import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
 
 @Injectable()
 export class SubscriptionsQueryRepository {
@@ -49,16 +51,14 @@ export class SubscriptionsQueryRepository {
         where: {
           userId: userId,
           payment: {
-            status: {
-              not: 'open',
-            },
+            status: PaymentStatus.COMPLETED,
           },
         },
         include: {
           payment: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: SortDirection.DESC,
         },
       });
 
@@ -70,16 +70,14 @@ export class SubscriptionsQueryRepository {
         where: {
           userId: userId,
           payment: {
-            status: {
-              not: 'open',
-            },
+            status: PaymentStatus.COMPLETED,
           },
         },
         include: {
           payment: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: SortDirection.DESC,
         },
         skip: skip,
         take: Number(query.pageSize),
