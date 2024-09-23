@@ -27,8 +27,8 @@ import { RawBodyMiddleware } from './infrastructure/middlewares/raw-body.middlew
 import { JsonBodyMiddleware } from './infrastructure/middlewares/json-body.middleware';
 import { UsersModule } from './features/users/users.module';
 import { AuthResolver } from './resolvers/auth/auth.resolver';
-
 import { BasicStrategy } from './features/auth/strategies/basic.strategy';
+import { SocketGatewayModule } from './features/socket/socket.gateway.module';
 
 const services = [
   AppService,
@@ -43,6 +43,7 @@ const modules = [
   AuthModule,
   NotificationsModule,
   SubscriptionsModule,
+  SocketGatewayModule,
 ];
 const controllers = [AppController, TestingController];
 

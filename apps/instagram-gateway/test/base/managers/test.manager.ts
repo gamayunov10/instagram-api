@@ -7,12 +7,15 @@ import { registration_confirmation_url } from '../../integration/auth/registrati
 import { login_url } from '../../integration/auth/login.spec';
 import { UserCredentialsType, UserInputModelType } from '../types/testing.type';
 import { PostsRepository } from '../../../src/features/posts/infrastructure/posts.repo';
+import { messageForOneDay } from '../../../src/base/constants/constants';
+import { NotificationsRepository } from '../../../src/features/notifications/infrastructure/notifications.repo';
 
 export class TestManager {
   constructor(
     protected readonly app: INestApplication,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly postsRepository: PostsRepository,
+    private readonly notificationsRepository: NotificationsRepository,
   ) {}
 
   async getEmailConfirmationCode(email: string): Promise<string> {
@@ -77,5 +80,12 @@ export class TestManager {
 
   async updateDeletedAtForTests(postId: string): Promise<boolean> {
     return await this.postsRepository.updateDeletedAtForTests(postId);
+  }
+
+  async createTestNotification(userId: string) {
+    return this.notificationsRepository.createNotification(
+      userId,
+      messageForOneDay,
+    );
   }
 }

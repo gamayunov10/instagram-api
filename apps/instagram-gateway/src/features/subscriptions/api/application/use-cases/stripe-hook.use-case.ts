@@ -69,6 +69,12 @@ export class StripeHookUseCase implements ICommandHandler<StripeHookCommand> {
       await this.subscriptionsService.sendSubscriptionNotification(
         order.userId,
       );
+
+      await this.subscriptionsService.scheduleSubscriptionNotification(
+        order.userId,
+        order.price,
+        order.subscriptionTime,
+      );
     }
 
     if (event.type === 'customer.subscription.created') {

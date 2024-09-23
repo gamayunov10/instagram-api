@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
 import { UserPasswdRecoveryInputModel } from '../../../../models/input/user-passwd-recovery.input.model';
-import { SendPasswordRecoveryMailCommand } from '../../../../../notifications/application/use-cases/send-pass-recovery-mail.use-case';
+import { SendPasswordRecoveryMailCommand } from '../../../../../notifications/api/application/use-cases/send-pass-recovery-mail.use-case';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {

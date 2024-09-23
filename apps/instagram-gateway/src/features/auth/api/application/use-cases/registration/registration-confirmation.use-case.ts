@@ -6,7 +6,7 @@ import { UserConfirmationCodeInputModel } from '../../../../models/input/user-co
 import { UsersRepository } from '../../../../../users/infrastructure/users.repo';
 import { UsersQueryRepository } from '../../../../../users/infrastructure/users.query.repo';
 import { NodeEnv } from '../../../../../../base/enums/node-env.enum';
-import { SendSuccessRegistrationCommand } from '../../../../../notifications/application/use-cases/send-success-registration-message.use-case';
+import { SendSuccessRegistrationCommand } from '../../../../../notifications/api/application/use-cases/send-success-registration-message.use-case';
 
 export class RegistrationConfirmationCommand {
   constructor(
