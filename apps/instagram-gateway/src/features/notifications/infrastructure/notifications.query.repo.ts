@@ -93,19 +93,4 @@ export class NotificationsQueryRepository {
 		  return
 	}
   }
-
-  async findNotByUserId(userId: string):Promise<any> {
-	try {
-		await this.prismaClient.notification.findFirst({
-			where: {
-				user: {id: userId}
-			}
-		})
-	} catch(e) {
-		if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
-			this.logger.error(e);
-		  }
-		  return
-	}
-  }
 }

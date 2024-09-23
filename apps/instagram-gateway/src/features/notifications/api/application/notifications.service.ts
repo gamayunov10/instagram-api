@@ -60,17 +60,21 @@ export class NotificationsService {
 	if(!findAllNotificationByIds) {
 		return {
 			data: false,
-       		 code: ResultCode.Forbidden,
+       		code: ResultCode.NotFound,
 		}
 	}
-	let idUser: string
-	for(let i =0; i < findAllNotificationByIds.length; i++) {
-		const findNotificationByUserId = await this.notificationsQueryRepo.findNotByUserId(userId)
-		idUser = findNotificationByUserId.userId
-		return idUser
-	}
+
+	findAllNotificationByIds.forEach(function(item) {
+			if(item.userId !== userId) {
+				return {
+				data: false,
+				code: ResultCode.Forbidden,
+			}
+		}
+	})
+
     const res = await this.notificationsRepo.markNotificationsAsRead(
-	  idUser,
+	  userId,
       ids,
     );
 
