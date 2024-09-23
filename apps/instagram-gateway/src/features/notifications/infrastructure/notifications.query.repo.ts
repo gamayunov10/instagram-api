@@ -1,6 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { NotificationQueryModel } from '../models/notification.query.model';
@@ -77,5 +77,35 @@ export class NotificationsQueryRepository {
       }
       return 0;
     }
+  }
+
+  async findAllNotifications(ids: string[]) {
+	try {
+		return await this.prismaClient.notification.findMany({
+			where: {
+				id: {in: [...ids]}
+			}
+		})
+	} catch(e) {
+		if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+			this.logger.error(e);
+		  }
+		  return
+	}
+  }
+
+  async findNotByUserId(userId: string):Promise<any> {
+	try {
+		await this.prismaClient.notification.findFirst({
+			where: {
+				user: {id: userId}
+			}
+		})
+	} catch(e) {
+		if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+			this.logger.error(e);
+		  }
+		  return
+	}
   }
 }

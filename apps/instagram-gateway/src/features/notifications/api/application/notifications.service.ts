@@ -56,8 +56,21 @@ export class NotificationsService {
   }
 
   async markNotificationsAsRead(userId: string, ids: string[]) {
+	const findAllNotificationByIds = await this.notificationsQueryRepo.findAllNotifications(ids)
+	if(!findAllNotificationByIds) {
+		return {
+			data: false,
+       		 code: ResultCode.Forbidden,
+		}
+	}
+	let idUser: string
+	for(let i =0; i < findAllNotificationByIds.length; i++) {
+		const findNotificationByUserId = await this.notificationsQueryRepo.findNotByUserId(userId)
+		idUser = findNotificationByUserId.userId
+		return idUser
+	}
     const res = await this.notificationsRepo.markNotificationsAsRead(
-      userId,
+	  idUser,
       ids,
     );
 
