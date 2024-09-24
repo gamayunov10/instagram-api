@@ -53,6 +53,28 @@ describe('NotificationsController: /notifications/', (): void => {
         .send({ ids: '' })
         .expect(400);
     });
+
+	let notificationId;
+	it(`should create notification`, async (): Promise<void> => {
+		// user = await testManager.createUser(createUserInput);
+  
+		await testManager.createTestNotification(user.id);
+  
+		const response = await agent
+		  .get(notifications_url)
+		  .auth(user.accessToken, { type: 'bearer' })
+		  .expect(200);
+  
+		notificationId = response.body.items[0].id;
+	  });
+
+	it("update notification with incorrect authorization and return 403", async() => {
+	  await agent
+		.put(notificationsMarkAsRead_url)
+		.auth('incorrect-accessToken', { type: 'bearer' })
+		.send({ ids: [notificationId] })
+		.expect(403)
+	})
   });
 
   describe('positive', () => {
