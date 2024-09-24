@@ -74,6 +74,7 @@ describe('NotificationsController: /notifications/', (): void => {
 		.auth('incorrect-accessToken', { type: 'bearer' })
 		.send({ ids: [notificationId] })
 		.expect(403)
+		// to add incorrenct authorization
 	})
   });
 
