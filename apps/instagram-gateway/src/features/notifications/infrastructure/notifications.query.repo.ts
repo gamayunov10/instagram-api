@@ -79,7 +79,7 @@ export class NotificationsQueryRepository {
     }
   }
 
-  async findAllNotifications(ids: string[]) {
+  async findNotificationsByIds(ids: string[]) {
     try {
         return await this.prismaClient.notification.findMany({
             where: {
