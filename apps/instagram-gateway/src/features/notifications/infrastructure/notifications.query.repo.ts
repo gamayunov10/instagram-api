@@ -78,4 +78,20 @@ export class NotificationsQueryRepository {
       return 0;
     }
   }
+
+  async findNotificationsByIds(ids: string[]) {
+    try {
+        return await this.prismaClient.notification.findMany({
+            where: {
+                id: {in: [...ids]}
+            }
+        })
+    } catch(e) {
+        if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+            this.logger.error(e);
+          }
+          return
+    }
+    // to do
+  }
 }
