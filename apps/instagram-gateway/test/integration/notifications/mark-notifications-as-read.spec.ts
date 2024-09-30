@@ -4,7 +4,7 @@ import TestAgent from 'supertest/lib/agent';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
-import { createUserInput } from '../../base/constants/tests-strings';
+import { createUserInput, createUserInput2 } from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 
 import { notifications_url } from './get-notifications.spec';
@@ -30,6 +30,7 @@ describe('NotificationsController: /notifications/', (): void => {
 
   describe('negative', () => {
     let user: UserCredentialsType;
+    let user2: UserCredentialsType;
 
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
@@ -55,14 +56,14 @@ describe('NotificationsController: /notifications/', (): void => {
     });
 
 	let notificationId;
-    it(`should create notification`, async (): Promise<void> => {
-        // user = await testManager.createUser(createUserInput);
+    it(`should create user and notification`, async (): Promise<void> => {
+        user2 = await testManager.createUser(createUserInput2);
   
-        await testManager.createTestNotification(user.id);
+        await testManager.createTestNotification(user2.id);
   
         const response = await agent
           .get(notifications_url)
-          .auth(user.accessToken, { type: 'bearer' })
+          .auth(user2.accessToken, { type: 'bearer' })
           .expect(200);
   
         notificationId = response.body.items[0].id;
@@ -71,7 +72,7 @@ describe('NotificationsController: /notifications/', (): void => {
     it("update notification with incorrect authorization and return 403", async() => {
       await agent
         .put(notificationsMarkAsRead_url)
-        .auth('incorrect-accessToken', { type: 'bearer' })
+        .auth(user.accessToken, { type: 'bearer' })
         .send({ ids: [notificationId] })
         .expect(403)
     })

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { SocketGatewayService } from '../../../socket/socket.gateway.service';
 import { NotificationsRepository } from '../../infrastructure/notifications.repo';
@@ -64,15 +64,16 @@ export class NotificationsService {
         }
     }
 
-    findAllNotificationByIds.forEach(function(item) {
-            if(item.userId !== userId) {
-                return {
-                data: false,
-                code: ResultCode.Forbidden,
-            }
-        }
-    })
-    const res = await this.notificationsRepo.markNotificationsAsRead(
+	for(let i = 0; i < findAllNotificationByIds.length; i++) {
+		if(findAllNotificationByIds[i].userId !== userId) {
+			return {
+					data: false,
+					code: ResultCode.Forbidden,
+			}
+		}
+	}
+
+	const res = await this.notificationsRepo.markNotificationsAsRead(
       userId,
       ids,
     );
