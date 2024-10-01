@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  NotFoundException,
   Put,
   Query,
   UseGuards,
@@ -50,6 +51,11 @@ export class NotificationsController {
     @Body() notificationIds: UpdateNotificationIsReadDto,
   ) {
     const { ids } = notificationIds;
+	// for(let i = 0; i < ids.length; i++) {
+	// 	if(!ids[i].match("^\\{?\\p{XDigit}{8}-(?:\\p{XDigit}{4}-){3}\\p{XDigit}{12}}?$")) {
+	// 		throw new NotFoundException('404')
+	// 	}
+	// }
     const result = await this.notificationsService.markNotificationsAsRead(
       userId,
       ids,

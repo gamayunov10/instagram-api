@@ -6,6 +6,7 @@ import { NotificationsQueryRepository } from '../../infrastructure/notifications
 import { NotificationQueryModel } from '../../models/notification.query.model';
 import { Paginator } from '../../../../base/pagination/paginator';
 import { ResultCode } from '../../../../base/enums/result-code.enum';
+import { IsUUID } from 'class-validator';
 
 @Injectable()
 export class NotificationsService {
@@ -56,21 +57,26 @@ export class NotificationsService {
 	}
 
 	async markNotificationsAsRead(userId: string, ids: string[]) {
-		const findAllNotificationByIds = await this.notificationsQueryRepo.findNotificationsByIds(ids)
-		if (!findAllNotificationByIds) {
-			return {
-				data: false,
-				code: ResultCode.NotFound,
+		for (let i = 0; i < ids.length; i++) {
+			if (!ids[i].match(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)) {
+				throw new NotFoundException('404')
 			}
 		}
+		const findAllNotificationByIds = await this.notificationsQueryRepo.findNotificationsByIds(ids)
 
 		for (let i = 0; i < findAllNotificationByIds.length; i++) {
-			if (findAllNotificationByIds[i].userId !== userId) {
+			if (!findAllNotificationByIds[i].id) {
 				return {
 					data: false,
-					code: ResultCode.Forbidden,
+					code: ResultCode.NotFound,
 				}
-			}
+			} else
+				if (findAllNotificationByIds[i].userId !== userId) {
+					return {
+						data: false,
+						code: ResultCode.Forbidden,
+					}
+				}
 		}
 
 		const res = await this.notificationsRepo.markNotificationsAsRead(

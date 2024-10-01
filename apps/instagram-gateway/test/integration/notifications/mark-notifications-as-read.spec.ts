@@ -12,105 +12,111 @@ import { notifications_url } from './get-notifications.spec';
 export const notificationsMarkAsRead_url = '/api/v1/notifications/mark-as-read';
 
 describe('NotificationsController: /notifications/', (): void => {
-  let app: INestApplication;
-  let agent: TestAgent<any>;
-  let testManager: TestManager;
+	let app: INestApplication;
+	let agent: TestAgent<any>;
+	let testManager: TestManager;
 
-  beforeAll(async (): Promise<void> => {
-    const config = await beforeAllConfig();
-    app = config.app;
-    agent = config.agent;
-    testManager = config.testManager;
-  });
+	beforeAll(async (): Promise<void> => {
+		const config = await beforeAllConfig();
+		app = config.app;
+		agent = config.agent;
+		testManager = config.testManager;
+	});
 
-  afterAll(async () => {
-    await app.close();
-    await prismaClientSingleton.disconnect();
-  });
+	afterAll(async () => {
+		await app.close();
+		await prismaClientSingleton.disconnect();
+	});
 
-  describe('negative', () => {
-    let user: UserCredentialsType;
-    let user2: UserCredentialsType;
+	describe('negative', () => {
+		let user: UserCredentialsType;
+		let user2: UserCredentialsType;
 
-    it(`should clear database`, async () => {
-      await agent.delete('/api/v1/testing/all-data');
-    });
+		it(`should clear database`, async () => {
+			await agent.delete('/api/v1/testing/all-data');
+		});
 
-    it(`should create user`, async (): Promise<void> => {
-      user = await testManager.createUser(createUserInput);
-    });
+		it(`should create user`, async (): Promise<void> => {
+			user = await testManager.createUser(createUserInput);
+		});
 
-    it(`should not update notifications if bearer token is incorrect`, async (): Promise<void> => {
-      await agent
-        .put(notificationsMarkAsRead_url)
-        .auth('incorrect-accessToken', { type: 'bearer' }) // accessToken incorrect
-        .expect(401);
-    });
+		it(`should not update notifications if bearer token is incorrect`, async (): Promise<void> => {
+			await agent
+				.put(notificationsMarkAsRead_url)
+				.auth('incorrect-accessToken', { type: 'bearer' }) // accessToken incorrect
+				.expect(401);
+		});
 
-    it(`should not update notifications if inputModel is incorrect`, async (): Promise<void> => {
-      await agent
-        .put(notificationsMarkAsRead_url)
-        .auth(user.accessToken, { type: 'bearer' })
-        .send({ ids: '' })
-        .expect(400);
-    });
+		it(`should not update notifications if inputModel is incorrect`, async (): Promise<void> => {
+			await agent
+				.put(notificationsMarkAsRead_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.send({ ids: '' })
+				.expect(400);
+		});
 
-	let notificationId;
-    it(`should create user and notification`, async (): Promise<void> => {
-        user2 = await testManager.createUser(createUserInput2);
-  
-        await testManager.createTestNotification(user2.id);
-  
-        const response = await agent
-          .get(notifications_url)
-          .auth(user2.accessToken, { type: 'bearer' })
-          .expect(200);
-  
-        notificationId = response.body.items[0].id;
-      });
+		let notificationId;
+		it(`should create user and notification`, async (): Promise<void> => {
+			user2 = await testManager.createUser(createUserInput2);
+			await testManager.createTestNotification(user2.id);
+			const response = await agent
+				.get(notifications_url)
+				.auth(user2.accessToken, { type: 'bearer' })
+				.expect(200);
 
-    it("update notification with incorrect authorization and return 403", async() => {
-      await agent
-        .put(notificationsMarkAsRead_url)
-        .auth(user.accessToken, { type: 'bearer' })
-        .send({ ids: [notificationId] })
-        .expect(403)
-    })
-  });
+			notificationId = response.body.items[0].id;
+		});
 
-  describe('positive', () => {
-    let user: UserCredentialsType;
-    let notificationId;
-    it(`should clear database`, async () => {
-      await agent.delete('/api/v1/testing/all-data');
-    });
+		it(`should not update notifications if inputModel is incorrect`, async (): Promise<void> => {
+			await agent
+				.put(notificationsMarkAsRead_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.send({ ids: ['e02fd0e4-00fd-090A-ca30-0d00a0038ba0'] })
+				.expect(404);
+		});
 
-    it(`should create user and notification`, async (): Promise<void> => {
-      user = await testManager.createUser(createUserInput);
+		it("update notification with incorrect authorization and return 403", async () => {
+			await agent
+				.put(notificationsMarkAsRead_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.send({ ids: [notificationId] })
+				.expect(403)
+		})
+	});
 
-      await testManager.createTestNotification(user.id);
+	describe('positive', () => {
+		let user: UserCredentialsType;
+		let notificationId;
+		it(`should clear database`, async () => {
+			await agent.delete('/api/v1/testing/all-data');
+		});
 
-      const response = await agent
-        .get(notifications_url)
-        .auth(user.accessToken, { type: 'bearer' })
-        .expect(200);
+		it(`should create user and notification`, async (): Promise<void> => {
+			user = await testManager.createUser(createUserInput);
 
-      notificationId = response.body.items[0].id;
-    });
+			await testManager.createTestNotification(user.id);
 
-    it(`should update notification `, async (): Promise<void> => {
-      await agent
-        .put(notificationsMarkAsRead_url)
-        .auth(user.accessToken, { type: 'bearer' })
-        .send({ ids: [notificationId] })
-        .expect(204);
+			const response = await agent
+				.get(notifications_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.expect(200);
 
-      const notification = await agent
-        .get(notifications_url)
-        .auth(user.accessToken, { type: 'bearer' })
-        .expect(200);
+			notificationId = response.body.items[0].id;
+		});
 
-      expect(notification.body.items[0].isRead).toEqual(true);
-    });
-  });
+		it(`should update notification `, async (): Promise<void> => {
+			await agent
+				.put(notificationsMarkAsRead_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.send({ ids: [notificationId] })
+				.expect(204);
+
+			const notification = await agent
+				.get(notifications_url)
+				.auth(user.accessToken, { type: 'bearer' })
+				.expect(200);
+
+			expect(notification.body.items[0].isRead).toEqual(true);
+		});
+	});
 });
