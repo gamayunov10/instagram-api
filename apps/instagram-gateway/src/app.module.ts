@@ -61,6 +61,7 @@ const resolvers = [AppResolver, AuthResolver, UsersResolver];
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
+      path: '/api/v1/graphql',
       playground: true,
     }),
   ],
