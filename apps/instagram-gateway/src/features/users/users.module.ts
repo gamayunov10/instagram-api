@@ -19,8 +19,9 @@ import { UserDevicesQueryRepository } from './infrastructure/devices/user.device
 import { ViewUserPublicInfoUseCase } from './api/application/use-cases/view-user-public-info.use-case';
 import { PublicUsersController } from './api/public.users.controller';
 import { GetTotalCountRegisteredUsersUseCase } from './api/application/use-cases/get-total-count-registered-users';
+import { UsersService } from './api/application/users.service';
 
-const services = [PrismaClient, FileServiceAdapter, JwtService];
+const services = [UsersService, PrismaClient, FileServiceAdapter, JwtService];
 const useCases = [
   FillOutProfileUseCase,
   GetProfileInfoUseCase,
@@ -48,6 +49,6 @@ const queryRepositories = [
     ...useCases,
     ...adapters,
   ],
-  exports: [UsersQueryRepository],
+  exports: [UsersQueryRepository, UsersService],
 })
 export class UsersModule {}

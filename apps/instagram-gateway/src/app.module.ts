@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { ClientsModule } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
 
 import { AppController } from './app.controller';
 import { PostsModule } from './features/posts/posts.module';
@@ -25,6 +27,9 @@ import { RawBodyMiddleware } from './infrastructure/middlewares/raw-body.middlew
 import { JsonBodyMiddleware } from './infrastructure/middlewares/json-body.middleware';
 import { UsersModule } from './features/users/users.module';
 import { SocketGatewayModule } from './features/socket/socket.gateway.module';
+import { AppResolver } from './app.resolver';
+import { AuthResolver } from './resolvers/auth/auth.resolver';
+import { UsersResolver } from './resolvers/users/users.resolver';
 
 const services = [
   AppService,
@@ -43,6 +48,8 @@ const modules = [
 ];
 const controllers = [AppController, TestingController];
 
+const resolvers = [AppResolver, AuthResolver, UsersResolver];
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -51,9 +58,14 @@ const controllers = [AppController, TestingController];
     ClientsModule.registerAsync([fileServiceConfig(), paymentsServiceConfig()]),
     ...modules,
     ScheduleModule.forRoot(),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      playground: true,
+    }),
   ],
   controllers: [...controllers],
-  providers: [...services],
+  providers: [...services, ...resolvers],
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {

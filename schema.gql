@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserModel {
+  id: String!
+  accountType: AccountType!
+  endDateOfSubscription: DateTime
+  autoRenewal: Boolean!
+  email: String!
+  username: String!
+  createdAt: DateTime!
+  firstName: String
+  lastName: String
+  birthDate: String
+  city: String
+  country: String
+  aboutMe: String
+  avatarURL: String
+}
+
+enum AccountType {
+  PERSONAL
+  BUSINESS
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  sayHello: String!
+  loginSa: String!
+  getUsers: [UserModel!]!
+}

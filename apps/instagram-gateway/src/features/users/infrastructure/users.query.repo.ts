@@ -171,4 +171,20 @@ export class UsersQueryRepository {
       },
     });
   }
+
+  async getUsersWithRelations() {
+    try {
+      return await this.prismaClient.user.findMany({
+        include: {
+          device: true,
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
 }
