@@ -36,6 +36,7 @@ import { OAuthConfig } from './config/oauth.config';
 import { TerminateOtherSessionsUseCase } from './api/application/use-cases/devices/terminate-other-sessions.use-case';
 import { TerminateSessionUseCase } from './api/application/use-cases/devices/terminate-session.use-case';
 import { PasswordRecoveryResendingUseCase } from './api/application/use-cases/password/password-recovery-resending.use-case';
+import { BasicStrategy } from './strategies/basic.strategy';
 
 const services = [AuthService, PrismaClient, JwtService];
 const useCases = [
@@ -66,6 +67,7 @@ const strategy = [
   GithubOAuth2Strategy,
   JwtBearerStrategy,
   JwtRefreshTokenStrategy,
+  BasicStrategy,
 ];
 const config = [JwtConfig, OAuthConfig];
 
