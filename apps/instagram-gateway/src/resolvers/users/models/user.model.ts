@@ -47,4 +47,7 @@ export class UserModel {
 
   @Field({ nullable: true })
   avatarURL: string;
+
+  @Field({ nullable: true })
+  profileLink: string;
 }

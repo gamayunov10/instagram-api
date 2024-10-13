@@ -4,6 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '../../infrastructure/users.repo';
 import { UsersQueryRepository } from '../../infrastructure/users.query.repo';
 import { UserModel } from '../../../../resolvers/users/models/user.model';
+import { Paginator } from '../../../../base/pagination/paginator';
+import { PaginatedUserModel } from '../../../../resolvers/users/models/paginated-user.model';
+import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
 
 @Injectable()
 export class UsersService {
@@ -13,9 +16,31 @@ export class UsersService {
 
     private readonly configService: ConfigService,
   ) {}
-  async getAllUsers(): Promise<UserModel[]> {
-    const result = await this.usersQueryRepository.getUsersWithRelations();
-    const users: UserModel[] = result.map((user) => {
+  async getAllUsers(
+    page: number,
+    pageSize: number,
+    sortBy: string,
+    sortOrder: SortDirection,
+    search: string,
+  ): Promise<PaginatedUserModel> {
+    const result = await this.usersQueryRepository.getUsersWithRelations(
+      page,
+      pageSize,
+      sortBy,
+      sortOrder,
+      search,
+    );
+    const users = this.mapUsers(result.users);
+
+    return Paginator.paginate({
+      pageNumber: page,
+      pageSize: pageSize,
+      totalCount: result.totalCount,
+      items: users,
+    });
+  }
+  private mapUsers(users: any[]): UserModel[] {
+    return users.map((user) => {
       return {
         id: user.id,
         username: user.username,
@@ -31,8 +56,8 @@ export class UsersService {
         country: user.country,
         aboutMe: user.aboutMe,
         avatarURL: user.avatarURL,
+        profileLink: `https://inctagram.org/profile?id=${user.id}`,
       };
     });
-    return users;
   }
 }

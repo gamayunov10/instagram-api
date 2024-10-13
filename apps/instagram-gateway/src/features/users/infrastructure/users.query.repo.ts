@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
+import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -172,17 +173,50 @@ export class UsersQueryRepository {
     });
   }
 
-  async getUsersWithRelations() {
+  async getUsersWithRelations(
+    page: number,
+    pageSize: number,
+    sortBy: string,
+    sortOrder: SortDirection,
+    search: string,
+  ) {
     try {
-      return await this.prismaClient.user.findMany({
+      const skip = pageSize * (page - 1);
+
+      const result = await this.prismaClient.user.findMany({
         include: {
           device: true,
         },
       });
+      const totalCount = result.length;
+
+      let where = {};
+      if (search && search.trim() !== '') {
+        where = {
+          username: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        };
+      }
+      const users = await this.prismaClient.user.findMany({
+        include: {
+          device: true,
+        },
+        where,
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+        skip: skip,
+        take: pageSize,
+      });
+
+      return { users, totalCount };
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+      return { users: [], totalCount: 0 };
     } finally {
       await this.prismaClient.$disconnect();
     }
