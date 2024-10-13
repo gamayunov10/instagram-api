@@ -1,14 +1,14 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 
-import { BasicAuthGuard } from '../../features/auth/guards/basic.guard';
+import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
 
 @Resolver()
 export class AuthResolver {
   constructor() {}
 
   @Query(() => String)
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicGqlGuard)
   loginSa(): string {
     return 'Authorized user';
   }

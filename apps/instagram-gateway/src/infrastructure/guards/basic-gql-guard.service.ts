@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
-export class BasicQclGuard implements CanActivate {
+export class BasicGqlGuard implements CanActivate {
   constructor(private readonly configService: ConfigService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
