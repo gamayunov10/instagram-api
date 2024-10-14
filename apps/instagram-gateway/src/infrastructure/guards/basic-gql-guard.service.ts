@@ -35,7 +35,7 @@ export class BasicGqlGuard implements CanActivate {
     const validPassword = this.configService.get<string>('BASIC_AUTH_PASSWORD');
 
     if (username !== validUsername || password !== validPassword) {
-      throw new ForbiddenException('Invalid credentials');
+      throw new ForbiddenException('User not unauthorized');
     }
 
     return true;
