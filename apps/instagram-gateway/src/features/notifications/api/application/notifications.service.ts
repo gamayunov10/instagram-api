@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { SocketGatewayService } from '../../../socket/socket.gateway.service';
 import { NotificationsRepository } from '../../infrastructure/notifications.repo';
@@ -9,88 +9,92 @@ import { ResultCode } from '../../../../base/enums/result-code.enum';
 
 @Injectable()
 export class NotificationsService {
-	constructor(
-		private socketGatewayService: SocketGatewayService,
-		private notificationsRepo: NotificationsRepository,
-		private notificationsQueryRepo: NotificationsQueryRepository,
-	) { }
+  constructor(
+    private socketGatewayService: SocketGatewayService,
+    private notificationsRepo: NotificationsRepository,
+    private notificationsQueryRepo: NotificationsQueryRepository,
+  ) {}
 
-	async createNotification(
-		userId: string,
-		message: string,
-		delayInMs?: number,
-	) {
-		const notification = await this.notificationsRepo.createNotification(
-			userId,
-			message,
-		);
+  async createNotification(
+    userId: string,
+    message: string,
+    delayInMs?: number,
+  ) {
+    const notification = await this.notificationsRepo.createNotification(
+      userId,
+      message,
+    );
 
-		// Sending a notification via WebSocket
-		if (delayInMs && delayInMs > 0) {
-			setTimeout(() => {
-				this.socketGatewayService.sendNotificationToUser(userId, notification);
-			}, delayInMs);
-		} else {
-			this.socketGatewayService.sendNotificationToUser(userId, notification);
-		}
+    // Sending a notification via WebSocket
+    if (delayInMs && delayInMs > 0) {
+      setTimeout(() => {
+        this.socketGatewayService.sendNotificationToUser(userId, notification);
+      }, delayInMs);
+    } else {
+      this.socketGatewayService.sendNotificationToUser(userId, notification);
+    }
 
-		return notification;
-	}
+    return notification;
+  }
 
-	async getNotificationsByUserId(
-		userId: string,
-		query: NotificationQueryModel,
-	) {
-		const items =
-			await this.notificationsQueryRepo.findNotificationsByQueryAndUserId(
-				userId,
-				query,
-			);
+  async getNotificationsByUserId(
+    userId: string,
+    query: NotificationQueryModel,
+  ) {
+    const items =
+      await this.notificationsQueryRepo.findNotificationsByQueryAndUserId(
+        userId,
+        query,
+      );
 
-		return Paginator.paginate({
-			pageNumber: Number(query.page),
-			pageSize: Number(query.pageSize),
-			totalCount: items.totalCount,
-			items: items.notifications,
-		});
-	}
+    return Paginator.paginate({
+      pageNumber: Number(query.page),
+      pageSize: Number(query.pageSize),
+      totalCount: items.totalCount,
+      items: items.notifications,
+    });
+  }
 
-	async markNotificationsAsRead(userId: string, ids: string[]) {
-		const findAllNotificationByIds = await this.notificationsQueryRepo.findNotificationsByIds(ids)
-		if (!findAllNotificationByIds) {
-			return {
-				data: false,
-				code: ResultCode.NotFound,
-			}
-		}
+  async markNotificationsAsRead(userId: string, ids: string[]) {
+    const findAllNotificationByIds =
+      await this.notificationsQueryRepo.findNotificationsByIds(ids);
+    if (
+      !findAllNotificationByIds ||
+      ids.length !== findAllNotificationByIds.length
+    ) {
+      return {
+        data: false,
+        code: ResultCode.NotFound,
+      };
+    }
 
-		for (let i = 0; i < findAllNotificationByIds.length; i++) {
-			if (findAllNotificationByIds[i].userId !== userId) {
-				return {
-					data: false,
-					code: ResultCode.Forbidden,
-				}
-			}
-		}
+    for (let i = 0; i < findAllNotificationByIds.length; i++) {
+      if (findAllNotificationByIds[i].userId !== userId) {
+        return {
+          data: false,
+          code: ResultCode.Forbidden,
+        };
+      }
+    }
 
-		const res = await this.notificationsRepo.markNotificationsAsRead(
-			userId,
-			ids,
-		);
+    const res = await this.notificationsRepo.markNotificationsAsRead(
+      userId,
+      ids,
+    );
 
-		if (!res) {
-			return {
-				data: false,
-				code: ResultCode.BadRequest,
-			};
-		}
-		return {
-			data: true,
-			code: ResultCode.Success,
-		};
-	}
+    if (!res) {
+      return {
+        data: false,
+        code: ResultCode.BadRequest,
+      };
+    }
+    return {
+      data: true,
+      code: ResultCode.Success,
+    };
+  }
 
-	async getUnreadNotificationCount(userId: string): Promise<number> {
-		return this.notificationsQueryRepo.getUnreadNotificationCount(userId);
-	}
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    return this.notificationsQueryRepo.getUnreadNotificationCount(userId);
+  }
 }
