@@ -4,7 +4,10 @@ import TestAgent from 'supertest/lib/agent';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
-import { createUserInput, createUserInput2 } from '../../base/constants/tests-strings';
+import {
+  createUserInput,
+  createUserInput2,
+} from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 
 import { notifications_url } from './get-notifications.spec';
@@ -55,27 +58,57 @@ describe('NotificationsController: /notifications/', (): void => {
         .expect(400);
     });
 
-	let notificationId;
+    let notificationId;
     it(`should create user and notification`, async (): Promise<void> => {
-        user2 = await testManager.createUser(createUserInput2);
-  
-        await testManager.createTestNotification(user2.id);
-  
-        const response = await agent
-          .get(notifications_url)
-          .auth(user2.accessToken, { type: 'bearer' })
-          .expect(200);
-  
-        notificationId = response.body.items[0].id;
-      });
+      user2 = await testManager.createUser(createUserInput2);
 
-    it("update notification with incorrect authorization and return 403", async() => {
+      await testManager.createTestNotification(user2.id);
+
+      const response = await agent
+        .get(notifications_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .expect(200);
+
+      notificationId = response.body.items[0].id;
+    });
+
+    it('update notification with incorrect authorization and return 403', async () => {
       await agent
         .put(notificationsMarkAsRead_url)
         .auth(user.accessToken, { type: 'bearer' })
         .send({ ids: [notificationId] })
-        .expect(403)
-    })
+        .expect(403);
+    });
+    it('should return 404 for non-existent notification ID', async (): Promise<void> => {
+      const nonExistentId = 'd9b2d63d-a233-4123-847a-8d66e185742b'; // Example of a valid but non-existent ID
+
+      await agent
+        .put(notificationsMarkAsRead_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({ ids: [notificationId, nonExistentId] })
+        .expect(404); // Expecting a 404 Not Found response
+    });
+
+    it('should return 400 Bad Request for invalid ID format', async (): Promise<void> => {
+      const invalidId = '123-invalid-id'; // Example of an invalid ID format
+
+      await agent
+        .put(notificationsMarkAsRead_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({ ids: [notificationId, invalidId] })
+        .expect(400); // Expecting a 400 Bad Request
+    });
+    it('should return 400 Bad Request when sending more than 10 notification IDs', async (): Promise<void> => {
+      const validIds = Array(11)
+        .fill(null)
+        .map(() => 'd9b2d63d-a233-4123-847a-8d66e185742b'); // An array of 11 valid UUIDs
+
+      await agent
+        .put(notificationsMarkAsRead_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({ ids: validIds })
+        .expect(400);
+    });
   });
 
   describe('positive', () => {
