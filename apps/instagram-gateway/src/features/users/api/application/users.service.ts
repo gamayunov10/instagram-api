@@ -39,6 +39,10 @@ export class UsersService {
       items: users,
     });
   }
+
+  async removeUser(userId: string): Promise<boolean> {
+    return this.usersRepository.removeUser(userId);
+  }
   private mapUsers(users: any[]): UserModel[] {
     return users.map((user) => {
       return {
@@ -47,6 +51,7 @@ export class UsersService {
         accountType: user.accountType,
         endDateOfSubscription: user.endDateOfSubscription,
         autoRenewal: user.autoRenewal,
+        isDeleted: user.isDeleted,
         email: user.email,
         createdAt: user.createdAt,
         firstName: user.firstName,
