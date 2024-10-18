@@ -21,7 +21,7 @@ export class S3Adapter {
     this.bucketName = this.configService.get<string>('BUCKET_NAME');
 
     this.s3Client = new S3Client({
-      region: 'eu-east-1',
+      region: 'ru-central1',
       endpoint: this.configService.get<string>('S3_DOMAIN'),
       credentials: {
         accessKeyId: this.configService.get<string>('S3_ACCESS_KEY_ID'),
