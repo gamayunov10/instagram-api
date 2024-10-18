@@ -18,6 +18,7 @@ type UserModel {
   aboutMe: String
   avatarURL: String
   profileLink: String
+  isDeleted: Boolean!
 }
 
 enum AccountType {
@@ -47,4 +48,8 @@ type Query {
 enum SortDirection {
   ASC
   DESC
+}
+
+type Mutation {
+  deleteUser(userId: String!): Boolean!
 }

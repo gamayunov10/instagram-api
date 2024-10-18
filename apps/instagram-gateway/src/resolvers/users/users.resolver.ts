@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { UsersService } from '../../features/users/api/application/users.service';
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
@@ -31,5 +31,13 @@ export class UsersResolver {
       sortOrder,
       search,
     );
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(BasicGqlGuard)
+  async deleteUser(
+    @Args('userId', { type: () => String }) userId: string,
+  ): Promise<boolean> {
+    return this.usersService.removeUser(userId);
   }
 }

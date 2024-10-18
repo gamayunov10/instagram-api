@@ -20,6 +20,7 @@ model User {
   accountType           String                @default("Personal") @map("account_type")
   endDateOfSubscription DateTime?             @map("end_date_of_subscription")
   autoRenewal           Boolean               @default(false) @map("auto_renewal")
+  isDeleted             Boolean               @default(false) @map("is_deleted")
   email                 String                @unique
   username              String                @unique
   firstName             String?               @map("first_name")

@@ -50,4 +50,7 @@ export class UserModel {
 
   @Field({ nullable: true })
   profileLink: string;
+
+  @Field()
+  isDeleted: boolean;
 }
