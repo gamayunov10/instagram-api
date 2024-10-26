@@ -6,7 +6,7 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
@@ -31,7 +31,7 @@ export class SocketGatewayService
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
-
+  private readonly logger = new Logger(SocketGatewayService.name);
   private clients: Map<Socket, string> = new Map();
 
   async handleConnection(client: Socket) {
@@ -39,6 +39,10 @@ export class SocketGatewayService
       const token = client.handshake.headers.accesstoken as string;
 
       if (!token) {
+        this.logger.warn(
+          `Client ${client.id} tried to connect without a token.`,
+        );
+
         this.forceDisconnect(client, 'Missing token');
         return;
       }
@@ -50,6 +54,7 @@ export class SocketGatewayService
       const user = await this.usersQueryRepo.findUserById(decodedToken.userId);
 
       if (!user) {
+        this.logger.warn(`Client ${client.id} unauthorized. User not found.`);
         this.forceDisconnect(client, 'Unauthorized');
         return;
       }
@@ -59,6 +64,7 @@ export class SocketGatewayService
       this.clients.set(client, user.id);
 
       client.join(user.id);
+      this.logger.log(`Client ${client.id} connected as user ${user.id}.`);
     } catch (e) {
       this.forceDisconnect(client, 'Unauthorized');
       return;
@@ -69,15 +75,23 @@ export class SocketGatewayService
     for (const [savedClient, userId] of this.clients) {
       if (savedClient === client) {
         this.clients.delete(savedClient);
+        this.logger.log(
+          `Client ${client.id} disconnected from user ${userId}.`,
+        );
       }
     }
   }
   forceDisconnect(client: Socket, message: string) {
+    this.logger.warn(`Forcing disconnect for client ${client.id}: ${message}`);
     client.emit('error', new WsException(message));
     client.disconnect(true);
   }
 
   sendNotificationToUser(userId: string, notification: NotificationViewModel) {
+    this.logger.log(
+      `Sending notification to user ${userId}: ${JSON.stringify(notification)}`,
+    );
+
     this.server.to(userId).emit(notificationEvent, notification);
   }
 }

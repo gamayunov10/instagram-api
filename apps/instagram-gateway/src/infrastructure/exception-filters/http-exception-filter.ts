@@ -42,48 +42,59 @@ const convertToGraphQLStatus = (status: number): ExceptionCodes => {
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const hostType = host.getType<GqlContextType>();
+
+    // Обработка исключений для GraphQL
     if (hostType === 'graphql') {
       if (exception instanceof HttpException) {
         const gqlHost = GqlArgumentsHost.create(host); // eslint-disable-line
-
         const response = exception.getResponse();
         const status = exception.getStatus();
-
         const messageResponse = exception.message;
         throwInputGraphqlError(messageResponse, status, response);
       }
-      return exception;
+
+      throw new GraphQLError('Internal server error');
     }
 
+    // Обработка исключений для HTTP
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-    const status = exception.getStatus();
 
-    if (
-      status === HttpStatus.BAD_REQUEST ||
-      status === HttpStatus.NOT_FOUND ||
-      status === HttpStatus.UNAUTHORIZED ||
-      status === HttpStatus.INTERNAL_SERVER_ERROR
-    ) {
-      const errorsResponse: exceptionResponseType = {
-        errorsMessages: [],
-      };
-      const responseBody: any = exception.getResponse();
+    if (exception instanceof HttpException) {
+      const status = exception.getStatus();
 
-      if (typeof responseBody.message !== 'string') {
-        responseBody.message.forEach((m) =>
-          errorsResponse.errorsMessages.push(m),
-        );
-        response.status(status).json(errorsResponse);
+      if (
+        status === HttpStatus.BAD_REQUEST ||
+        status === HttpStatus.NOT_FOUND ||
+        status === HttpStatus.UNAUTHORIZED ||
+        status === HttpStatus.INTERNAL_SERVER_ERROR
+      ) {
+        const errorsResponse: exceptionResponseType = {
+          errorsMessages: [],
+        };
+        const responseBody: any = exception.getResponse();
+
+        if (typeof responseBody.message !== 'string') {
+          responseBody.message.forEach((m) =>
+            errorsResponse.errorsMessages.push(m),
+          );
+          response.status(status).json(errorsResponse);
+        } else {
+          response.status(status).json(responseBody.message);
+        }
       } else {
-        response.status(status).json(responseBody.message);
+        response.status(status).json({
+          statusCode: status,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+        });
       }
     } else {
-      response.status(status).json({
-        statusCode: status,
+      response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         timestamp: new Date().toISOString(),
         path: request.url,
       });

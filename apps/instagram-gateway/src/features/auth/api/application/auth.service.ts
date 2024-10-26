@@ -91,4 +91,9 @@ export class AuthService {
   async findUserById(id: string) {
     return await this.usersQueryRepository.findUserById(id);
   }
+  createBasicAuthString(email: string, password: string): string {
+    const authString = `${email}:${password}`;
+    const base64AuthString = Buffer.from(authString).toString('base64');
+    return `Basic ${base64AuthString}`;
+  }
 }

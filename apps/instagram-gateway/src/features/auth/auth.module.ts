@@ -88,6 +88,7 @@ const config = [JwtConfig, OAuthConfig];
       useClass: AuthService,
     },
   ],
+  exports: [AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {}

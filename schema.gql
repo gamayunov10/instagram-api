@@ -51,5 +51,11 @@ enum SortDirection {
 }
 
 type Mutation {
+  authorizeSuperAdmin(authLoginInput: AuthLoginInput!): String!
   deleteUser(userId: String!): Boolean!
+}
+
+input AuthLoginInput {
+  email: String!
+  password: String!
 }
