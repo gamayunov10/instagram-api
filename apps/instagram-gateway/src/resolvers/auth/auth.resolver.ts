@@ -2,7 +2,6 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
-import { AuthBasicGqlGuard } from '../../infrastructure/guards/auth-gql-guard';
 import { AuthService } from '../../features/auth/api/application/auth.service';
 
 import { AuthLoginInput } from './models/auth-login-input.model';
@@ -18,7 +17,6 @@ export class AuthResolver {
   }
 
   @Mutation(() => String)
-  @UseGuards(AuthBasicGqlGuard)
   async authorizeSuperAdmin(
     @Args('authLoginInput') authLoginInput: AuthLoginInput,
   ): Promise<string> {

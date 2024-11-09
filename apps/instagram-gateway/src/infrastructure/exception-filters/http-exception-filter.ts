@@ -11,7 +11,7 @@ import { GraphQLError } from 'graphql/error';
 import { exceptionResponseType } from '../../base/types/exception.type';
 import { ExceptionCodes } from '../../base/enums/exception-code.enum';
 
-const throwInputGraphqlError = <T>(
+export const throwInputGraphqlError = <T>(
   message: string,
   status: number,
   errorData: T,
@@ -40,7 +40,7 @@ const convertToGraphQLStatus = (status: number): ExceptionCodes => {
   }
 };
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const hostType = host.getType<GqlContextType>();
@@ -52,7 +52,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const response = exception.getResponse();
         const status = exception.getStatus();
         const messageResponse = exception.message;
-        throwInputGraphqlError(messageResponse, status, response);
+
+        throwInputGraphqlError(messageResponse, status, response['message']);
       }
 
       throw new GraphQLError('Internal server error');

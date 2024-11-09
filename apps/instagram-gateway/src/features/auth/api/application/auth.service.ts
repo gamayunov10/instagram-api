@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 
@@ -92,6 +92,13 @@ export class AuthService {
     return await this.usersQueryRepository.findUserById(id);
   }
   createBasicAuthString(email: string, password: string): string {
+    const validEmail = this.configService.get<string>('BASIC_AUTH_USERNAME');
+    const validPassword = this.configService.get<string>('BASIC_AUTH_PASSWORD');
+
+    if (email !== validEmail || password !== validPassword) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
     const authString = `${email}:${password}`;
     const base64AuthString = Buffer.from(authString).toString('base64');
     return `Basic ${base64AuthString}`;
