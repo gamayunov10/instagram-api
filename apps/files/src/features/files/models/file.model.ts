@@ -28,6 +28,9 @@ export class File extends Document {
 
   @Prop({ required: false })
   expirationDate: Date;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const FileSchema = SchemaFactory.createForClass(File);
