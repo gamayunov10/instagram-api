@@ -16,6 +16,30 @@ export class UsersService {
 
     private readonly configService: ConfigService,
   ) {}
+  async getUserById(userId: string): Promise<UserModel | null> {
+    const user = await this.usersQueryRepository.findUserById(userId);
+    if (!user) {
+      return null;
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      accountType: user.accountType,
+      endDateOfSubscription: user.endDateOfSubscription,
+      autoRenewal: user.autoRenewal,
+      isDeleted: user.isDeleted,
+      email: user.email,
+      createdAt: user.createdAt,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      birthDate: user.birthDate,
+      city: user.city,
+      country: user.country,
+      aboutMe: user.aboutMe,
+      avatarURL: user.avatarURL,
+      profileLink: `https://inctagram.org/profile?id=${user.id}`,
+    };
+  }
   async getAllUsers(
     page: number,
     pageSize: number,

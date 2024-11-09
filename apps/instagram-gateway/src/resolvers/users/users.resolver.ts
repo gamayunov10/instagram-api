@@ -3,32 +3,38 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { UsersService } from '../../features/users/api/application/users.service';
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
-import { SortDirection } from '../../base/enums/sort/sort.direction.enum';
+import { exceptionHandler } from '../../infrastructure/exception-filters/exception-handler';
+import { ResultCode } from '../../base/enums/result-code.enum';
+import { PaginationInputGql } from '../../base/pagination/pagination-input-gql';
 
 import { PaginatedUserModel } from './models/paginated-user.model';
+import { UserModel } from './models/user.model';
 
-@Resolver()
+@Resolver(() => UserModel)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+  @Query(() => UserModel, { nullable: true })
+  @UseGuards(BasicGqlGuard)
+  async getUser(@Args('id') id: string): Promise<UserModel> {
+    const user = await this.usersService.getUserById(id);
+    if (!user) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
+    return user;
+  }
 
   @Query(() => PaginatedUserModel)
   @UseGuards(BasicGqlGuard)
   async getUsers(
-    @Args('page', { nullable: true, defaultValue: 1 }) page?: number,
-    @Args('pageSize', { nullable: true, defaultValue: 8 }) pageSize?: number,
-    @Args('sortBy', { defaultValue: 'username' }) sortBy?: string,
-    @Args('sortOrder', {
-      type: () => SortDirection,
-      defaultValue: SortDirection.ASC,
-    })
-    sortOrder?: SortDirection,
+    @Args('pagination', { type: () => PaginationInputGql, nullable: true })
+    pagination: PaginationInputGql,
     @Args('search', { nullable: true }) search?: string,
   ): Promise<PaginatedUserModel> {
     return this.usersService.getAllUsers(
-      page,
-      pageSize,
-      sortBy,
-      sortOrder,
+      pagination.page,
+      pagination.pageSize,
+      pagination.sortBy,
+      pagination.sortOrder,
       search,
     );
   }
