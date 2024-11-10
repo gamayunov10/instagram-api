@@ -7,6 +7,7 @@ import { UserModel } from '../../../../resolvers/users/models/user.model';
 import { Paginator } from '../../../../base/pagination/paginator';
 import { PaginatedUserModel } from '../../../../resolvers/users/models/paginated-user.model';
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
+import { AccountType } from '../../../../../../../libs/common/base/ts/enums/account-type.enum';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
     return {
       id: user.id,
       username: user.username,
-      accountType: user.accountType,
+      accountType: user.accountType as AccountType,
       endDateOfSubscription: user.endDateOfSubscription,
       autoRenewal: user.autoRenewal,
       isDeleted: user.isDeleted,
@@ -73,7 +74,7 @@ export class UsersService {
       return {
         id: user.id,
         username: user.username,
-        accountType: user.accountType,
+        accountType: user.accountType as AccountType,
         endDateOfSubscription: user.endDateOfSubscription,
         autoRenewal: user.autoRenewal,
         isDeleted: user.isDeleted,
