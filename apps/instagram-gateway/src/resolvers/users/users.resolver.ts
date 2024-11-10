@@ -1,14 +1,25 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { Loader } from 'nestjs-dataloader';
+import DataLoader from 'dataloader';
 
 import { UsersService } from '../../features/users/api/application/users.service';
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
 import { exceptionHandler } from '../../infrastructure/exception-filters/exception-handler';
 import { ResultCode } from '../../base/enums/result-code.enum';
-import { PaginationInputGql } from '../../base/pagination/pagination-input-gql';
+import { FileModel } from '../posts/models/file-model';
+import { UserImagesLoader } from '../../base/data-loaders/user-images-loader';
 
 import { PaginatedUserModel } from './models/paginated-user.model';
 import { UserModel } from './models/user.model';
+import { PaginationInputUsers } from './models/pagination-users-input';
 
 @Resolver(() => UserModel)
 export class UsersResolver {
@@ -23,11 +34,20 @@ export class UsersResolver {
     return user;
   }
 
+  @ResolveField(() => [FileModel], { nullable: true })
+  async imagesUser(
+    @Parent() user: UserModel,
+    @Loader(UserImagesLoader)
+    userImagesLoader: DataLoader<string, UserImagesLoader>,
+  ) {
+    return await userImagesLoader.load(user.id);
+  }
+
   @Query(() => PaginatedUserModel)
   @UseGuards(BasicGqlGuard)
   async getUsers(
-    @Args('pagination', { type: () => PaginationInputGql, nullable: true })
-    pagination: PaginationInputGql,
+    @Args('pagination', { type: () => PaginationInputUsers, nullable: true })
+    pagination: PaginationInputUsers,
     @Args('search', { nullable: true }) search?: string,
   ): Promise<PaginatedUserModel> {
     return this.usersService.getAllUsers(

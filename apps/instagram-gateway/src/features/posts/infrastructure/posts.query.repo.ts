@@ -150,7 +150,30 @@ export class PostsQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
+  async getImageIdsByPostIds(
+    postIds: string[],
+  ): Promise<{ postId: string; imageId: string }[]> {
+    try {
+      const postImages = await this.prismaClient.postImage.findMany({
+        where: {
+          postId: { in: postIds },
+        },
+        select: {
+          postId: true,
+          imageId: true,
+        },
+      });
 
+      return postImages;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return [];
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
   private async postMapper(data): Promise<PostViewModel> {
     return {
       id: data.id,

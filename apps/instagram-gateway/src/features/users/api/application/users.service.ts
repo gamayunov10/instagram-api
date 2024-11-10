@@ -36,6 +36,7 @@ export class UsersService {
       city: user.city,
       country: user.country,
       aboutMe: user.aboutMe,
+      avatarId: user.avatarId,
       avatarURL: user.avatarURL,
       profileLink: `https://inctagram.org/profile?id=${user.id}`,
     };
@@ -84,6 +85,7 @@ export class UsersService {
         city: user.city,
         country: user.country,
         aboutMe: user.aboutMe,
+        avatarId: user.avatarId,
         avatarURL: user.avatarURL,
         profileLink: `https://inctagram.org/profile?id=${user.id}`,
       };

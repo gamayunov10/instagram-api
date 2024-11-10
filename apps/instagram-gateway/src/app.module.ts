@@ -10,6 +10,8 @@ import { ClientsModule } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { DataLoaderInterceptor } from 'nestjs-dataloader/dist';
 
 import { AppController } from './app.controller';
 import { PostsModule } from './features/posts/posts.module';
@@ -30,6 +32,10 @@ import { SocketGatewayModule } from './features/socket/socket.gateway.module';
 import { AppResolver } from './app.resolver';
 import { AuthResolver } from './resolvers/auth/auth.resolver';
 import { UsersResolver } from './resolvers/users/users.resolver';
+import { PostsResolver } from './resolvers/posts/posts.resolver';
+import { FilesLoader } from './base/data-loaders/files-loader';
+import { UserImagesLoader } from './base/data-loaders/user-images-loader';
+import { PostImagesLoader } from './base/data-loaders/post-images-loader';
 
 const services = [
   AppService,
@@ -48,7 +54,9 @@ const modules = [
 ];
 const controllers = [AppController, TestingController];
 
-const resolvers = [AppResolver, AuthResolver, UsersResolver];
+const resolvers = [AppResolver, AuthResolver, UsersResolver, PostsResolver];
+
+const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
 
 @Module({
   imports: [
@@ -66,7 +74,15 @@ const resolvers = [AppResolver, AuthResolver, UsersResolver];
     }),
   ],
   controllers: [...controllers],
-  providers: [...services, ...resolvers],
+  providers: [
+    ...services,
+    ...resolvers,
+    ...loaders,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: DataLoaderInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
