@@ -29,7 +29,10 @@ export class FileQueryRepository {
   async findPostsImagesWithPaginationAndSortingByUser(
     userId: string,
     paginationPosts: PaginationInputPosts,
-  ) {
+  ): Promise<{
+    files: File[];
+    totalCount: number;
+  }> {
     const skip = (paginationPosts.page - 1) * paginationPosts.pageSize;
 
     const [files, totalCount] = await Promise.all([
@@ -38,7 +41,6 @@ export class FileQueryRepository {
         .sort({ [paginationPosts.sortBy]: paginationPosts.sortOrder })
         .skip(skip)
         .limit(paginationPosts.pageSize)
-        .lean()
         .exec(),
       this.fileModel.countDocuments({ userId }).exec(),
     ]);
