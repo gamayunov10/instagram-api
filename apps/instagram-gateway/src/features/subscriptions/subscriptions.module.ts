@@ -71,5 +71,6 @@ const queryRepositories = [
     ...useCases,
     ...adapters,
   ],
+  exports: [...services],
 })
 export class SubscriptionsModule {}

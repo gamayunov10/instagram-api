@@ -7,6 +7,7 @@ import { UserModel } from '../../../../resolvers/users/models/user.model';
 import { Paginator } from '../../../../base/pagination/paginator';
 import { PaginatedUserModel } from '../../../../resolvers/users/models/paginated-user.model';
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
+import { AccountType } from '../../../../../../../libs/common/base/ts/enums/account-type.enum';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,31 @@ export class UsersService {
 
     private readonly configService: ConfigService,
   ) {}
+  async getUserById(userId: string): Promise<UserModel | null> {
+    const user = await this.usersQueryRepository.findUserById(userId);
+    if (!user) {
+      return null;
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      accountType: user.accountType as AccountType,
+      endDateOfSubscription: user.endDateOfSubscription,
+      autoRenewal: user.autoRenewal,
+      isDeleted: user.isDeleted,
+      email: user.email,
+      createdAt: user.createdAt,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      birthDate: user.birthDate,
+      city: user.city,
+      country: user.country,
+      aboutMe: user.aboutMe,
+      avatarId: user.avatarId,
+      avatarURL: user.avatarURL,
+      profileLink: `https://inctagram.org/profile?id=${user.id}`,
+    };
+  }
   async getAllUsers(
     page: number,
     pageSize: number,
@@ -48,7 +74,7 @@ export class UsersService {
       return {
         id: user.id,
         username: user.username,
-        accountType: user.accountType,
+        accountType: user.accountType as AccountType,
         endDateOfSubscription: user.endDateOfSubscription,
         autoRenewal: user.autoRenewal,
         isDeleted: user.isDeleted,
@@ -60,6 +86,7 @@ export class UsersService {
         city: user.city,
         country: user.country,
         aboutMe: user.aboutMe,
+        avatarId: user.avatarId,
         avatarURL: user.avatarURL,
         profileLink: `https://inctagram.org/profile?id=${user.id}`,
       };

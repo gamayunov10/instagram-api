@@ -11,10 +11,14 @@ import { NodeEnv } from '../../enums/node-env.enum';
 import {
   DELETE_ALL_FILES,
   DELETE_FILE,
+  GET_FILE_META_BY_ID,
   GET_FILE_URL,
   GET_FILES_META,
+  GET_FILES_META_BY_USER_IDS,
+  GET_POST_IMAGES_BY_USER_ID,
   UPLOAD_FILE,
 } from '../../../../../../libs/common/base/constants/service.constants';
+import { PaginationInputPosts } from '../../../resolvers/posts/models/pagination-posts-input';
 
 @Injectable()
 export class FileServiceAdapter {
@@ -48,6 +52,87 @@ export class FileServiceAdapter {
         code: ResultCode.InternalServerError,
         field: noneField,
         message: 'error: 2454',
+      };
+    }
+  }
+  async getFilesMetaByUserIds(userIds: string[]) {
+    try {
+      const responseOfService = this.fileServiceClient
+        .send({ cmd: GET_FILES_META_BY_USER_IDS }, { userIds })
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(responseOfService);
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: getFilesMetaByUserId',
+      };
+    }
+  }
+  async getFileMetaById(id: string) {
+    try {
+      const responseOfService = this.fileServiceClient
+        .send({ cmd: GET_FILE_META_BY_ID }, { id })
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(responseOfService);
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: getFileMetaById',
+      };
+    }
+  }
+  async getPostsImagesByUser(
+    userId: string,
+    paginationPosts: PaginationInputPosts,
+  ) {
+    try {
+      const responseOfService = this.fileServiceClient
+        .send({ cmd: GET_POST_IMAGES_BY_USER_ID }, { userId, paginationPosts })
+        .pipe(timeout(10000));
+
+      const result = await firstValueFrom(responseOfService);
+
+      return {
+        data: true,
+        code: ResultCode.Success,
+        res: result,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+
+      return {
+        data: false,
+        code: ResultCode.InternalServerError,
+        field: noneField,
+        message: 'error: getFileMetaById',
       };
     }
   }

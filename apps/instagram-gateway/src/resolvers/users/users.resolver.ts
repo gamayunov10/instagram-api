@@ -1,34 +1,60 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { Loader } from 'nestjs-dataloader';
+import DataLoader from 'dataloader';
 
 import { UsersService } from '../../features/users/api/application/users.service';
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
-import { SortDirection } from '../../base/enums/sort/sort.direction.enum';
+import { exceptionHandler } from '../../infrastructure/exception-filters/exception-handler';
+import { ResultCode } from '../../base/enums/result-code.enum';
+import { FileModel } from '../posts/models/file-model';
+import { UserImagesLoader } from '../../base/data-loaders/user-images-loader';
 
 import { PaginatedUserModel } from './models/paginated-user.model';
+import { UserModel } from './models/user.model';
+import { PaginationInputUsers } from './models/pagination-users-input';
 
-@Resolver()
+@Resolver(() => UserModel)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+  @Query(() => UserModel, { nullable: true })
+  @UseGuards(BasicGqlGuard)
+  async getUser(@Args('id') id: string): Promise<UserModel> {
+    const user = await this.usersService.getUserById(id);
+    if (!user) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
+    return user;
+  }
+
+  @ResolveField(() => [FileModel], { nullable: true })
+  async imagesUser(
+    @Parent() user: UserModel,
+    @Loader(UserImagesLoader)
+    userImagesLoader: DataLoader<string, UserImagesLoader>,
+  ) {
+    return await userImagesLoader.load(user.id);
+  }
 
   @Query(() => PaginatedUserModel)
   @UseGuards(BasicGqlGuard)
   async getUsers(
-    @Args('page', { nullable: true, defaultValue: 1 }) page?: number,
-    @Args('pageSize', { nullable: true, defaultValue: 8 }) pageSize?: number,
-    @Args('sortBy', { defaultValue: 'username' }) sortBy?: string,
-    @Args('sortOrder', {
-      type: () => SortDirection,
-      defaultValue: SortDirection.ASC,
-    })
-    sortOrder?: SortDirection,
+    @Args('pagination', { type: () => PaginationInputUsers, nullable: true })
+    pagination: PaginationInputUsers,
     @Args('search', { nullable: true }) search?: string,
   ): Promise<PaginatedUserModel> {
     return this.usersService.getAllUsers(
-      page,
-      pageSize,
-      sortBy,
-      sortOrder,
+      pagination.page,
+      pagination.pageSize,
+      pagination.sortBy,
+      pagination.sortOrder,
       search,
     );
   }

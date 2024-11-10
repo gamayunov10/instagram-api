@@ -15,7 +15,9 @@ export class FileRepository {
     return newFile.save();
   }
 
-  async deleteFile(_id: Types.ObjectId) {
+  async deleteFile(
+    _id: Types.ObjectId,
+  ): Promise<{ acknowledged: boolean; deletedCount: number }> {
     return this.fileModel.deleteOne({ _id });
   }
 

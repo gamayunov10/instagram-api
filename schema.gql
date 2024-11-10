@@ -2,6 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type FileModel {
+  authorId: String!
+  createdAt: DateTime!
+  fileType: FileType!
+  url: String!
+  imageId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum FileType {
+  Avatar
+  PostImage
+}
+
 type UserModel {
   id: String!
   accountType: AccountType!
@@ -18,18 +36,15 @@ type UserModel {
   aboutMe: String
   avatarURL: String
   profileLink: String
+  avatarId: String
   isDeleted: Boolean!
+  imagesUser: [FileModel!]
 }
 
 enum AccountType {
   PERSONAL
   BUSINESS
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type PaginatedUserModel {
   page: Int!
@@ -39,15 +54,59 @@ type PaginatedUserModel {
   items: [UserModel!]!
 }
 
+type PaginatedPostsImagesModel {
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+  items: [FileModel!]!
+}
+
+type PostModel {
+  id: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDeleted: Boolean!
+  deletedAt: DateTime
+  authorId: String!
+  imagesData: [FileModel!]
+}
+
+type PaginatedPostsModel {
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+  items: [PostModel!]!
+}
+
 type Query {
   sayHello: String!
   loginSa: String!
-  getUsers(page: Float = 1, pageSize: Float = 8, sortBy: String! = "username", sortOrder: SortDirection! = ASC, search: String): PaginatedUserModel!
+  getUser(id: String!): UserModel
+  getUsers(pagination: PaginationInputUsers, search: String): PaginatedUserModel!
+  getPosts(paginationPosts: PaginationInputPosts): PaginatedPostsModel
+  getPostsImagesByUser(userId: String!, paginationPosts: PaginationInputPosts): PaginatedPostsImagesModel!
+}
+
+input PaginationInputUsers {
+  page: Int! = 1
+  pageSize: Int! = 8
+  sortBy: String! = "createdAt"
+  sortOrder: SortDirection! = ASC
 }
 
 enum SortDirection {
   ASC
   DESC
+}
+
+input PaginationInputPosts {
+  page: Int! = 1
+  pageSize: Int! = 8
+  sortBy: String! = "createdAt"
+  sortOrder: SortDirection! = ASC
 }
 
 type Mutation {

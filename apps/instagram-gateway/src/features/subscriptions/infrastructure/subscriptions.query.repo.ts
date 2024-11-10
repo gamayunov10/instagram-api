@@ -7,6 +7,7 @@ import { SubscriptionTime } from '../../../../../../libs/common/base/ts/enums/su
 import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
 import { PaymentStatus } from '../../../../../../libs/common/base/ts/enums/payment-status.enum';
 import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
+import { PaginationInputPayments } from '../../../resolvers/payments/models/pagination-payments-input';
 
 @Injectable()
 export class SubscriptionsQueryRepository {
@@ -91,6 +92,32 @@ export class SubscriptionsQueryRepository {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async getAllPayments(pagination: PaginationInputPayments) {
+    try {
+      const skip = pagination.pageSize * (pagination.page - 1);
+
+      const result = await this.prismaClient.subscriptionOrder.findMany();
+      const totalCount = result.length;
+
+      const payments = await this.prismaClient.subscriptionOrder.findMany({
+        orderBy: {
+          [pagination.sortBy]: pagination.sortOrder,
+        },
+        skip: skip,
+        take: pagination.pageSize,
+      });
+
+      return { payments, totalCount };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return { payments: [], totalCount: 0 };
     } finally {
       await this.prismaClient.$disconnect();
     }

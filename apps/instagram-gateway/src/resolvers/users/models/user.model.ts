@@ -10,7 +10,7 @@ export class UserModel {
   id: string;
 
   @Field(() => AccountType)
-  accountType;
+  accountType: AccountType;
 
   @Field(() => Date, { nullable: true })
   endDateOfSubscription: Date;
@@ -50,6 +50,9 @@ export class UserModel {
 
   @Field({ nullable: true })
   profileLink: string;
+
+  @Field({ nullable: true })
+  avatarId: string;
 
   @Field()
   isDeleted: boolean;
