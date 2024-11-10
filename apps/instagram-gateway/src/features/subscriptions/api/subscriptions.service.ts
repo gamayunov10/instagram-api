@@ -13,6 +13,9 @@ import { SendSuccessAutoRenewalSubscriptionCommand } from '../../notifications/a
 import { SendMessageAboutEndSubscriptionCommand } from '../../notifications/api/application/use-cases/send-message-about-end-subscription.use-case';
 import { NotificationsService } from '../../notifications/api/application/notifications.service';
 import { messageSuccessfulSubscription } from '../../../base/constants/constants';
+import { PaginationInputPayments } from '../../../resolvers/payments/models/pagination-payments-input';
+import { PaginatedPaymentsModel } from '../../../resolvers/payments/models/paginated-payments.model';
+import { Paginator } from '../../../base/pagination/paginator';
 
 @Injectable()
 export class SubscriptionsService {
@@ -26,7 +29,18 @@ export class SubscriptionsService {
     private readonly configService: ConfigService,
     private readonly notificationsService: NotificationsService,
   ) {}
+  async getAllPayments(
+    pagination: PaginationInputPayments,
+  ): Promise<PaginatedPaymentsModel> {
+    const result = await this.subscriptionsQueryRepo.getAllPayments(pagination);
 
+    return Paginator.paginate({
+      pageNumber: pagination.page,
+      pageSize: pagination.pageSize,
+      totalCount: result.totalCount,
+      items: [],
+    });
+  }
   async endDateOfSubscription(
     price: number,
     subscriptionTime: string,

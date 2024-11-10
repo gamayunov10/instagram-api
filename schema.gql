@@ -81,37 +81,6 @@ type PaginatedPostsModel {
   items: [PostModel!]!
 }
 
-type SubscriptionPaymentsModel {
-  id: String!
-  userId: String!
-  userName: String!
-  paymentMethod: PaymentType!
-  type: SubscriptionTime!
-  amount: Float!
-  currency: String!
-  createdAt: DateTime!
-  endDate: DateTime!
-}
-
-enum PaymentType {
-  STRIPE
-  PAYPAL
-}
-
-enum SubscriptionTime {
-  MONTHLY
-  DAY
-  WEEKLY
-}
-
-type PaginatedPaymentsModel {
-  page: Int!
-  pageSize: Int!
-  pagesCount: Int!
-  totalCount: Int!
-  items: [SubscriptionPaymentsModel!]!
-}
-
 type Query {
   sayHello: String!
   loginSa: String!
@@ -119,7 +88,6 @@ type Query {
   getUsers(pagination: PaginationInputUsers, search: String): PaginatedUserModel!
   getPosts(paginationPosts: PaginationInputPosts): PaginatedPostsModel
   getPostsImagesByUser(userId: String!, paginationPosts: PaginationInputPosts): PaginatedPostsImagesModel!
-  getSubscriptionPayments(pagination: PaginationInputPayments, search: String): PaginatedPaymentsModel!
 }
 
 input PaginationInputUsers {
@@ -135,13 +103,6 @@ enum SortDirection {
 }
 
 input PaginationInputPosts {
-  page: Int! = 1
-  pageSize: Int! = 8
-  sortBy: String! = "createdAt"
-  sortOrder: SortDirection! = ASC
-}
-
-input PaginationInputPayments {
   page: Int! = 1
   pageSize: Int! = 8
   sortBy: String! = "createdAt"
