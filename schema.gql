@@ -54,33 +54,6 @@ type PaginatedUserModel {
   items: [UserModel!]!
 }
 
-type PaginatedPostsImagesModel {
-  page: Int!
-  pageSize: Int!
-  pagesCount: Int!
-  totalCount: Int!
-  items: [FileModel!]!
-}
-
-type PostModel {
-  id: String!
-  description: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  isDeleted: Boolean!
-  deletedAt: DateTime
-  authorId: String!
-  imagesData: [FileModel!]
-}
-
-type PaginatedPostsModel {
-  page: Int!
-  pageSize: Int!
-  pagesCount: Int!
-  totalCount: Int!
-  items: [PostModel!]!
-}
-
 type SubscriptionPaymentsModel {
   id: String!
   userId: String!
@@ -111,6 +84,33 @@ type PaginatedPaymentsModel {
   pagesCount: Int!
   totalCount: Int!
   items: [SubscriptionPaymentsModel!]!
+}
+
+type PaginatedPostsImagesModel {
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+  items: [FileModel!]!
+}
+
+type PostModel {
+  id: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDeleted: Boolean!
+  deletedAt: DateTime
+  authorId: String!
+  imagesData: [FileModel!]
+}
+
+type PaginatedPostsModel {
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+  items: [PostModel!]!
 }
 
 """Custom DateTime scalar type"""
