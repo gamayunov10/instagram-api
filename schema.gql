@@ -4,16 +4,11 @@
 
 type FileModel {
   authorId: String!
-  createdAt: DateTime!
+  createdAt: DateTimeScalar!
   fileType: FileType!
   url: String!
   imageId: String!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 enum FileType {
   Avatar
@@ -45,6 +40,11 @@ enum AccountType {
   PERSONAL
   BUSINESS
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type PaginatedUserModel {
   page: Int!
@@ -81,6 +81,41 @@ type PaginatedPostsModel {
   items: [PostModel!]!
 }
 
+type SubscriptionPaymentsModel {
+  id: String!
+  userId: String!
+  userName: String!
+  paymentMethod: PaymentType!
+  type: SubscriptionTime!
+  amount: Float!
+  currency: String!
+  createdAt: DateTime!
+  endDate: DateTime!
+  user: UserModel
+}
+
+enum PaymentType {
+  STRIPE
+  PAYPAL
+}
+
+enum SubscriptionTime {
+  MONTHLY
+  DAY
+  WEEKLY
+}
+
+type PaginatedPaymentsModel {
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+  items: [SubscriptionPaymentsModel!]!
+}
+
+"""Custom DateTime scalar type"""
+scalar DateTimeScalar
+
 type Query {
   sayHello: String!
   loginSa: String!
@@ -88,6 +123,7 @@ type Query {
   getUsers(pagination: PaginationInputUsers): PaginatedUserModel!
   getPosts(paginationPosts: PaginationInputPosts): PaginatedPostsModel
   getPostsImagesByUser(userId: String!, paginationPosts: PaginationInputPosts): PaginatedPostsImagesModel!
+  getPayments(pagination: PaginationInputPayments): PaginatedPaymentsModel!
 }
 
 input PaginationInputUsers {
@@ -108,6 +144,14 @@ input PaginationInputPosts {
   pageSize: Int! = 8
   sortBy: String! = "createdAt"
   sortOrder: SortDirection! = ASC
+}
+
+input PaginationInputPayments {
+  page: Int! = 1
+  pageSize: Int! = 6
+  sortBy: String! = "createdAt"
+  sortOrder: SortDirection! = ASC
+  search: String
 }
 
 type Mutation {

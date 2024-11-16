@@ -37,6 +37,8 @@ import { FilesLoader } from './base/data-loaders/files-loader';
 import { UserImagesLoader } from './base/data-loaders/user-images-loader';
 import { PostImagesLoader } from './base/data-loaders/post-images-loader';
 import { DateTimeScalar } from './base/custom-scalar- gql/date.time.scalar';
+import { PaymentsResolver } from './resolvers/payments/payments.resolver';
+import { UserLoader } from './base/data-loaders/user-loader';
 
 const services = [
   AppService,
@@ -55,10 +57,16 @@ const modules = [
 ];
 const controllers = [AppController, TestingController];
 
-const resolvers = [AppResolver, AuthResolver, UsersResolver, PostsResolver];
+const resolvers = [
+  AppResolver,
+  AuthResolver,
+  UsersResolver,
+  PostsResolver,
+  PaymentsResolver,
+];
 
 const scalars = [DateTimeScalar];
-const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
+const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader, UserLoader];
 
 @Module({
   imports: [

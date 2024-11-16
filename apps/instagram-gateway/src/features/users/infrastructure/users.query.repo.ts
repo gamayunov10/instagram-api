@@ -221,4 +221,22 @@ export class UsersQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
+  async findUsersByIds(ids: string[]) {
+    try {
+      return this.prismaClient.user.findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return [];
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
 }

@@ -104,9 +104,25 @@ export class SubscriptionsQueryRepository {
       const result = await this.prismaClient.subscriptionOrder.findMany();
       const totalCount = result.length;
 
+      let where = {};
+      if (pagination.search && pagination.search.trim() !== '') {
+        where = {
+          user: {
+            username: {
+              contains: pagination.search,
+              mode: 'insensitive',
+            },
+          },
+        };
+      }
       const payments = await this.prismaClient.subscriptionOrder.findMany({
+        where,
         orderBy: {
           [pagination.sortBy]: pagination.sortOrder,
+        },
+        include: {
+          payment: true,
+          user: true,
         },
         skip: skip,
         take: pagination.pageSize,

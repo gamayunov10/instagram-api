@@ -16,6 +16,8 @@ import { messageSuccessfulSubscription } from '../../../base/constants/constants
 import { PaginationInputPayments } from '../../../resolvers/payments/models/pagination-payments-input';
 import { PaginatedPaymentsModel } from '../../../resolvers/payments/models/paginated-payments.model';
 import { Paginator } from '../../../base/pagination/paginator';
+import { PaymentType } from '../../../../../../libs/common/base/ts/enums/payment-type.enum';
+import { SubscriptionPaymentsModel } from '../../../resolvers/payments/models/subscription.payments.model';
 
 @Injectable()
 export class SubscriptionsService {
@@ -33,12 +35,40 @@ export class SubscriptionsService {
     pagination: PaginationInputPayments,
   ): Promise<PaginatedPaymentsModel> {
     const result = await this.subscriptionsQueryRepo.getAllPayments(pagination);
+    if (result.payments.length === 0) {
+      return Paginator.paginate({
+        pageNumber: pagination.page,
+        pageSize: pagination.pageSize,
+        totalCount: result.totalCount,
+        items: [],
+      });
+    }
+    const items: SubscriptionPaymentsModel[] = await Promise.all(
+      result.payments.map(async (p) => {
+        const endDateOfSubscription = await this.endDateOfSubscription(
+          p.price,
+          p.subscriptionTime,
+          p.payment.updatedAt,
+        );
 
+        return {
+          id: p.id,
+          userId: p.userId,
+          userName: p.user.username,
+          endDate: endDateOfSubscription,
+          createdAt: p.createdAt,
+          currency: 'USD',
+          amount: p.price,
+          type: p.subscriptionTime as SubscriptionTime,
+          paymentMethod: p.payment.paymentSystem as PaymentType,
+        };
+      }),
+    );
     return Paginator.paginate({
       pageNumber: pagination.page,
       pageSize: pagination.pageSize,
       totalCount: result.totalCount,
-      items: [],
+      items: items,
     });
   }
   async endDateOfSubscription(
