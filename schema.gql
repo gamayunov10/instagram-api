@@ -85,7 +85,7 @@ type Query {
   sayHello: String!
   loginSa: String!
   getUser(id: String!): UserModel
-  getUsers(pagination: PaginationInputUsers, search: String): PaginatedUserModel!
+  getUsers(pagination: PaginationInputUsers): PaginatedUserModel!
   getPosts(paginationPosts: PaginationInputPosts): PaginatedPostsModel
   getPostsImagesByUser(userId: String!, paginationPosts: PaginationInputPosts): PaginatedPostsImagesModel!
 }
@@ -95,6 +95,7 @@ input PaginationInputUsers {
   pageSize: Int! = 8
   sortBy: String! = "createdAt"
   sortOrder: SortDirection! = ASC
+  search: String
 }
 
 enum SortDirection {
