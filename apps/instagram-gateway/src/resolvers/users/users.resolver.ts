@@ -48,14 +48,13 @@ export class UsersResolver {
   async getUsers(
     @Args('pagination', { type: () => PaginationInputUsers, nullable: true })
     pagination: PaginationInputUsers,
-    @Args('search', { nullable: true }) search?: string,
   ): Promise<PaginatedUserModel> {
     return this.usersService.getAllUsers(
       pagination.page,
       pagination.pageSize,
       pagination.sortBy,
       pagination.sortOrder,
-      search,
+      pagination.search,
     );
   }
 
@@ -64,6 +63,10 @@ export class UsersResolver {
   async deleteUser(
     @Args('userId', { type: () => String }) userId: string,
   ): Promise<boolean> {
-    return this.usersService.removeUser(userId);
+    const res = await this.usersService.removeUser(userId);
+    if (!res) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
+    return true;
   }
 }
