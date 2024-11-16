@@ -96,36 +96,72 @@ export class SubscriptionsQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
-
   async getAllPayments(pagination: PaginationInputPayments) {
     try {
       const skip = pagination.pageSize * (pagination.page - 1);
 
-      const result = await this.prismaClient.subscriptionOrder.findMany();
-      const totalCount = result.length;
-
       let where = {};
       if (pagination.search && pagination.search.trim() !== '') {
         where = {
-          user: {
-            username: {
-              contains: pagination.search,
-              mode: 'insensitive',
-            },
+          username: {
+            contains: pagination.search,
+            mode: 'insensitive',
           },
         };
       }
+
+      let orderBy: Record<string, any> = {};
+      switch (pagination.sortBy) {
+        case 'username':
+          orderBy = {
+            user: {
+              username: pagination.sortOrder,
+            },
+          };
+          break;
+        case 'createdAt':
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+          break;
+        case 'amount':
+          orderBy = {
+            payment: {
+              price: pagination.sortOrder,
+            },
+          };
+          break;
+        case 'paymentMethod':
+          orderBy = {
+            payment: {
+              paymentSystem: pagination.sortOrder,
+            },
+          };
+          break;
+        case 'dateAdded':
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+          break;
+        default:
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+      }
+
       const payments = await this.prismaClient.subscriptionOrder.findMany({
         where,
-        orderBy: {
-          [pagination.sortBy]: pagination.sortOrder,
-        },
+        orderBy,
+        skip: skip,
+        take: pagination.pageSize,
         include: {
           payment: true,
           user: true,
         },
-        skip: skip,
-        take: pagination.pageSize,
+      });
+
+      const totalCount = await this.prismaClient.subscriptionOrder.count({
+        where,
       });
 
       return { payments, totalCount };

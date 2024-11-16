@@ -24,9 +24,9 @@ export class PaginationInputPayments {
   pageSize: number = 6;
 
   @IsString()
-  @IsIn(['createdAt', 'amount', 'paymentMethod'], {
+  @IsIn(['createdAt', 'amount', 'paymentMethod', 'username', 'dateAdded'], {
     message:
-      'sortBy must be one of the following values: createdAt, amount, paymentMethod',
+      'sortBy must be one of the following values: createdAt, amount, paymentMethod, username, dateAdded',
   })
   @Field(() => String, { defaultValue: 'createdAt' })
   sortBy: string = 'createdAt';
