@@ -10,9 +10,9 @@ export class PaginationInputPayments {
   page: number = 1;
 
   @Min(1, { message: 'Page size must be greater than or equal to 1' })
-  @Max(8, { message: 'Page size must be less than or equal to 8' })
-  @Field(() => Int, { defaultValue: 8 })
-  pageSize: number = 8;
+  @Max(6, { message: 'Page size must be less than or equal to 6' })
+  @Field(() => Int, { defaultValue: 6 })
+  pageSize: number = 6;
 
   @IsString()
   @IsIn(['createdAt', 'amount', 'paymentMethod'], {
