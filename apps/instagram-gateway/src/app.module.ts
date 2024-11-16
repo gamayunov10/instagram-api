@@ -36,6 +36,7 @@ import { PostsResolver } from './resolvers/posts/posts.resolver';
 import { FilesLoader } from './base/data-loaders/files-loader';
 import { UserImagesLoader } from './base/data-loaders/user-images-loader';
 import { PostImagesLoader } from './base/data-loaders/post-images-loader';
+import { DateTimeScalar } from './base/custom-scalar- gql/date.time.scalar';
 
 const services = [
   AppService,
@@ -56,6 +57,7 @@ const controllers = [AppController, TestingController];
 
 const resolvers = [AppResolver, AuthResolver, UsersResolver, PostsResolver];
 
+const scalars = [DateTimeScalar];
 const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
 
 @Module({
@@ -78,6 +80,7 @@ const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
     ...services,
     ...resolvers,
     ...loaders,
+    ...scalars,
     {
       provide: APP_INTERCEPTOR,
       useClass: DataLoaderInterceptor,
