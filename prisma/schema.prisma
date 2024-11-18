@@ -40,6 +40,7 @@ model User {
   device                DeviceAuthSession[]
   providers             UserProviderInfo[]
   notifications         Notification[]
+  SubscriptionOrder     SubscriptionOrder[]
 
   @@unique([username, email])
   @@map("user")
@@ -129,6 +130,7 @@ model Subscriptions {
 model SubscriptionOrder {
   id               String                         @id @default(uuid())
   userId           String
+  user             User                           @relation(fields: [userId], references: [id])
   productId        String                         @map("product_id")
   price            Int
   paymentId        String                         @unique @map("payment_id")

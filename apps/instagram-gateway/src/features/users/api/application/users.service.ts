@@ -69,6 +69,11 @@ export class UsersService {
   async removeUser(userId: string): Promise<boolean> {
     return this.usersRepository.removeUser(userId);
   }
+
+  async findUsersByIds(ids: string[]): Promise<UserModel[]> {
+    const users = await this.usersQueryRepository.findUsersByIds(ids);
+    return this.mapUsers(users);
+  }
   private mapUsers(users: any[]): UserModel[] {
     return users.map((user) => {
       return {

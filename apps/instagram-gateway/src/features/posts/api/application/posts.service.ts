@@ -6,17 +6,25 @@ import { PaginatedPostsImagesModel } from '../../../../resolvers/posts/models/pa
 import { Paginator } from '../../../../base/pagination/paginator';
 import { PaginatedPostsModel } from '../../../../resolvers/posts/models/paginated-posts.model';
 import { PaginationInputPosts } from '../../../../resolvers/posts/models/pagination-posts-input';
+import { UsersService } from '../../../users/api/application/users.service';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception-handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly fileServiceAdapter: FileServiceAdapter,
+    private readonly usersService: UsersService,
   ) {}
   async getPostsImagesByUser(
     userId: string,
     paginationPosts: PaginationInputPosts,
   ): Promise<PaginatedPostsImagesModel> {
+    const user = await this.usersService.getUserById(userId);
+    if (!user) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
     const postsImages = await this.fileServiceAdapter.getPostsImagesByUser(
       userId,
       paginationPosts,

@@ -9,6 +9,7 @@ import { UsersRepository } from '../users/infrastructure/users.repo';
 import { UsersQueryRepository } from '../users/infrastructure/users.query.repo';
 import { fileServiceConfig } from '../../base/application/config/file-service.config';
 import { UserDevicesQueryRepository } from '../users/infrastructure/devices/user.devices.query.repo';
+import { UsersService } from '../users/api/application/users.service';
 
 import { PostsService } from './api/application/posts.service';
 import { PostsController } from './api/posts.controller';
@@ -35,7 +36,7 @@ const useCases = [
   PublicPostsGetUseCase,
   PublicPostGetUseCase,
 ];
-const services = [PrismaClient, PostsCleanupService, JwtService];
+const services = [PrismaClient, PostsCleanupService, JwtService, UsersService];
 const adapters = [FileServiceAdapter];
 const repositories = [PostsRepository, UsersRepository];
 const queryRepositories = [

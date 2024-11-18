@@ -436,17 +436,18 @@ export class UsersRepository {
 
   async removeUser(userId: string): Promise<boolean> {
     try {
-      await this.prismaClient.user.update({
+      const res = await this.prismaClient.user.update({
         where: { id: userId },
         data: { isDeleted: true },
       });
-
+      if (!res) {
+        return false;
+      }
       return true;
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
         this.logger.error(e);
       }
-
       return false;
     }
   }

@@ -32,6 +32,9 @@ import { SocketGatewayModule } from './features/socket/socket.gateway.module';
 import { AppResolver } from './app.resolver';
 import { AuthResolver } from './resolvers/auth/auth.resolver';
 import { UsersResolver } from './resolvers/users/users.resolver';
+import { DateTimeScalar } from './base/custom-scalar- gql/date.time.scalar';
+import { PaymentsResolver } from './resolvers/payments/payments.resolver';
+import { UserLoader } from './base/data-loaders/user-loader';
 import { PostsResolver } from './resolvers/posts/posts.resolver';
 import { FilesLoader } from './base/data-loaders/files-loader';
 import { UserImagesLoader } from './base/data-loaders/user-images-loader';
@@ -54,9 +57,16 @@ const modules = [
 ];
 const controllers = [AppController, TestingController];
 
-const resolvers = [AppResolver, AuthResolver, UsersResolver, PostsResolver];
+const resolvers = [
+  AppResolver,
+  AuthResolver,
+  UsersResolver,
+  PostsResolver,
+  PaymentsResolver,
+];
 
-const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
+const scalars = [DateTimeScalar];
+const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader, UserLoader];
 
 @Module({
   imports: [
@@ -78,6 +88,7 @@ const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader];
     ...services,
     ...resolvers,
     ...loaders,
+    ...scalars,
     {
       provide: APP_INTERCEPTOR,
       useClass: DataLoaderInterceptor,
