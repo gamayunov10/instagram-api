@@ -8,6 +8,8 @@ import { Paginator } from '../../../../base/pagination/paginator';
 import { PaginatedUserModel } from '../../../../resolvers/users/models/paginated-user.model';
 import { SortDirection } from '../../../../base/enums/sort/sort.direction.enum';
 import { AccountType } from '../../../../../../../libs/common/base/ts/enums/account-type.enum';
+import { BanUserInput } from '../../../../resolvers/users/models/ban-user-input';
+import { UserBlockStatus } from '../../../../base/enums/user-block-status.enum';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +31,12 @@ export class UsersService {
       endDateOfSubscription: user.endDateOfSubscription,
       autoRenewal: user.autoRenewal,
       isDeleted: user.isDeleted,
+      banInfo: user.banInfo
+        ? {
+            createdAt: user.banInfo.bannedAt,
+            reason: user.banInfo.reason,
+          }
+        : null,
       email: user.email,
       createdAt: user.createdAt,
       firstName: user.firstName,
@@ -48,6 +56,7 @@ export class UsersService {
     sortBy: string,
     sortOrder: SortDirection,
     search: string,
+    statusFilter: UserBlockStatus,
   ): Promise<PaginatedUserModel> {
     const result = await this.usersQueryRepository.getUsersWithRelations(
       page,
@@ -55,6 +64,7 @@ export class UsersService {
       sortBy,
       sortOrder,
       search,
+      statusFilter,
     );
     const users = this.mapUsers(result.users);
 
@@ -70,6 +80,27 @@ export class UsersService {
     return this.usersRepository.removeUser(userId);
   }
 
+  async banUser(banUserInput: BanUserInput): Promise<boolean> {
+    const user = await this.usersQueryRepository.findUserById(
+      banUserInput.userId,
+    );
+    if (!user) {
+      return false;
+    }
+    return this.usersRepository.banUser(
+      banUserInput.userId,
+      banUserInput.banReason,
+    );
+  }
+
+  async unbanUser(userId: string): Promise<boolean> {
+    const user = await this.usersQueryRepository.findUserById(userId);
+    if (!user) {
+      return false;
+    }
+    return this.usersRepository.unbanUser(userId);
+  }
+
   async findUsersByIds(ids: string[]): Promise<UserModel[]> {
     const users = await this.usersQueryRepository.findUsersByIds(ids);
     return this.mapUsers(users);
@@ -83,6 +114,12 @@ export class UsersService {
         endDateOfSubscription: user.endDateOfSubscription,
         autoRenewal: user.autoRenewal,
         isDeleted: user.isDeleted,
+        banInfo: user.banInfo
+          ? {
+              createdAt: user.banInfo.bannedAt,
+              reason: user.banInfo.reason,
+            }
+          : null,
         email: user.email,
         createdAt: user.createdAt,
         firstName: user.firstName,

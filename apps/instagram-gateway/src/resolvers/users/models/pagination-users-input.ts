@@ -11,6 +11,7 @@ import {
 
 import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
 import { maxChar30 } from '../../../base/constants/constants';
+import { UserBlockStatus } from '../../../base/enums/user-block-status.enum';
 
 @InputType()
 export class PaginationInputUsers {
@@ -41,4 +42,10 @@ export class PaginationInputUsers {
   @IsOptional()
   @Field(() => String, { nullable: true })
   search?: string;
+
+  @IsEnum(UserBlockStatus, {
+    message: 'statusFilter must be either all or blocked or unblocked',
+  })
+  @Field(() => UserBlockStatus, { defaultValue: UserBlockStatus.ALL })
+  statusFilter: UserBlockStatus;
 }

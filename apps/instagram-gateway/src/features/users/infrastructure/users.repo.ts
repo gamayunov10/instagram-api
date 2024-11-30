@@ -476,4 +476,41 @@ export class UsersRepository {
       await this.prismaClient.$disconnect();
     }
   }
+
+  async banUser(
+    userId: string,
+    reason: string,
+    bannedBy: string | null = null,
+  ): Promise<boolean> {
+    try {
+      await this.prismaClient.userBanInfo.create({
+        data: {
+          userId: userId,
+          reason: reason,
+          bannedBy: bannedBy,
+        },
+      });
+
+      return true;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return false;
+    }
+  }
+
+  async unbanUser(userId: string): Promise<boolean> {
+    try {
+      await this.prismaClient.userBanInfo.delete({
+        where: { userId: userId },
+      });
+      return true;
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return false;
+    }
+  }
 }

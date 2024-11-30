@@ -15,6 +15,11 @@ enum FileType {
   PostImage
 }
 
+type UserBan {
+  reason: String!
+  createdAt: DateTimeScalar!
+}
+
 type UserModel {
   id: String!
   accountType: AccountType!
@@ -33,6 +38,7 @@ type UserModel {
   profileLink: String
   avatarId: String
   isDeleted: Boolean!
+  banInfo: UserBan
   imagesUser: [FileModel!]
 }
 
@@ -133,11 +139,18 @@ input PaginationInputUsers {
   sortBy: String! = "createdAt"
   sortOrder: SortDirection! = ASC
   search: String
+  statusFilter: UserBlockStatus! = ALL
 }
 
 enum SortDirection {
   ASC
   DESC
+}
+
+enum UserBlockStatus {
+  ALL
+  BLOCKED
+  UNBLOCKED
 }
 
 input PaginationInputPosts {
@@ -165,9 +178,16 @@ input PaginationInputPayments {
 type Mutation {
   authorizeSuperAdmin(authLoginInput: AuthLoginInput!): String!
   deleteUser(userId: String!): Boolean!
+  banUser(banUserInput: BanUserInput!): Boolean!
+  unbanUser(userId: String!): Boolean!
 }
 
 input AuthLoginInput {
   email: String!
   password: String!
+}
+
+input BanUserInput {
+  banReason: String!
+  userId: String!
 }

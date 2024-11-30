@@ -20,6 +20,7 @@ import { UserImagesLoader } from '../../base/data-loaders/user-images-loader';
 import { PaginatedUserModel } from './models/paginated-user.model';
 import { UserModel } from './models/user.model';
 import { PaginationInputUsers } from './models/pagination-users-input';
+import { BanUserInput } from './models/ban-user-input';
 
 @Resolver(() => UserModel)
 export class UsersResolver {
@@ -55,6 +56,7 @@ export class UsersResolver {
       pagination.sortBy,
       pagination.sortOrder,
       pagination.search,
+      pagination.statusFilter,
     );
   }
 
@@ -64,6 +66,31 @@ export class UsersResolver {
     @Args('userId', { type: () => String }) userId: string,
   ): Promise<boolean> {
     const res = await this.usersService.removeUser(userId);
+    if (!res) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(BasicGqlGuard)
+  async banUser(
+    @Args('banUserInput', { type: () => BanUserInput })
+    banUserInput: BanUserInput,
+  ): Promise<boolean> {
+    const res = await this.usersService.banUser(banUserInput);
+    if (!res) {
+      exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
+    }
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(BasicGqlGuard)
+  async unbanUser(
+    @Args('userId', { type: () => String }) userId: string,
+  ): Promise<boolean> {
+    const res = await this.usersService.unbanUser(userId);
     if (!res) {
       exceptionHandler(ResultCode.NotFound, 'User not found', 'id');
     }
