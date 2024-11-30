@@ -1,16 +1,7 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import {
-  IsEnum,
-  IsIn,
-  IsOptional,
-  IsString,
-  Max,
-  MaxLength,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsIn, IsString, Max, Min } from 'class-validator';
 
 import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
-import { maxChar30 } from '../../../base/constants/constants';
 
 @InputType()
 export class PaginationInputPayments {
@@ -36,9 +27,4 @@ export class PaginationInputPayments {
   })
   @Field(() => SortDirection, { defaultValue: SortDirection.ASC })
   sortOrder: SortDirection = SortDirection.ASC;
-
-  @MaxLength(30, { message: maxChar30 })
-  @IsOptional()
-  @Field(() => String, { nullable: true })
-  search?: string;
 }

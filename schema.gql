@@ -123,7 +123,8 @@ type Query {
   getUsers(pagination: PaginationInputUsers): PaginatedUserModel!
   getPosts(paginationPosts: PaginationInputPosts): PaginatedPostsModel
   getPostsImagesByUser(userId: String!, paginationPosts: PaginationInputPosts): PaginatedPostsImagesModel!
-  getPayments(pagination: PaginationInputPayments): PaginatedPaymentsModel!
+  getPayments(pagination: PaginationInputPaymentsWithSearch): PaginatedPaymentsModel!
+  getPaymentsByUser(pagination: PaginationInputPayments, userId: String!): PaginatedPaymentsModel!
 }
 
 input PaginationInputUsers {
@@ -146,12 +147,19 @@ input PaginationInputPosts {
   sortOrder: SortDirection! = ASC
 }
 
-input PaginationInputPayments {
+input PaginationInputPaymentsWithSearch {
   page: Int! = 1
   pageSize: Int! = 6
   sortBy: String! = "createdAt"
   sortOrder: SortDirection! = ASC
   search: String
+}
+
+input PaginationInputPayments {
+  page: Int! = 1
+  pageSize: Int! = 6
+  sortBy: String! = "createdAt"
+  sortOrder: SortDirection! = ASC
 }
 
 type Mutation {
