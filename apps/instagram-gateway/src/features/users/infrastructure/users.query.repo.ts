@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
+import { UserBlockStatus } from '../../../base/enums/user-block-status.enum';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -18,6 +19,9 @@ export class UsersQueryRepository {
     try {
       return this.prismaClient.user.findUnique({
         where: { id },
+        include: {
+          banInfo: true,
+        },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -105,6 +109,7 @@ export class UsersQueryRepository {
           confirmationCode: true,
           passwordRecoveryCode: true,
           device: true,
+          banInfo: true,
         },
       });
     } catch (e) {
@@ -179,29 +184,39 @@ export class UsersQueryRepository {
     sortBy: string,
     sortOrder: SortDirection,
     search: string,
+    statusFilter: UserBlockStatus,
   ) {
     try {
       const skip = pageSize * (page - 1);
 
+      const where: any = {};
+
+      if (search && search.trim() !== '') {
+        where.username = {
+          contains: search,
+          mode: 'insensitive',
+        };
+      }
+
+      if (statusFilter === UserBlockStatus.BLOCKED) {
+        where.banInfo = { isNot: null };
+      } else if (statusFilter === UserBlockStatus.UNBLOCKED) {
+        where.banInfo = { is: null };
+      }
+
       const result = await this.prismaClient.user.findMany({
         include: {
           device: true,
+          banInfo: true,
         },
+        where,
       });
       const totalCount = result.length;
 
-      let where = {};
-      if (search && search.trim() !== '') {
-        where = {
-          username: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        };
-      }
       const users = await this.prismaClient.user.findMany({
         include: {
           device: true,
+          banInfo: true,
         },
         where,
         orderBy: {

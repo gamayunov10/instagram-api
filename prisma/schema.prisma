@@ -41,9 +41,22 @@ model User {
   providers             UserProviderInfo[]
   notifications         Notification[]
   SubscriptionOrder     SubscriptionOrder[]
+  banInfo               UserBanInfo?
 
   @@unique([username, email])
   @@map("user")
+}
+
+model UserBanInfo {
+  id         String    @id @default(uuid())
+  userId     String    @unique @map("user_id")
+  user       User      @relation(fields: [userId], references: [id])
+  reason     String    @map("ban_reason")
+  bannedAt   DateTime  @default(now()) @map("banned_at")
+  unbannedAt DateTime? @map("unbanned_at")
+  bannedBy   String?   @map("banned_by")
+
+  @@map("user_ban_info")
 }
 
 model UserProviderInfo {
