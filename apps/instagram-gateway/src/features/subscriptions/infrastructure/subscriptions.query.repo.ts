@@ -8,6 +8,7 @@ import { MyPaymentsQueryModel } from '../models/query/my-paymants.query.model';
 import { PaymentStatus } from '../../../../../../libs/common/base/ts/enums/payment-status.enum';
 import { SortDirection } from '../../../base/enums/sort/sort.direction.enum';
 import { PaginationInputPayments } from '../../../resolvers/payments/models/pagination-payments-input';
+import { PaginationInputPaymentsWithSearch } from '../../../resolvers/payments/models/pagination-payments-input-with-search';
 
 @Injectable()
 export class SubscriptionsQueryRepository {
@@ -96,20 +97,24 @@ export class SubscriptionsQueryRepository {
       await this.prismaClient.$disconnect();
     }
   }
-  async getAllPayments(pagination: PaginationInputPayments) {
+  async getAllPayments(pagination: PaginationInputPaymentsWithSearch) {
     try {
       const skip = pagination.pageSize * (pagination.page - 1);
 
       let where = {};
       if (pagination.search && pagination.search.trim() !== '') {
         where = {
-          username: {
-            contains: pagination.search,
-            mode: 'insensitive',
+          user: {
+            username: {
+              contains: pagination.search,
+              mode: 'insensitive',
+            },
+          },
+          payment: {
+            status: PaymentStatus.COMPLETED,
           },
         };
       }
-
       let orderBy: Record<string, any> = {};
       switch (pagination.sortBy) {
         case 'username':
@@ -119,6 +124,78 @@ export class SubscriptionsQueryRepository {
             },
           };
           break;
+        case 'createdAt':
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+          break;
+        case 'amount':
+          orderBy = {
+            payment: {
+              price: pagination.sortOrder,
+            },
+          };
+          break;
+        case 'paymentMethod':
+          orderBy = {
+            payment: {
+              paymentSystem: pagination.sortOrder,
+            },
+          };
+          break;
+        case 'dateAdded':
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+          break;
+        default:
+          orderBy = {
+            createdAt: pagination.sortOrder,
+          };
+      }
+
+      const payments = await this.prismaClient.subscriptionOrder.findMany({
+        where,
+        orderBy,
+        skip: skip,
+        take: pagination.pageSize,
+        include: {
+          payment: true,
+          user: true,
+        },
+      });
+
+      const totalCount = await this.prismaClient.subscriptionOrder.count({
+        where,
+      });
+
+      return { payments, totalCount };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return { payments: [], totalCount: 0 };
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+
+  async getAllPaymentsByUser(
+    userId: string,
+    pagination: PaginationInputPayments,
+  ) {
+    try {
+      const skip = pagination.pageSize * (pagination.page - 1);
+
+      const where = {
+        userId: userId,
+        payment: {
+          status: PaymentStatus.COMPLETED,
+        },
+      };
+
+      let orderBy: Record<string, any> = {};
+      switch (pagination.sortBy) {
         case 'createdAt':
           orderBy = {
             createdAt: pagination.sortOrder,

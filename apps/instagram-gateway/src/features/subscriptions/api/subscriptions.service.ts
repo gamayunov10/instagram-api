@@ -35,16 +35,46 @@ export class SubscriptionsService {
     pagination: PaginationInputPayments,
   ): Promise<PaginatedPaymentsModel> {
     const result = await this.subscriptionsQueryRepo.getAllPayments(pagination);
-    if (result.payments.length === 0) {
+    return this.processPayments(
+      result.payments,
+      pagination.page,
+      pagination.pageSize,
+      result.totalCount,
+    );
+  }
+
+  async getAllPaymentsByUser(
+    userId: string,
+    pagination: PaginationInputPayments,
+  ): Promise<PaginatedPaymentsModel> {
+    const result = await this.subscriptionsQueryRepo.getAllPaymentsByUser(
+      userId,
+      pagination,
+    );
+    return this.processPayments(
+      result.payments,
+      pagination.page,
+      pagination.pageSize,
+      result.totalCount,
+    );
+  }
+  private async processPayments(
+    payments: any[],
+    pageNumber: number,
+    pageSize: number,
+    totalCount: number,
+  ): Promise<PaginatedPaymentsModel> {
+    if (payments.length === 0) {
       return Paginator.paginate({
-        pageNumber: pagination.page,
-        pageSize: pagination.pageSize,
-        totalCount: result.totalCount,
+        pageNumber,
+        pageSize,
+        totalCount,
         items: [],
       });
     }
+
     const items: SubscriptionPaymentsModel[] = await Promise.all(
-      result.payments.map(async (p) => {
+      payments.map(async (p) => {
         const endDateOfSubscription = await this.endDateOfSubscription(
           p.price,
           p.subscriptionTime,
@@ -64,11 +94,12 @@ export class SubscriptionsService {
         };
       }),
     );
+
     return Paginator.paginate({
-      pageNumber: pagination.page,
-      pageSize: pagination.pageSize,
-      totalCount: result.totalCount,
-      items: items,
+      pageNumber,
+      pageSize,
+      totalCount,
+      items,
     });
   }
   async endDateOfSubscription(
@@ -254,6 +285,6 @@ export class SubscriptionsService {
     );
 
     const message = `${messageSuccessfulSubscription} ${endDate.toLocaleDateString()}`;
-    await this.notificationsService.createNotification(userId, message, 30000);
+    await this.notificationsService.createNotification(userId, message);
   }
 }
