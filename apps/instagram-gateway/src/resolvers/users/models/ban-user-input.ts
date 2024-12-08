@@ -1,11 +1,17 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsString, IsUUID, MaxLength } from 'class-validator';
+import { IsString, IsUUID, Matches, MaxLength } from 'class-validator';
 
-import { maxChar30 } from '../../../base/constants/constants';
+import {
+  banReasonIsIncorrect,
+  maxChar30,
+} from '../../../base/constants/constants';
 
 @InputType()
 export class BanUserInput {
   @MaxLength(30, { message: maxChar30 })
+  @Matches(/^[A-Za-zА-Яа-яЁё]*$/, {
+    message: banReasonIsIncorrect,
+  })
   @IsString()
   @Field(() => String)
   banReason: string;
