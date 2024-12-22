@@ -103,4 +103,22 @@ export class AuthService {
     const base64AuthString = Buffer.from(authString).toString('base64');
     return `Basic ${base64AuthString}`;
   }
+
+  validateAuthorization(authHeader: string): boolean {
+    const [, credentials] = authHeader.split(' ');
+
+    const decodedCredentials = Buffer.from(credentials, 'base64').toString(
+      'utf8',
+    );
+    const [username, password] = decodedCredentials.split(':');
+
+    const validUsername = this.configService.get<string>('BASIC_AUTH_USERNAME');
+    const validPassword = this.configService.get<string>('BASIC_AUTH_PASSWORD');
+
+    if (username !== validUsername || password !== validPassword) {
+      return false;
+    }
+
+    return true;
+  }
 }

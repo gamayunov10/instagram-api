@@ -2,19 +2,20 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
+
+import { AuthService } from '../../features/auth/api/application/auth.service';
 
 @Injectable()
 export class BasicGqlGuard implements CanActivate {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context).getContext();
     const request = ctx.req;
+    console.log(ctx);
 
     const authHeader = request.headers['authorization'];
     if (!authHeader) {
@@ -25,19 +26,6 @@ export class BasicGqlGuard implements CanActivate {
     if (authType !== 'Basic' || !credentials) {
       throw new UnauthorizedException('Invalid Authorization header format');
     }
-
-    const decodedCredentials = Buffer.from(credentials, 'base64').toString(
-      'utf8',
-    );
-    const [username, password] = decodedCredentials.split(':');
-
-    const validUsername = this.configService.get<string>('BASIC_AUTH_USERNAME');
-    const validPassword = this.configService.get<string>('BASIC_AUTH_PASSWORD');
-
-    if (username !== validUsername || password !== validPassword) {
-      throw new ForbiddenException('User not unauthorized');
-    }
-
-    return true;
+    return this.authService.validateAuthorization(authHeader);
   }
 }
