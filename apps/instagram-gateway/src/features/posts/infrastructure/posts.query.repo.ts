@@ -183,6 +183,7 @@ export class PostsQueryRepository {
       avatar: { url: data.author.avatarURL },
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
+      isDeleted: data.isDeleted,
       images: data.images.map((image) => ({
         imageId: image.imageId,
       })),
