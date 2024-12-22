@@ -35,6 +35,7 @@ import { PostQueryModel } from '../models/query/post.query.model';
 import { invalidPostPhoto } from '../../../base/constants/constants';
 import { DeviceAuthSessionGuard } from '../../../infrastructure/guards/devie-auth-session.guard';
 import { PublicPostsSchema } from '../../../base/schemas/public.posts.schema';
+import { pubSub } from '../../../settings/pubsub.provider';
 
 import { UploadPostPhotoCommand } from './application/use-cases/commandBus/upload-post-photo.use-case';
 import { CreatePostCommand } from './application/use-cases/commandBus/create-post.use-case';
@@ -190,6 +191,7 @@ export class PostsController {
     if (post.code !== ResultCode.Success) {
       return exceptionHandler(result.code, result.message, result.field);
     }
+    await pubSub.publish('postAdded', { postAdded: post.response });
 
     return post.response;
   }

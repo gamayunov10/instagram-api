@@ -81,6 +81,11 @@ const loaders = [FilesLoader, UserImagesLoader, PostImagesLoader, UserLoader];
       autoSchemaFile: 'schema.gql',
       path: '/api/v1/graphql',
       playground: true,
+      subscriptions: {
+        'graphql-ws': {
+          path: '/api/v1/graphql',
+        },
+      },
     }),
   ],
   controllers: [...controllers],

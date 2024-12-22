@@ -1,11 +1,19 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import DataLoader from 'dataloader';
 import { Loader } from 'nestjs-dataloader';
 
 import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.service';
 import { PostsService } from '../../features/posts/api/application/posts.service';
 import { PostImagesLoader } from '../../base/data-loaders/post-images-loader';
+import { pubSub } from '../../settings/pubsub.provider';
 
 import { PaginatedPostsImagesModel } from './models/paginated-posts-images.model';
 import { PostModel } from './models/post-model';
@@ -49,5 +57,9 @@ export class PostsResolver {
     paginationPosts: PaginationInputPosts,
   ): Promise<PaginatedPostsImagesModel> {
     return this.postsService.getPostsImagesByUser(userId, paginationPosts);
+  }
+  @Subscription(() => PostModel)
+  postAdded() {
+    return pubSub.asyncIterableIterator('postAdded');
   }
 }
