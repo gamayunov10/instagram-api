@@ -14,6 +14,7 @@ import { BasicGqlGuard } from '../../infrastructure/guards/basic-gql-guard.servi
 import { PostsService } from '../../features/posts/api/application/posts.service';
 import { PostImagesLoader } from '../../base/data-loaders/post-images-loader';
 import { pubSub } from '../../settings/pubsub.provider';
+import { BasicGqlSubscriptionGuard } from '../../infrastructure/guards/basic-gql-subscription.guard';
 
 import { PaginatedPostsImagesModel } from './models/paginated-posts-images.model';
 import { PostModel } from './models/post-model';
@@ -59,6 +60,7 @@ export class PostsResolver {
     return this.postsService.getPostsImagesByUser(userId, paginationPosts);
   }
   @Subscription(() => PostModel)
+  @UseGuards(BasicGqlSubscriptionGuard)
   postAdded() {
     return pubSub.asyncIterableIterator('postAdded');
   }
