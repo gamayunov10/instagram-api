@@ -39,6 +39,7 @@ import { PostsResolver } from './resolvers/posts/posts.resolver';
 import { FilesLoader } from './base/data-loaders/files-loader';
 import { UserImagesLoader } from './base/data-loaders/user-images-loader';
 import { PostImagesLoader } from './base/data-loaders/post-images-loader';
+import { CommentModule } from './features/comments/comments.module';
 
 const services = [
   AppService,
@@ -54,6 +55,7 @@ const modules = [
   NotificationsModule,
   SubscriptionsModule,
   SocketGatewayModule,
+  CommentModule,
 ];
 const controllers = [AppController, TestingController];
 
