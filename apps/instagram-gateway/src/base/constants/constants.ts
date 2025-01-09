@@ -45,6 +45,7 @@ export const maxChar20 = 'Maximum number of characters 20';
 export const maxChar30 = 'Maximum number of characters 30';
 export const maxChar50 = 'Maximum number of characters 50';
 export const maxChar200 = 'Maximum number of characters 200';
+export const maxChar300 = 'Maximum number of characters 300';
 export const maxChar500 = 'Maximum number of characters 500';
 export const passwordIsIncorrect =
   'Password must contain 0-9, a-z, A-Z, ! " # $ % &\' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~}';

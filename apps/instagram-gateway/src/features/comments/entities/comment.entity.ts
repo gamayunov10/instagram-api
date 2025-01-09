@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export class Comment {
   id: string;
   content: string;
@@ -8,4 +10,5 @@ export class Comment {
   authorId: string;
   postId: string;
   parentId: string | null;
+  author?: User | null;
 }

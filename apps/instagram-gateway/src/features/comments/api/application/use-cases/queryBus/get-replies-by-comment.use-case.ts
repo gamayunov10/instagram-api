@@ -4,7 +4,6 @@ import { ExceptionResultType } from '../../../../../../base/types/exception.type
 import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import { Paginator } from '../../../../../../base/pagination/paginator';
 import { CommentService } from '../../comments.service';
-import { CommentViewModel } from '../../../../models/output/comment.view.model';
 import { RepliesQueryModel } from '../../../../models/query/replies.query.model';
 import {
   commentIdField,
@@ -37,11 +36,10 @@ export class RepliesByCommentGetUseCase
       };
     }
 
-    const resultReplies: { replies: CommentViewModel[]; totalCount: number } =
-      await this.commentsService.findRepliesByCommentId(
-        query.commentId,
-        query.queryModel,
-      );
+    const resultReplies = await this.commentsService.findRepliesByCommentId(
+      query.commentId,
+      query.queryModel,
+    );
 
     const replies = resultReplies.replies;
 

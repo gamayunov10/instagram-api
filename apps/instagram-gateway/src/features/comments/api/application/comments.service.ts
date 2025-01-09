@@ -33,10 +33,15 @@ export class CommentService {
     return comment ? this.mapToCommentViewModel(comment) : null;
   }
 
-  async findCommentsByPostId(postId: string, query: CommentQueryModel) {
+  async findCommentsByPostId(
+    postId: string,
+    query: CommentQueryModel,
+    userId: string | null,
+  ) {
     const result = await this.commentQueryRepo.findCommentsByPostId(
       postId,
       query,
+      userId,
     );
     if (result.comments.length === 0) {
       return result;
@@ -83,7 +88,11 @@ export class CommentService {
       content: comment.content,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
-      authorId: comment.authorId,
+      author: {
+        id: comment.author.id,
+        username: comment.author.username,
+        avatarUrl: comment.author.avatarURL,
+      },
       postId: comment.postId,
       parentId: comment.parentId,
     };

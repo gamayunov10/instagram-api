@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { OwnerDataViewModel } from './owner.data.view.model';
+
 export class CommentViewModel {
   @ApiProperty({
     type: String,
@@ -22,9 +24,9 @@ export class CommentViewModel {
   updatedAt: Date;
 
   @ApiProperty({
-    type: String,
+    type: OwnerDataViewModel,
   })
-  authorId: string;
+  author: OwnerDataViewModel;
 
   @ApiProperty({
     type: String,
