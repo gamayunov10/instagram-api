@@ -168,7 +168,11 @@ describe('CommentsController: /comments (Pagination)', (): void => {
           content: 'Comment 1 by user',
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
-          authorId: user.id,
+          author: {
+            id: user.id,
+            username: createUserInput.username,
+            avatarUrl: null,
+          },
           postId: postId,
           parentId: null,
         },
@@ -177,7 +181,11 @@ describe('CommentsController: /comments (Pagination)', (): void => {
           content: 'Comment 1 by user2',
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
-          authorId: user2.id,
+          author: {
+            id: user2.id,
+            username: createUserInput2.username,
+            avatarUrl: null,
+          },
           postId: postId,
           parentId: null,
         },
@@ -186,11 +194,94 @@ describe('CommentsController: /comments (Pagination)', (): void => {
           content: 'Comment 2 by user',
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
-          authorId: user.id,
+          author: {
+            id: user.id,
+            username: createUserInput.username,
+            avatarUrl: null,
+          },
           postId: postId,
           parentId: null,
         },
       ]);
+    });
+
+    it(`should prioritize user's own comments at the top`, async (): Promise<void> => {
+      // Очистка базы данных
+      await agent.delete('/api/v1/testing/all-data');
+
+      // Создание пользователей
+      const user = await testManager.createUser(createUserInput);
+      const user2 = await testManager.createUser(createUserInput2);
+
+      // Создание публикации
+      const imagePath = path.join(__dirname, '../../base/assets/node.png');
+
+      const photoId = await agent
+        .post(post_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .attach('file', imagePath)
+        .expect(201);
+
+      const postResponse = await agent
+        .post(post_with_photo_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({
+          description: 'Test Post',
+          images: [photoId.body.imageId],
+        })
+        .expect(201);
+
+      postId = postResponse.body.id;
+
+      // Комментарий от user2
+      await agent
+        .post(comments_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({ postId, content: 'Comment by user2' })
+        .expect(201);
+
+      // Комментарий от user
+      await agent
+        .post(comments_url)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({ postId, content: 'Comment by user' })
+        .expect(201);
+
+      // Получение комментариев
+      const response = await agent
+        .get(`${get_comments_url}/${postId}`)
+        .auth(user.accessToken, { type: 'bearer' })
+        .query({
+          sortBy: CommentSortFields.CREATED_AT,
+          sortDirection: SortDirection.ASC,
+          page: 1,
+          pageSize: 10,
+        })
+        .expect(200);
+
+      // Проверяем, что комментарий пользователя находится первым
+      expect(response.body.items[0]).toEqual(
+        expect.objectContaining({
+          content: 'Comment by user',
+          author: {
+            id: user.id,
+            username: createUserInput.username,
+            avatarUrl: null,
+          },
+        }),
+      );
+
+      // Проверяем, что остальные комментарии следуют
+      expect(response.body.items[1]).toEqual(
+        expect.objectContaining({
+          content: 'Comment by user2',
+          author: {
+            id: user2.id,
+            username: createUserInput2.username,
+            avatarUrl: null,
+          },
+        }),
+      );
     });
   });
 });

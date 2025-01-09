@@ -164,7 +164,11 @@ describe('CommentsController: /comments/:id', (): void => {
         content: updatedContent,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-        authorId: user.id,
+        author: {
+          id: user.id,
+          username: expect.any(String),
+          avatarUrl: null,
+        },
         postId: postId,
         parentId: null,
       });
