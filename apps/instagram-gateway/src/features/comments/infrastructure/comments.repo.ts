@@ -28,6 +28,7 @@ export class CommentsRepository {
           authorId: userId,
           parentId: commentInputModel.parentId || null,
         },
+        include: { author: true },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
@@ -45,6 +46,7 @@ export class CommentsRepository {
       return this.prismaClient.comment.update({
         where: { id: commentId },
         data: commentUpdateModel,
+        include: { author: true },
       });
     } catch (e) {
       if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {

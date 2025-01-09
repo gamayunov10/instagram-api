@@ -26,20 +26,52 @@ export class CommentsQueryRepo {
   async findCommentsByPostId(
     postId: string,
     query: CommentQueryModel,
+    userId: string | null,
   ): Promise<{ comments: Comment[]; totalCount: number }> {
     try {
-      const result = await this.prismaClient.comment.findMany({
-        where: { postId, isDeleted: false, parentId: null },
-      });
-      const totalCount = result.length;
-      const skip = Number(query.pageSize) * (Number(query.page) - 1);
+      const { page, pageSize, sortField, sortDirection } = query;
 
-      const comments = await this.prismaClient.comment.findMany({
-        where: { postId, isDeleted: false, parentId: null },
-        orderBy: { [query.sortField]: query.sortDirection },
+      let userComments = [];
+      let userCommentsCount = 0;
+
+      if (userId) {
+        userComments = await this.prismaClient.comment.findMany({
+          where: { postId, authorId: userId, isDeleted: false, parentId: null },
+          include: { author: true },
+          orderBy: { [sortField]: sortDirection },
+        });
+
+        userCommentsCount = userComments.length;
+      }
+
+      const skip = Math.max(
+        0,
+        Number(pageSize) * (Number(page) - 1) - userCommentsCount,
+      );
+
+      const whereFilter: any = {
+        postId,
+        isDeleted: false,
+        parentId: null,
+      };
+
+      if (userId) {
+        whereFilter.NOT = { authorId: userId };
+      }
+
+      const otherComments = await this.prismaClient.comment.findMany({
+        where: whereFilter,
+        include: { author: true },
+        orderBy: { [sortField]: sortDirection },
         skip: skip,
-        take: Number(query.pageSize),
+        take: Number(pageSize) - userCommentsCount, // Оставшееся место для комментариев
       });
+
+      const totalCount = await this.prismaClient.comment.count({
+        where: { postId, isDeleted: false, parentId: null },
+      });
+
+      const comments = [...userComments, ...otherComments];
 
       return { comments, totalCount };
     } catch (e) {
@@ -57,6 +89,7 @@ export class CommentsQueryRepo {
     try {
       const result = await this.prismaClient.comment.findMany({
         where: { parentId: commentId, isDeleted: false },
+        include: { author: true },
       });
 
       const totalCount = result.length;
@@ -64,6 +97,7 @@ export class CommentsQueryRepo {
 
       const replies = await this.prismaClient.comment.findMany({
         where: { parentId: commentId, isDeleted: false },
+        include: { author: true },
         orderBy: { [query.sortField]: query.sortDirection },
         skip: skip,
         take: Number(query.pageSize),

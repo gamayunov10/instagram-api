@@ -1,16 +1,23 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { maxChar50 } from '../../../../base/constants/constants';
+import { maxChar300, minChar1 } from '../../../../base/constants/constants';
 
 export class CommentInputModel {
   @ApiProperty({
     type: String,
-    minLength: 0,
-    maxLength: 50,
+    minLength: 1,
+    maxLength: 300,
     required: true,
   })
-  @MaxLength(50, { message: maxChar50 })
+  @MinLength(1, { message: minChar1 })
+  @MaxLength(300, { message: maxChar300 })
   @IsNotEmpty()
   @IsString()
   content: string;

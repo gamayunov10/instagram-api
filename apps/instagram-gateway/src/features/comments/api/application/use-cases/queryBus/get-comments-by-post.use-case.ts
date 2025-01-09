@@ -10,12 +10,12 @@ import {
 } from '../../../../../../base/constants/constants';
 import { PostsQueryRepository } from '../../../../../posts/infrastructure/posts.query.repo';
 import { CommentService } from '../../comments.service';
-import { CommentViewModel } from '../../../../models/output/comment.view.model';
 
 export class CommentsByPostGetCommand {
   constructor(
     public postId: string,
     public queryModel: CommentQueryModel,
+    public userId: string | null,
   ) {}
 }
 
@@ -42,11 +42,11 @@ export class CommentsByPostGetUseCase
       };
     }
 
-    const resultComments: { comments: CommentViewModel[]; totalCount: number } =
-      await this.commentsService.findCommentsByPostId(
-        query.postId,
-        query.queryModel,
-      );
+    const resultComments = await this.commentsService.findCommentsByPostId(
+      query.postId,
+      query.queryModel,
+      query.userId,
+    );
 
     const comments = resultComments.comments;
 

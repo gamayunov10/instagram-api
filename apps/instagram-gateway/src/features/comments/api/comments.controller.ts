@@ -26,6 +26,8 @@ import { CommentViewModel } from '../models/output/comment.view.model';
 import { CommentQueryModel } from '../models/query/comment.query.model';
 import { CommentsSchema } from '../../../base/schemas/comments.schema';
 import { RepliesQueryModel } from '../models/query/replies.query.model';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
+import { GetUserIdByAuth } from '../../auth/guards/get-user.guard';
 
 import { CreateCommentCommand } from './application/use-cases/commandBus/create-comment.use-case';
 import { CommentService } from './application/comments.service';
@@ -89,12 +91,14 @@ export class CommentController {
     true,
     false,
   )
+  @UseGuards(GetUserIdByAuth)
   async findCommentsByPostId(
     @Param('postId') postId: string,
     @Query() query: CommentQueryModel,
+    @CurrentUserId() userId: string | null,
   ) {
     const comments = await this.queryBus.execute(
-      new CommentsByPostGetCommand(postId, query),
+      new CommentsByPostGetCommand(postId, query, userId),
     );
 
     if (!comments.data) {
