@@ -38,7 +38,7 @@ export const firstNameIsIncorrect =
   'The firstName must contain A-Z a-z А-Я а-я';
 export const lastNameIsIncorrect = 'The lastName must contain A-Z a-z А-Я а-я';
 export const banReasonIsIncorrect =
-  'The firstName must contain A-Z a-z А-Я а-я';
+  'The banReason must contain A-Z a-z А-Я а-я';
 export const minChar1 = 'Minimum number of characters 1';
 export const minChar6 = 'Minimum number of characters 6';
 export const maxChar20 = 'Maximum number of characters 20';

@@ -9,7 +9,7 @@ import {
 @InputType()
 export class BanUserInput {
   @MaxLength(30, { message: maxChar30 })
-  @Matches(/^[A-Za-zА-Яа-яЁё]*$/, {
+  @Matches(/^[A-Za-zА-Яа-яЁё\s]*$/, {
     message: banReasonIsIncorrect,
   })
   @IsString()
