@@ -65,6 +65,7 @@ export class PublicPostGetUseCase
       updatedAt: p.updatedAt,
       authorId: p.authorId,
       username: p.username,
+      isDeleted: p.isDeleted,
       images: urls,
     };
   }

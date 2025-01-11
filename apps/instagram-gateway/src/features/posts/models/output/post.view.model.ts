@@ -41,6 +41,11 @@ export class PostViewModel {
   updatedAt: Date;
 
   @ApiProperty({
+    type: Boolean,
+  })
+  isDeleted: boolean;
+
+  @ApiProperty({
     type: Array,
   })
   images: PostImageViewModel[];
