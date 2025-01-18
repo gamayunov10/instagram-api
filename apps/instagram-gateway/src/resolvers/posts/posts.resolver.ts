@@ -15,6 +15,8 @@ import { PostsService } from '../../features/posts/api/application/posts.service
 import { PostImagesLoader } from '../../base/data-loaders/post-images-loader';
 import { pubSub } from '../../settings/pubsub.provider';
 import { BasicGqlSubscriptionGuard } from '../../infrastructure/guards/basic-gql-subscription.guard';
+import { UserModel } from '../users/models/user.model';
+import { UserLoader } from '../../base/data-loaders/user-loader';
 
 import { PaginatedPostsImagesModel } from './models/paginated-posts-images.model';
 import { PostModel } from './models/post-model';
@@ -24,7 +26,10 @@ import { FileModel } from './models/file-model';
 
 @Resolver(() => PostModel)
 export class PostsResolver {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly userLoader: UserLoader,
+  ) {}
 
   @Query(() => PaginatedPostsModel, { nullable: true })
   @UseGuards(BasicGqlGuard)
@@ -59,6 +64,12 @@ export class PostsResolver {
   ): Promise<PaginatedPostsImagesModel> {
     return this.postsService.getPostsImagesByUser(userId, paginationPosts);
   }
+
+  @ResolveField(() => UserModel, { nullable: true })
+  async user(@Parent() postModel: PostModel) {
+    return this.userLoader.generateDataLoader().load(postModel.authorId);
+  }
+
   @Subscription(() => PostModel)
   @UseGuards(BasicGqlSubscriptionGuard)
   postAdded() {

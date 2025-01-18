@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { NodeEnv } from '../../../base/enums/node-env.enum';
 import { PostViewModel } from '../models/output/post.view.model';
 import { PostQueryModel } from '../models/query/post.query.model';
+import { PaginationInputPosts } from '../../../resolvers/posts/models/pagination-posts-input';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -91,6 +92,46 @@ export class PostsQueryRepository {
 
       const posts = await this.prismaClient.post.findMany({
         where: { isDeleted: false },
+        orderBy: { [query.sortField]: query.sortDirection },
+        skip: skip,
+        take: Number(query.pageSize),
+        include: { images: true, author: true },
+      });
+
+      return {
+        posts,
+        totalCount,
+      };
+    } catch (e) {
+      if (this.configService.get('ENV') === NodeEnv.DEVELOPMENT) {
+        this.logger.error(e);
+      }
+      return { posts: [], totalCount: 0 };
+    } finally {
+      await this.prismaClient.$disconnect();
+    }
+  }
+  async findPostsByQueryForAdmin(query: PaginationInputPosts) {
+    try {
+      const filters: any = { isDeleted: false };
+
+      if (query.searchUsername) {
+        filters.author = {
+          username: {
+            contains: query.searchUsername,
+            mode: 'insensitive',
+          },
+        };
+      }
+      const result = await this.prismaClient.post.findMany({
+        where: filters,
+      });
+
+      const totalCount = result.length;
+      const skip = Number(query.pageSize) * (Number(query.page) - 1);
+
+      const posts = await this.prismaClient.post.findMany({
+        where: filters,
         orderBy: { [query.sortField]: query.sortDirection },
         skip: skip,
         take: Number(query.pageSize),
