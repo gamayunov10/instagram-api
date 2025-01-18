@@ -62,6 +62,7 @@ export class CommentController {
   )
   @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
+  @HttpCode(201)
   async create(
     @UserIdFromGuard() userId: string,
     @Body() commentInputModel: CommentInputModel,
@@ -81,7 +82,7 @@ export class CommentController {
     'Get all comments for a specific post',
     false,
     false,
-    201,
+    200,
     '',
     CommentsSchema,
     ``,
@@ -92,6 +93,7 @@ export class CommentController {
     false,
   )
   @UseGuards(GetUserIdByAuth)
+  @HttpCode(200)
   async findCommentsByPostId(
     @Param('postId') postId: string,
     @Query() query: CommentQueryModel,
@@ -113,7 +115,7 @@ export class CommentController {
     'Get all replies for a specific comment',
     false,
     false,
-    201,
+    200,
     '',
     CommentsSchema,
     ``,
@@ -155,6 +157,7 @@ export class CommentController {
   )
   @UseGuards(DeviceAuthSessionGuard)
   @UseGuards(JwtBearerGuard)
+  @HttpCode(204)
   async update(
     @UserIdFromGuard() userId: string,
     @Param('id') id: string,

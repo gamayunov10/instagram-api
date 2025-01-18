@@ -37,7 +37,7 @@ export class PostsService {
     paginationPosts: PaginationInputPosts,
   ): Promise<PaginatedPostsModel> {
     const posts =
-      await this.postsQueryRepository.findPostsByQuery(paginationPosts);
+      await this.postsQueryRepository.findPostsByQueryForAdmin(paginationPosts);
     if (posts.posts.length === 0) {
       return {
         page: Number(paginationPosts.page),

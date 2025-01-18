@@ -109,6 +109,7 @@ type PostModel {
   deletedAt: DateTime
   authorId: String!
   imagesData: [FileModel!]
+  user: UserModel
 }
 
 type PaginatedPostsModel {
@@ -156,8 +157,15 @@ enum UserBlockStatus {
 input PaginationInputPosts {
   page: Int! = 1
   pageSize: Int! = 8
-  sortBy: String! = "createdAt"
-  sortOrder: SortDirection! = ASC
+  sortField: PostSortFields! = CREATED_AT
+  sortDirection: SortDirection! = ASC
+  searchUsername: String
+}
+
+enum PostSortFields {
+  CREATED_AT
+  UPDATED_AT
+  AUTHOR_ID
 }
 
 input PaginationInputPaymentsWithSearch {
