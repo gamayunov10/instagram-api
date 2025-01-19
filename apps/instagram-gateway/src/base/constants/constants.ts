@@ -13,6 +13,7 @@ export const subscriptionField = 'subscription';
 export const subscriptionTimeTypeField = 'subscriptionTimeType';
 export const postIdField = 'postId';
 export const commentIdField = 'commentId';
+export const parentIdIdField = 'parentId';
 
 export const deviceIDField = 'deviceId';
 export const imagesField = 'images';
@@ -23,6 +24,7 @@ export const userNotFound = 'User not found';
 export const subscriptionNotAvailable = 'Subscription not available';
 export const postNotFound = 'Post not found';
 export const commentNotFound = 'Comment not found';
+export const parentNotFound = 'Parent not found';
 export const postNotSaved = 'Post has not been saved';
 export const deviceNotFound = 'Device not found';
 export const userNotFoundOrConfirmed =

@@ -146,8 +146,8 @@ export class CommentController {
     true,
     false,
     204,
-    'Updated',
-    CommentViewModel,
+    'No Content',
+    false,
     ` If input model has incorrect values`,
     ApiErrorMessages,
     true,
@@ -170,7 +170,6 @@ export class CommentController {
     if (result.code !== ResultCode.Success) {
       return exceptionHandler(result.code, result.message, result.field);
     }
-    return result.res;
   }
 
   @Delete(':id')

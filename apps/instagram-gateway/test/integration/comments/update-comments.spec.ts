@@ -157,21 +157,7 @@ describe('CommentsController: /comments/:id', (): void => {
         .put(`${comments_url}/${commentId}`)
         .auth(user.accessToken, { type: 'bearer' })
         .send({ content: updatedContent })
-        .expect(200);
-
-      expect(updatedComment.body).toEqual({
-        id: commentId,
-        content: updatedContent,
-        createdAt: expect.any(String),
-        updatedAt: expect.any(String),
-        author: {
-          id: user.id,
-          username: expect.any(String),
-          avatarUrl: null,
-        },
-        postId: postId,
-        parentId: null,
-      });
+        .expect(204);
     });
   });
 });

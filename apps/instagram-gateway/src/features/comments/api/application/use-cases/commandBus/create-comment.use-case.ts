@@ -4,6 +4,8 @@ import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   commentIdField,
   commentNotFound,
+  parentIdIdField,
+  parentNotFound,
   postIdField,
   postNotFound,
 } from '../../../../../../base/constants/constants';
@@ -44,15 +46,15 @@ export class CreateCommentUseCase
     }
 
     if (commentInputModel.parentId) {
-      const comment = await this.commentsQueryRepo.findCommentById(
+      const parent = await this.commentsQueryRepo.findCommentById(
         commentInputModel.parentId,
       );
-      if (!comment) {
+      if (!parent) {
         return {
           data: false,
           code: ResultCode.NotFound,
-          field: commentIdField,
-          message: commentNotFound,
+          field: parentIdIdField,
+          message: parentNotFound,
         };
       }
     }
