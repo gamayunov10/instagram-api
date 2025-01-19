@@ -38,7 +38,7 @@ export class FileQueryRepository {
     const [files, totalCount] = await Promise.all([
       this.fileModel
         .find({ userId, fileType: FileType.PostImage })
-        .sort({ [paginationPosts.sortBy]: paginationPosts.sortOrder })
+        .sort({ [paginationPosts.sortField]: paginationPosts.sortDirection })
         .skip(skip)
         .limit(paginationPosts.pageSize)
         .exec(),
