@@ -19,7 +19,7 @@ export class CommentsQueryRepo {
   async findCommentById(id: string): Promise<Comment | null> {
     return this.prismaClient.comment.findUnique({
       where: { id },
-      include: { author: true }, // Including the author to check later
+      include: { author: true, post: true }, // Including the author to check later
     });
   }
 

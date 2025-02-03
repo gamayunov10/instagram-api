@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, Post } from '@prisma/client';
 
 export class Comment {
   id: string;
@@ -11,4 +11,5 @@ export class Comment {
   postId: string;
   parentId: string | null;
   author?: User | null;
+  post?: Post | null;
 }

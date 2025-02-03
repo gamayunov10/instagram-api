@@ -35,7 +35,7 @@ export class DeleteCommentUseCase
       };
     }
 
-    if (comment.authorId !== userId) {
+    if (comment.authorId !== userId && comment.post.authorId !== userId) {
       return {
         data: false,
         code: ResultCode.Forbidden,
