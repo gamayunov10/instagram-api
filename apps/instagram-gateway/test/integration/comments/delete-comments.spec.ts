@@ -5,7 +5,10 @@ import path from 'path';
 import { TestManager } from '../../base/managers/test.manager';
 import { beforeAllConfig } from '../../base/settings/before-all-config';
 import { prismaClientSingleton } from '../../base/settings/prisma-client-singleton';
-import { createUserInput } from '../../base/constants/tests-strings';
+import {
+  createUserInput,
+  createUserInput2,
+} from '../../base/constants/tests-strings';
 import { UserCredentialsType } from '../../base/types/testing.type';
 import { expectPhotoId } from '../../base/utils/post/expectPhotoId';
 import {
@@ -89,9 +92,12 @@ describe('CommentsController: DELETE /comments', (): void => {
 
   describe('positive', () => {
     let user: UserCredentialsType;
+    let user2: UserCredentialsType;
+
     let photoId;
     let postId;
     let commentId;
+    let commentId2;
 
     it(`should clear database`, async () => {
       await agent.delete('/api/v1/testing/all-data');
@@ -127,6 +133,16 @@ describe('CommentsController: DELETE /comments', (): void => {
       commentId = commentResponse.body.id;
     });
 
+    it(`should create comment user 2 for post`, async (): Promise<void> => {
+      user2 = await testManager.createUser(createUserInput2);
+      const commentResponse = await agent
+        .post(comments_url)
+        .auth(user2.accessToken, { type: 'bearer' })
+        .send({ postId: postId, content: 'This is a comment' })
+        .expect(201);
+      commentId2 = commentResponse.body.id;
+    });
+
     it(`should delete comment successfully`, async (): Promise<void> => {
       await agent
         .delete(`${comments_url}/${commentId}`)
@@ -136,6 +152,20 @@ describe('CommentsController: DELETE /comments', (): void => {
       // Verify comment is deleted
       await agent
         .put(`${comments_url}/${commentId}`)
+        .auth(user.accessToken, { type: 'bearer' })
+        .send({ content: 'Updated comment content' })
+        .expect(404);
+    });
+
+    it(`deleting comments on a post by other users, by the author of the post itself`, async (): Promise<void> => {
+      await agent
+        .delete(`${comments_url}/${commentId2}`)
+        .auth(user.accessToken, { type: 'bearer' })
+        .expect(204);
+
+      // Verify comment is deleted
+      await agent
+        .put(`${comments_url}/${commentId2}`)
         .auth(user.accessToken, { type: 'bearer' })
         .send({ content: 'Updated comment content' })
         .expect(404);
